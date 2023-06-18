@@ -1,0 +1,170 @@
+{
+  "login": "Login",
+  "register": "Register",
+  "email": "Email",
+  "password": "Password",
+  "accountSettings": "Account Settings",
+  "continueGoogle": "Continue with Google",
+  "or": "or",
+  "loginSuccess": "Signed in successfully.",
+  "loggedOut": "Signed out.",
+  "logOut": "Sign out",
+
+  "projects": "Projects",
+  "@projects": {
+    "description": "The \"Projects\" title in the Main Menu"
+  },
+  "projectDoesntExist": "Project does not exist",
+  "projectDoesntExistExplaination": "The project does not exist anymore. It may have been moved or deleted.",
+
+  "newProjectBtn": "Create new project...",
+  "@newProjectBtn": {
+    "description": "The button to create a new project in the Main Menu"
+  },
+  "newProject": "Create new project",
+  "projectName": "Project Name",
+  "backendEngine": "Backend Engine",
+  "canChangeLater": "(You can change this setting later)",
+  "projectLocation": "Project location",
+  "projectLocationDescription": "Where the project will be stored. On your device locally or online on the StoryTailor cloud.",
+  "locationLocal": "Local",
+  "@locationLocal": {
+    "description": "Storing the project/file locally."
+  },
+  "locationCloud": "StoryTailor Cloud",
+  "@locationCloud": {
+    "description": "Storing the project locally."
+  },
+
+  "refresh": "Refresh",
+  "@refresh": {
+    "description": "Refresh/Reload something"
+  },
+  "lastModified": "Last modified {date}",
+  "@lastModified": {
+    "description": "When a file is last modified",
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "Sunday, March 19, 2023"
+      }
+    }
+  },
+  "fileSize": "Size: {size}",
+  "@fileSize": {
+    "description": "The size of a file",
+    "placeholders": {
+      "size": {
+        "type": "String",
+        "example": "36.68KB"
+      }
+    }
+  },
+  "aboutAppBtn": "About this app",
+  "@aboutAppBtn": {
+    "description": "The button that jumps to the About page in the Main Menu"
+  },
+  "tutorials": "Tutorials",
+  "@tutorials": {
+    "description": "The tutorials section in the Main Menu"
+  },
+  "bugreport": "Bug report",
+  "bugdetails": "Bug details",
+  "bugdetailsplaceholder": "Please enter your bug report details here.",
+  "reportbug": "Report bug",
+
+  "create": "Create",
+  "cancel": "Cancel",
+  "delete": "Delete",
+
+  "about": "About",
+  "@about": {
+    "description": "The About page title."
+  },
+  "appSlogan": "Create your own stories.",
+  "aboutApp": "StoryTailor is an application to create visual novel games easily on your phone. Which it has never been this easy to create a visual novel game on your smartphone.\n\nMade with ❤️ in Flutter.\nMade by Satakun Utama (lines-of-codes). Copyright (C) 2023, All rights reserved.",
+  "@aboutApp": {
+    "description": "About the app."
+  },
+
+  "assets": "Assets",
+  "@assets": {
+    "description": "The Assets menu title (Project Editor)"
+  },
+  "importAssetBtn": "Import new asset...",
+  "newBtn": "New...",
+  "renameFile": "Rename",
+  "@renameFile": {
+    "description": "Renaming a file"
+  },
+
+  "objects": "Objects",
+  "@objects": {
+    "description": "The Objects menu title (Project Editor)"
+  },
+  "newObjectBtn": "Add new object...",
+
+  "preview": "Preview",
+  "@preview": {
+    "description": "The Preview menu title (Project Editor)"
+  },
+  "runPreviewBtn": "Run preview...",
+
+  "projectSettings": "Project Settings",
+  "@projectSettings": {
+    "description": "The Project Settings (Project Editor)"
+  },
+  "toRename": "To rename the project, please rename it from the project list by touch/click and hold on the project.",
+  "renameProject": "Rename project",
+  "deleteProject": "Delete project",
+  "deletionConfirmation": "Are you sure you want to permanently delete the project? The project will be gone forever and it cannot be accessed.",
+  "projectDeleted": "Project deleted.",
+  "projectNameCannotBeEmpty": "The project name cannot be empty.",
+  "invalidProjectName": "Invalid project name. It must contain at least one character or number to be valid.",
+
+  "story": "Story",
+  "@story": {
+    "description": "The Story menu title (Project Editor)"
+  },
+  "chapters": "Chapters",
+  "@chapters": {
+    "description": "The chapter list. (Project Editor/Story Page)"
+  },
+  "newChapter": "Add new chapter",
+  "chapterName": "Chapter's name",
+  "chapterNamePlaceholder": "The name of the chapter",
+  "branches": "Branches",
+  "@branches": {
+    "description": "The branch list. (Project Editor/Story Page)"
+  },
+  "newBranch": "Add new branch",
+  "branchName": "Branch's name",
+  "branchNamePlaceholder": "The name of the new branch",
+  "dialogs": "Dialogs",
+  "@dialogs": {
+    "description": "The dialog list. (Project Editor/Story Page)"
+  },
+  "dialog": "Dialog",
+  "@dialog": {
+    "description": "The dialog edit page. (Project Editor/Story Page)"
+  },
+  "newDialog": "Add new dialog",
+  "dialogContent": "Dialog's content",
+  "dialogContentPlaceholder": "The content of the dialog",
+
+  "addScene": "Add new scene",
+
+  "preferences": "Preferences",
+  "@preferences": {
+    "description": "The App settings menu title"
+  },
+  "theme": "Theme",
+  "darkTheme": "Dark",
+  "lightTheme": "Light",
+  "systemTheme": "System",
+  "language": "Language",
+
+  "devtools": "Developer tools",
+  "exitGame": "Exit Game",
+  "closeOverlay": "Close Overlay"
+}

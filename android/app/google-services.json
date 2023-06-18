@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "487544796493",
+    "project_id": "visual-novel-creator",
+    "storage_bucket": "visual-novel-creator.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:487544796493:android:11c9982c852bccc6cf3304",
+        "android_client_info": {
+          "package_name": "ga.trashbingames.storytailor"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "487544796493-181802ae41pk02ple35t43uhpvg3sqet.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyApO13mvtlrgDrAopVyLLIS7LYRIgg88cw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "487544796493-181802ae41pk02ple35t43uhpvg3sqet.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
