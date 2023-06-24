@@ -1,9 +1,11 @@
 import 'dart:ui';
 
+import 'package:storytailor/game_objects/sprite.dart';
+
 class Character {
   String name;
   Color textColor;
-  List<Map<String, String>> variants = [];
+  List<Map<String, SpriteMetadata>> variants = [];
 
   Character({
     required this.name,
@@ -11,16 +13,32 @@ class Character {
   });
 
   factory Character.fromMap(Map<String, dynamic> characterData) {
-    return Character(
+    Character char = Character(
       name: characterData["name"],
       textColor: Color(characterData["textColor"]),
     );
+
+    char.variants =
+        (characterData["variants"] as List<Map<String, Map<String, dynamic>>>)
+            .map(
+              (e) => e.map(
+                (key, value) => MapEntry(key, SpriteMetadata.fromMap(value)),
+              ),
+            )
+            .toList();
+
+    return char;
   }
 
   Map<String, dynamic> toMap() {
     return {
       "name": name,
       "textColor": textColor.value,
+      "variants": variants.map(
+        (e) => e.map(
+          (key, value) => MapEntry(key, value.toMap()),
+        ),
+      ),
     };
   }
 }

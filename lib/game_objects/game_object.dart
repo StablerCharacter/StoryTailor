@@ -10,4 +10,12 @@ class GameObject {
   });
 
   Component createComponent() => Component();
+
+  Map<String, dynamic> toMap() {
+    return {
+      "type": "object",
+      "name": name,
+      "children": children.map((e) => e.toMap()),
+    };
+  }
 }

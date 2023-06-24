@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flame/components.dart';
+import 'package:flame/events.dart';
 import 'package:flame/experimental.dart';
 import 'package:flame/palette.dart';
 import 'package:flutter/painting.dart';
@@ -10,6 +11,7 @@ import '../story_structure/story_manager.dart';
 import 'game_object.dart';
 
 class StoryDialog extends GameObject {
+  final objectTypeId = "storyDialog";
   StoryManager story;
   double height;
   int offsetY;
@@ -23,6 +25,17 @@ class StoryDialog extends GameObject {
 
   @override
   RectangleComponent createComponent() => _StoryDialogComponent(story, height: height, offsetY: offsetY);
+
+  @override
+  Map<String, dynamic> toMap() {
+    return {
+      "type": objectTypeId,
+      "name": name,
+      "children": children.map((e) => e.toMap()),
+      "height": height,
+      "offsetY": offsetY,
+    };
+  }
 }
 
 class _StoryDialogComponent extends RectangleComponent

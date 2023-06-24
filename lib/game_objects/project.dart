@@ -12,27 +12,23 @@ import 'game_scene.dart';
 
 enum BackendEngines {
   /// Uses HaxeFlixel (Haxe)
-  haxe("haxe"),
+  haxe,
 
   /// Uses Flame Engine (Dart)
-  flame("flame"),
+  flame,
 
   /// Uses the StablerCharacter.cs 2D Framework
-  sc2dcs("sc2dcs"),
+  sc2dcs,
 
   /// Uses the StablerCharacter.ts 2D Framework
-  sc2dts("sc2dts");
-
-  final String value;
-  const BackendEngines(this.value);
-  String toJson() => value;
+  sc2dts;
 
   factory BackendEngines.fromValue(String value) {
     for (BackendEngines backendEngine in BackendEngines.values) {
-      if (backendEngine.value == value) return backendEngine;
+      if (backendEngine.name == value) return backendEngine;
     }
     throw KeyNotFoundException(
-        "a backend engine with value $value is not found.");
+        "a backend engine with name $value is not found.");
   }
 }
 

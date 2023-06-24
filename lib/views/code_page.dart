@@ -2,12 +2,10 @@ import 'dart:io';
 
 import 'package:fluent_ui/fluent_ui.dart' show FluentIcons;
 import 'package:flutter/material.dart';
-import 'package:flutter_code_editor/flutter_code_editor.dart';
+import 'package:flutter_highlight/flutter_highlight.dart';
 import 'package:flutter_highlight/themes/androidstudio.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:highlight/languages/python.dart';
 import 'package:path/path.dart' as p;
-import 'package:system_theme/system_theme.dart';
 
 import 'file_edit_page.dart';
 
@@ -22,12 +20,12 @@ class CodeView extends StatefulWidget {
 }
 
 class _CodeViewState extends State<CodeView> {
-  CodeController codeController = CodeController();
-  List<bool> buttonHoverStates = [false, false, false];
+  String language = "";
+  late Future<String> code;
 
   @override
   void initState() {
-    widget.file.readAsString().then((value) => codeController.text = value);
+    code = widget.file.readAsString();
     setLanguageByFileExt();
 
     super.initState();
@@ -38,17 +36,13 @@ class _CodeViewState extends State<CodeView> {
 
     switch (extension) {
       case ".py":
-        codeController.language = python;
+        language = "python";
         break;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    SystemAccentColor accentColor = SystemTheme.accentColor;
-    ButtonStyle filledButtonStyle = ButtonStyle(
-        backgroundColor: MaterialStateProperty.all(accentColor.accent));
-
     return Scaffold(
       backgroundColor:
           androidstudioTheme["root"]?.backgroundColor ?? Colors.grey.shade900,
@@ -67,15 +61,22 @@ class _CodeViewState extends State<CodeView> {
         },
       ),
       body: SingleChildScrollView(
-        child: CodeTheme(
-          data: CodeThemeData(styles: androidstudioTheme),
-          child: CodeField(
-            textStyle: GoogleFonts.jetBrainsMono(
-                fontSize: Theme.of(context).textTheme.bodyLarge?.fontSize),
-            wrap: true,
-            controller: codeController,
-            readOnly: true,
-          ),
+        child: FutureBuilder(
+          future: code,
+          builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+            if (snapshot.hasData) {
+              return HighlightView(
+                snapshot.data!,
+                language: language,
+                theme: androidstudioTheme,
+                padding: const EdgeInsets.all(15),
+                tabSize: 4,
+                textStyle: GoogleFonts.jetBrainsMono(),
+              );
+            } else {
+              return const CircularProgressIndicator.adaptive();
+            }
+          },
         ),
       ),
     );

@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter_code_editor/flutter_code_editor.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:path/path.dart' as p;
 
@@ -31,7 +30,6 @@ class _AssetsPageState extends State<AssetsPage> {
   ];
 
   FlyoutController newEntityFlyoutControl = FlyoutController();
-  CodeController codeController = CodeController();
   late Directory assetsFolder;
 
   @override
