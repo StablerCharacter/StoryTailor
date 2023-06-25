@@ -1,5 +1,4 @@
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 Future<String?> askString(
     BuildContext context,
@@ -10,7 +9,6 @@ Future<String?> askString(
     String confirm,
     String cancel) {
   TextEditingController controller = TextEditingController();
-  AppLocalizations appLocal = AppLocalizations.of(context)!;
 
   return showDialog<String>(
     context: context,

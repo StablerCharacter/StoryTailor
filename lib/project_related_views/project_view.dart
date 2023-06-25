@@ -86,6 +86,7 @@ class _ProjectPageState extends State<ProjectPage> {
             icon: const Icon(FluentIcons.add_field),
             onTap: () {
               widget.project.scenes.add(GameScene(name: "New Scene ${widget.project.scenes.length}"));
+              widget.project.scenes.last.saveScene(widget.project.projectDirectory);
               setState(() {});
             },
             title: Text(appLocal.addScene, style: theme.typography.body),

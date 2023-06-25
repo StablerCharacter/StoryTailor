@@ -168,7 +168,7 @@ class _NewProjectPageState extends State<NewProjectPage> {
                         File("${projDir.path}/$fileName.json")..createSync());
                     projectDb.data.addAll({
                       'name': project.name,
-                      'backend': project.backendEngine,
+                      'backend': project.backendEngine.name,
                     });
                     projectDb.saveToFile();
                     Navigator.pop(context);

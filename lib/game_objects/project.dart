@@ -41,6 +41,9 @@ enum ProjectLocation {
 }
 
 class Project extends GameObject {
+  @override
+  get objectTypeId => "project";
+
   late KeyValueDatabase projectDb;
 
   ProjectLocation projectLocation = ProjectLocation.local;

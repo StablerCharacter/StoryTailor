@@ -29,9 +29,9 @@ class ColorPickerController {
 }
 
 class ColorPicker extends StatefulWidget {
-  ColorPickerController controller;
+  final ColorPickerController controller;
 
-  ColorPicker({super.key, required this.controller});
+  const ColorPicker({super.key, required this.controller});
 
   @override
   State<ColorPicker> createState() => _ColorPickerState();

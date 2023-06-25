@@ -50,7 +50,9 @@ class SpriteMetadata {
 }
 
 class SpriteObject extends GameObject {
-  final objectTypeId = "sprite";
+  @override
+  get objectTypeId => "sprite";
+
   SpriteMetadata metadata;
 
   SpriteObject(
@@ -67,7 +69,7 @@ class SpriteObject extends GameObject {
       "type": objectTypeId,
       "name": name,
       "metadata": metadata.toMap(),
-      "children": children.map((e) => e.toMap()),
+      "children": children.map((e) => e.toMap()).toList(),
     };
   }
 }

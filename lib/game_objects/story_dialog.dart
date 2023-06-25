@@ -11,7 +11,9 @@ import '../story_structure/story_manager.dart';
 import 'game_object.dart';
 
 class StoryDialog extends GameObject {
-  final objectTypeId = "storyDialog";
+  @override
+  get objectTypeId => "storyDialog";
+
   StoryManager story;
   double height;
   int offsetY;
@@ -31,7 +33,7 @@ class StoryDialog extends GameObject {
     return {
       "type": objectTypeId,
       "name": name,
-      "children": children.map((e) => e.toMap()),
+      "children": children.map((e) => e.toMap()).toList(),
       "height": height,
       "offsetY": offsetY,
     };

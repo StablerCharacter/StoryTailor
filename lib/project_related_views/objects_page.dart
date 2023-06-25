@@ -15,7 +15,6 @@ class ObjectsPage extends StatefulWidget {
 
 class _ObjectsPageState extends State<ObjectsPage> {
   List<GameObject> objects = [GameObject(name: "StoryDialog")];
-  FlyoutController newObjectFlyoutControl = FlyoutController();
 
   @override
   Widget build(BuildContext context) {
@@ -31,51 +30,41 @@ class _ObjectsPageState extends State<ObjectsPage> {
             children: [
               Text(appLocal.objects, style: theme.typography.titleLarge),
               const SizedBox(height: 30),
-              FlyoutTarget(
-                controller: newObjectFlyoutControl,
-                child: FilledButton(
-                  child: Text(appLocal.newObjectBtn),
-                  onPressed: () {
-                    newObjectFlyoutControl.showFlyout(
-                      builder: (context) {
-                        return FlyoutContent(
-                          child: SizedBox(
-                            width: 125,
-                            child: ListView(
-                              shrinkWrap: true,
-                              children: [
-                                Button(
-                                  child: const Text("Empty Object"),
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                ),
-                                Button(
-                                  child: const Text("Text"),
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                ),
-                                Button(
-                                  child: const Text("Button"),
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                ),
-                                Button(
-                                  child: const Text("Image"),
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
+              FilledButton(
+                child: Text(appLocal.newObjectBtn),
+                onPressed: () {
+                  showBottomSheet(context: context, builder: (context) {
+                    return ListView(
+                      shrinkWrap: true,
+                      children: [
+                        ListTile(
+                          title: const Text("Empty Object"),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                        ListTile(
+                          title: const Text("Text"),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                        ListTile(
+                          title: const Text("Button"),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                        ListTile(
+                          title: const Text("Image"),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ],
                     );
-                  },
-                ),
+                  });
+                },
               ),
               const SizedBox(height: 30),
               ListView.builder(

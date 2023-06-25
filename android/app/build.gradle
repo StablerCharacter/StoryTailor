@@ -71,6 +71,8 @@ dependencies {
 }
 
 android {
+
+    namespace 'ga.trashbingames.storytailor'
     defaultConfig {
         minSdkVersion 19
     }

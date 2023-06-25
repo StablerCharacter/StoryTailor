@@ -1,6 +1,8 @@
 import 'package:flame/components.dart';
 
 class GameObject {
+  String get objectTypeId => "object";
+
   String name;
   List<GameObject> children;
 
@@ -13,9 +15,9 @@ class GameObject {
 
   Map<String, dynamic> toMap() {
     return {
-      "type": "object",
+      "type": objectTypeId,
       "name": name,
-      "children": children.map((e) => e.toMap()),
+      "children": children.map((e) => e.toMap()).toList(),
     };
   }
 }
