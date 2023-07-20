@@ -5,7 +5,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '/game_objects/project.dart';
-import '/game_objects/game_scene.dart';
 import '/utils/string_utility.dart';
 import '/db/key_value_database.dart';
 import '/project_related_views/project_view.dart';
@@ -25,7 +24,6 @@ class _NewProjectPageState extends State<NewProjectPage> {
   @override
   void initState() {
     super.initState();
-    project.scenes.add(GameScene());
     _projectNameControl = TextEditingController(text: project.name);
     resetProjectsDirectory();
   }
@@ -156,8 +154,6 @@ class _NewProjectPageState extends State<NewProjectPage> {
                     projDir.createSync(recursive: true);
                     project.projectDirectory = projDir;
                     Directory("${projDir.path}/assets/").createSync();
-                    Directory("${projDir.path}/scenes/").createSync();
-                    project.scenes.first.saveScene(projDir);
                     Directory storyDirectory = Directory("${projDir.path}/story/")
                       ..createSync();
                     project.story

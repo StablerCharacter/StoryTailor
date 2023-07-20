@@ -4,9 +4,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '/game_objects/project.dart';
-import '/game_objects/game_scene.dart';
 import 'assets_page.dart';
-import 'objects_page.dart';
 import 'preview_page.dart';
 import 'story_page.dart';
 import 'project_settings_page.dart';
@@ -32,20 +30,6 @@ class _ProjectPageState extends State<ProjectPage> {
         Directory("${widget.project.projectDirectory.path}/story/")
           ..createSync();
     widget.project.story.loadChaptersFromDirectory();
-  }
-
-  List<PaneItem> getSceneNavigationItems() {
-    List<PaneItem> items = [];
-
-    for (var scene in widget.project.scenes) {
-      items.add(PaneItem(
-        icon: const Icon(FluentIcons.cube_shape_solid),
-        title: Text(scene.name),
-        body: ObjectsPage(scene),
-      ));
-    }
-
-    return items;
   }
 
   @override
@@ -78,20 +62,6 @@ class _ProjectPageState extends State<ProjectPage> {
               icon: const Icon(FluentIcons.play),
               title: Text(appLocal.preview, style: theme.typography.body),
               body: PreviewPage(widget.project)),
-          PaneItemSeparator(
-            color: theme.cardColor,
-            thickness: 2,
-          ),
-          PaneItemAction(
-            icon: const Icon(FluentIcons.add_field),
-            onTap: () {
-              widget.project.scenes.add(GameScene(name: "New Scene ${widget.project.scenes.length}"));
-              widget.project.scenes.last.saveScene(widget.project.projectDirectory);
-              setState(() {});
-            },
-            title: Text(appLocal.addScene, style: theme.typography.body),
-          ),
-          ...getSceneNavigationItems(),
         ],
         footerItems: <PaneItem>[
           PaneItem(

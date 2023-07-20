@@ -104,8 +104,8 @@ class _AssetsPageState extends State<AssetsPage> {
                   )
                       .then(
                     (_) {
-                      showSnackbar(context,
-                          const Snackbar(content: Text("File renamed.")));
+                      showSnackbar(
+                          context, const InfoBar(title: Text("File renamed.")));
                       onFileRenamed();
                     },
                   );
@@ -277,16 +277,68 @@ class _AssetsPageState extends State<AssetsPage> {
                       },
                     );
                   } else {
-                    onFileDelete() => setState(() {});
-
-                    Navigator.push(
-                      context,
-                      FluentPageRoute(
-                        builder: (context) => CodeView(
-                          entity,
-                          onFileDelete: onFileDelete,
-                        ),
-                      ),
+                    await showBottomSheet(
+                      context: context,
+                      builder: (context) {
+                        return Padding(
+                          padding: const EdgeInsets.all(20),
+                          child: ListView(
+                            shrinkWrap: true,
+                            children: [
+                              ListTile(
+                                leading: const Icon(FluentIcons.page),
+                                title: Text(basename,
+                                    style: theme.typography.bodyStrong),
+                              ),
+                              ListTile(
+                                title: const Text("Edit as text"),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    FluentPageRoute(
+                                      builder: (context) => CodeView(
+                                        entity,
+                                        onFileDelete: () => setState(() {}),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                              ListTile(
+                                title: const Text("Rename file"),
+                                onPressed: () {
+                                  showFileRenameDialog(
+                                    context,
+                                    entity,
+                                    () {
+                                      Navigator.pop(context);
+                                      setState(() {});
+                                    },
+                                  );
+                                },
+                              ),
+                              ListTile(
+                                title: const Text("Delete file"),
+                                onPressed: () {
+                                  entity.delete().then(
+                                    (value) {
+                                      showSnackbar(
+                                        context,
+                                        const InfoBar(
+                                          title: Text(
+                                              "File successfully deleted."),
+                                        ),
+                                      );
+                                      setState(() {});
+                                    },
+                                  );
+                                  Navigator.pop(context);
+                                },
+                              ),
+                            ],
+                          ),
+                        );
+                      },
                     );
                   }
                 }

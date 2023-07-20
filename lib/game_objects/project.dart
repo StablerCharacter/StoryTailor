@@ -8,7 +8,6 @@ import '/story_structure/branch.dart';
 import '/story_structure/dialog.dart';
 import '/story_structure/story_manager.dart';
 import 'game_object.dart';
-import 'game_scene.dart';
 
 enum BackendEngines {
   /// Uses HaxeFlixel (Haxe)
@@ -49,7 +48,6 @@ class Project extends GameObject {
   ProjectLocation projectLocation = ProjectLocation.local;
   BackendEngines backendEngine;
   Directory projectDirectory;
-  List<GameScene> scenes = [];
   int currentSceneIndex = 0;
   StoryManager story = StoryManager([
     Chapter("The beginning of the Adventure", {
@@ -74,16 +72,6 @@ class Project extends GameObject {
       projectDirectory: projectDirectory,
     );
 
-    project.loadScenes();
-
     return project;
-  }
-
-  void loadScenes() {
-    Directory(p.join(projectDirectory.path, "scenes")).listSync().forEach((entity) {
-      if (entity is File) {
-        scenes.add(GameScene.fromFile(entity));
-      }
-    });
   }
 }

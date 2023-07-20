@@ -2,7 +2,6 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import '../components/button_with_icon.dart';
 import '/game_objects/project.dart';
 import '../story_structure/branch.dart';
 import '../story_structure/chapter.dart';
@@ -31,6 +30,13 @@ class _StoryPageState extends State<StoryPage> {
   @override
   void initState() {
     super.initState();
+  }
+
+  @override
+  void deactivate() {
+    story.saveChaptersToFile();
+
+    super.deactivate();
   }
 
   String getViewingName(AppLocalizations appLocal) {
@@ -160,14 +166,6 @@ class _StoryPageState extends State<StoryPage> {
                 },
               ),
               const SizedBox(height: 15),
-              Tooltip(
-                message: "Save all unsaved changes in this chapter.",
-                child: ButtonWithIcon(
-                  icon: const Icon(FluentIcons.save),
-                  onPressed: () => story.saveChaptersToFile(),
-                  child: const Text("Save"),
-                ),
-              ),
             ],
           ),
         );

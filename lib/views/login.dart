@@ -102,7 +102,7 @@ class _LoginState extends State<LoginPage> {
             Container(
               margin: const EdgeInsets.all(5.0),
               child: Text(appLocal.or,
-                  style: TextStyle(color: theme.disabledColor)),
+                  style: TextStyle(color: theme.inactiveColor)),
             ),
             OutlinedButton(
               onPressed: () => _supabase.auth.signInWithOAuth(Provider.google),
