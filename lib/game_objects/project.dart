@@ -1,12 +1,12 @@
 import 'dart:io';
 
-import 'package:storytailor/story_structure/chapter.dart';
 import 'package:path/path.dart' as p;
+import 'package:storytailor/story_structure/chapter.dart';
 
-import '../db/key_value_database.dart';
 import '/story_structure/branch.dart';
 import '/story_structure/dialog.dart';
 import '/story_structure/story_manager.dart';
+import '../db/key_value_database.dart';
 import 'game_object.dart';
 
 enum BackendEngines {

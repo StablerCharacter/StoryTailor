@@ -2,25 +2,25 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:system_theme/system_theme.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:path/path.dart' as p;
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:system_theme/system_theme.dart';
 
 import 'db/key_value_database.dart';
+import 'game_objects/project.dart';
+import 'project_related_views/project_view.dart';
 import 'utils/dialog_util.dart';
+import 'utils/size_unit_conversion.dart';
 import 'utils/string_utility.dart';
 import 'views/bug_report.dart';
 import 'views/new_project_page.dart';
-import 'game_objects/project.dart';
 import 'views/settings_page.dart';
-import 'project_related_views/project_view.dart';
-import 'utils/size_unit_conversion.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -181,12 +181,12 @@ class _MyHomePageState extends State<MyHomePage> {
                     } else if (name.isEmpty) {
                       showSnackbar(
                           context,
-                          Snackbar(
-                              content:
+                          InfoBar(
+                              title:
                                   Text(appLocal.projectNameCannotBeEmpty)));
                     } else if (systemFriendlyFileName(name).isEmpty) {
                       showSnackbar(context,
-                          Snackbar(content: Text(appLocal.invalidProjectName)));
+                          InfoBar(title: Text(appLocal.invalidProjectName)));
                     }
                     List<String> pathSections = p.split(dir.path);
                     String oldName = pathSections.removeLast();
@@ -217,8 +217,8 @@ class _MyHomePageState extends State<MyHomePage> {
                               dir.delete(recursive: true).then((_) {
                                 showSnackbar(
                                   context,
-                                  Snackbar(
-                                    content: Text(appLocal.projectDeleted),
+                                  InfoBar(
+                                    title: Text(appLocal.projectDeleted),
                                   ),
                                 );
                                 setState(() {});

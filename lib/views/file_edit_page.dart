@@ -49,8 +49,8 @@ class _FileEditState extends State<FileEditPage> {
                   widget.file.writeAsString(textFieldControl.text).then(
                         (value) => showSnackbar(
                           context,
-                          const Snackbar(
-                            content: Text("File saved successfully."),
+                          const InfoBar(
+                            title: Text("File saved successfully."),
                           ),
                         ),
                       );

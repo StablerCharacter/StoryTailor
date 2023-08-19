@@ -154,6 +154,7 @@ class _NewProjectPageState extends State<NewProjectPage> {
                     projDir.createSync(recursive: true);
                     project.projectDirectory = projDir;
                     Directory("${projDir.path}/assets/").createSync();
+                    Directory("${projDir.path}/stages/").createSync();
                     Directory storyDirectory = Directory("${projDir.path}/story/")
                       ..createSync();
                     project.story

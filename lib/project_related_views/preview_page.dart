@@ -4,13 +4,22 @@ import 'package:flame/game.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import '../game_preview.dart';
 import '/game_objects/project.dart';
+import '../game_preview.dart';
 
-class PreviewPage extends StatelessWidget {
+class PreviewPage extends StatefulWidget {
   const PreviewPage(this.project, {super.key});
 
   final Project project;
+
+  @override
+  State<PreviewPage> createState() => _PreviewPageState();
+}
+
+class _PreviewPageState extends State<PreviewPage> {
+  _PreviewPageState();
+
+  String stage = "story";
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +33,36 @@ class PreviewPage extends StatelessWidget {
           children: [
             Text(appLocal.preview, style: theme.typography.titleLarge),
             Container(
+              margin: const EdgeInsets.fromLTRB(0, 15, 0, 0),
+              child: Column(
+                children: [
+                  InfoLabel(label: "Game Stage"),
+                  ComboBox<String>(
+                    value: stage,
+                    items: const [
+                      ComboBoxItem(
+                        value: "mainMenu",
+                        child: Text("Main Menu"),
+                      ),
+                      ComboBoxItem(
+                        value: "story",
+                        child: Text("Story"),
+                      ),
+                      ComboBoxItem(
+                        value: "credits",
+                        child: Text("Credits"),
+                      ),
+                    ],
+                    onChanged: (v) {
+                      setState(() {
+                        stage = v!;
+                      });
+                    },
+                  ),
+                ],
+              ),
+            ),
+            Container(
               margin: const EdgeInsets.all(30),
               child: FilledButton(
                 child: Text(
@@ -36,7 +75,7 @@ class PreviewPage extends StatelessWidget {
                     context,
                     FluentPageRoute(
                       builder: (context) => GameWidget(
-                        game: GamePreview(project.story),
+                        game: GamePreview(widget.project.story),
                         overlayBuilderMap: {
                           "devtools":
                               (BuildContext context, GamePreview preview) {

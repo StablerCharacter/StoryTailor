@@ -4,11 +4,12 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '/game_objects/project.dart';
-import 'assets_page.dart';
-import 'preview_page.dart';
-import 'story_page.dart';
-import 'project_settings_page.dart';
 import '../views/settings_page.dart';
+import 'assets_page.dart';
+import 'credits_config.dart';
+import 'preview_page.dart';
+import 'project_settings_page.dart';
+import 'story_page.dart';
 
 class ProjectPage extends StatefulWidget {
   const ProjectPage({super.key, required this.project});
@@ -51,17 +52,36 @@ class _ProjectPageState extends State<ProjectPage> {
         ),
         items: [
           PaneItem(
-              icon: const Icon(FluentIcons.fabric_folder),
-              title: Text(appLocal.assets, style: theme.typography.body),
-              body: AssetsPage(widget.project)),
+            icon: const Icon(FluentIcons.fabric_folder),
+            title: Text(appLocal.assets, style: theme.typography.body),
+            body: AssetsPage(widget.project),
+          ),
           PaneItem(
-              icon: const Icon(FluentIcons.text_document_edit),
-              title: Text(appLocal.story, style: theme.typography.body),
-              body: StoryPage(widget.project)),
+            icon: const Icon(FluentIcons.text_document_edit),
+            title: Text(appLocal.story, style: theme.typography.body),
+            body: StoryPage(widget.project),
+          ),
           PaneItem(
-              icon: const Icon(FluentIcons.play),
-              title: Text(appLocal.preview, style: theme.typography.body),
-              body: PreviewPage(widget.project)),
+            icon: const Icon(FluentIcons.play),
+            title: Text(appLocal.preview, style: theme.typography.body),
+            body: PreviewPage(widget.project),
+          ),
+          PaneItemSeparator(color: theme.cardColor, thickness: 2),
+          PaneItem(
+            icon: const Icon(FluentIcons.context_menu),
+            title: Text("Main Menu Stage", style: theme.typography.body),
+            body: Container(),
+          ),
+          PaneItem(
+            icon: const Icon(FluentIcons.storyboard),
+            title: Text("Story Stage", style: theme.typography.body),
+            body: Container(),
+          ),
+          PaneItem(
+            icon: const Icon(FluentIcons.circle_stop),
+            title: Text(appLocal.creditsStage, style: theme.typography.body),
+            body: CreditsConfigPage(widget.project),
+          ),
         ],
         footerItems: <PaneItem>[
           PaneItem(
@@ -70,9 +90,10 @@ class _ProjectPageState extends State<ProjectPage> {
             body: ProjectSettingsPage(widget.project),
           ),
           PaneItem(
-              icon: const Icon(FluentIcons.settings),
-              title: Text(appLocal.preferences, style: theme.typography.body),
-              body: const SettingsPage()),
+            icon: const Icon(FluentIcons.settings),
+            title: Text(appLocal.preferences, style: theme.typography.body),
+            body: const SettingsPage(),
+          ),
         ],
       ),
     );

@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:storytailor/components/button_with_icon.dart';
 import 'package:storytailor/views/about_page.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -75,13 +75,13 @@ class _SettingsPageState extends State<SettingsPage> {
       final AuthChangeEvent event = data.event;
 
       if (event == AuthChangeEvent.signedIn) {
-        showSnackbar(context, Snackbar(content: Text(loggedIn)));
+        showSnackbar(context, InfoBar(title: Text(loggedIn)));
       } else if (event == AuthChangeEvent.signedOut) {
-        showSnackbar(context, Snackbar(content: Text(loggedOut)));
+        showSnackbar(context, InfoBar(title: Text(loggedOut)));
       }
       setState(() {});
     }, onError: (error) {
-      showSnackbar(context, Snackbar(content: Text(error)), duration: snackbarLongDuration);
+      showSnackbar(context, InfoBar(title: Text(error)), duration: snackbarLongDuration);
     });
   }
 

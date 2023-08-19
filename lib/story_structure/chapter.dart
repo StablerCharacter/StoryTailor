@@ -49,7 +49,20 @@ class Chapter {
   factory Chapter.fromJson(Map<String, dynamic> data) {
     String name = data["chapter_info"]["name"];
     data.remove("chapter_info");
-    return Chapter(name, null);
+    Map<String, Branch> branches = {};
+
+    for (MapEntry<String, dynamic> entry in data.entries) {
+      branches.addEntries(
+        [
+          MapEntry(
+            entry.key,
+            Branch.fromJson(entry.value),
+          ),
+        ],
+      );
+    }
+
+    return Chapter(name, branches);
   }
 
   void loadFromFile() {

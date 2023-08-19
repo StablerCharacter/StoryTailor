@@ -5,10 +5,10 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:path/path.dart' as p;
 
-import '/game_objects/project.dart';
-import '/views/code_page.dart';
 import '/components/button_with_icon.dart';
+import '/game_objects/project.dart';
 import '/utils/size_unit_conversion.dart';
+import '/views/code_page.dart';
 
 class AssetsPage extends StatefulWidget {
   const AssetsPage(this.project, {super.key});

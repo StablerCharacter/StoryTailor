@@ -86,6 +86,13 @@
   "systemTheme": "ตามระบบ",
   "language": "ภาษา",
 
+  "stageInfo": "ข้อมูลฉาก",
+
+  "creditsStage": "ฉากเครดิต",
+  "newCreditSection": "ส่วนเครดิตใหม่",
+  "creditSectionNamePlaceholder": "โปรดใส่ชื่อของเครดิตส่วนนี้",
+  "creditSectionContentPlaceholder": "โปรดใส่เนื้อหาของเครดิตส่วนนี้",
+
   "devtools": "เครื่องมือผู้พัฒนา",
   "exitGame": "ออกจากเกม",
   "closeOverlay": "ปิดโอเวอร์เลย์"

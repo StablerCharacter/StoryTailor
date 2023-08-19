@@ -164,6 +164,13 @@
   "systemTheme": "System",
   "language": "Language",
 
+  "stageInfo": "Stage Info",
+
+  "creditsStage": "Credits Stage",
+  "newCreditSection": "New Section",
+  "creditSectionNamePlaceholder": "Enter the name of this credit section.",
+  "creditSectionContentPlaceholder": "Enter the content of this credit section.",
+
   "devtools": "Developer tools",
   "exitGame": "Exit Game",
   "closeOverlay": "Close Overlay"
