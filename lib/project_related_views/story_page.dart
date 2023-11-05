@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -34,6 +36,8 @@ class _StoryPageState extends State<StoryPage> {
 
   @override
   void deactivate() {
+    story.storyDirectory ??=
+        Directory("${widget.project.projectDirectory.path}/story/");
     story.saveChaptersToFile();
 
     super.deactivate();

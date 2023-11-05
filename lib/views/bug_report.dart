@@ -29,8 +29,8 @@ class _BugReportPageState extends State<BugReportPage> {
     AppLocalizations appLocal = AppLocalizations.of(context)!;
 
     return ScaffoldPage(
-      content: Padding(
-        padding: const EdgeInsets.all(10.0),
+      content: Container(
+        margin: const EdgeInsets.all(30.0),
         child: Column(
           children: [
             Text(

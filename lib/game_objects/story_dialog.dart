@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
-import 'package:flame/experimental.dart';
 import 'package:flame/palette.dart';
 import 'package:flutter/painting.dart';
 
@@ -22,7 +21,7 @@ class StoryDialog extends GameObject {
     super.name = "New Story Dialog",
     super.children = const [],
     this.height = 200,
-    this.offsetY = 100,
+    this.offsetY = -100,
   });
 
   @override
@@ -53,13 +52,13 @@ class _StoryDialogComponent extends RectangleComponent
   StoryManager story;
   int offsetY;
 
-  _StoryDialogComponent(this.story, {this.height = 200, this.offsetY = 100})
+  _StoryDialogComponent(this.story, {this.height = 200, this.offsetY = -100})
       : super(position: Vector2(0, 100));
 
   @override
   FutureOr<void> onLoad() {
     size = Vector2(game.size.x, height);
-    position = Vector2(0, game.size.y - height - offsetY);
+    position = Vector2(0, game.size.y - height + offsetY);
     story.chapters[story.chapterIndex].loadFromFile();
     storyText = TextComponent(
       text: story.getCurrentDialog().text,

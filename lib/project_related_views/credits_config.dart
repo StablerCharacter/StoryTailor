@@ -3,9 +3,11 @@ import 'dart:io';
 
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:gap/gap.dart';
 import 'package:path/path.dart' as p;
 import 'package:storytailor/components/button_with_icon.dart';
 import 'package:storytailor/game_objects/project.dart';
+import 'package:storytailor/utils/list_utility.dart';
 
 class CreditsSection {
   String name;
@@ -118,9 +120,31 @@ class _CreditsConfigState extends State<CreditsConfigPage> {
     super.dispose();
   }
 
+  void cloneAndMoveCreditsSection(int oldIndex, int newIndex) {
+    var clonedConfigSections = cloneList(config.sections);
+    var clonedSectionNameControls = cloneList(sectionNameControls);
+    var clonedCreditsControls = cloneList(creditsControls);
+    clonedConfigSections.insert(
+      newIndex,
+      clonedConfigSections.removeAt(oldIndex),
+    );
+    clonedSectionNameControls.insert(
+      newIndex,
+      clonedSectionNameControls.removeAt(oldIndex),
+    );
+    clonedCreditsControls.insert(
+      newIndex,
+      clonedCreditsControls.removeAt(oldIndex),
+    );
+    config.sections = clonedConfigSections;
+    sectionNameControls = clonedSectionNameControls;
+    creditsControls = clonedCreditsControls;
+  }
+
   @override
   Widget build(BuildContext context) {
     AppLocalizations appLocal = AppLocalizations.of(context)!;
+    FluentThemeData theme = FluentTheme.of(context);
 
     return ScaffoldPage(
       content: SingleChildScrollView(
@@ -128,10 +152,9 @@ class _CreditsConfigState extends State<CreditsConfigPage> {
           margin: const EdgeInsets.all(30),
           child: Column(
             children: [
-              Expander(
-                header: Text(appLocal.stageInfo),
-                content: const Text(
-                    "This is the stage for the *ending* credits. Can also be used to tell an ending story. For example, telling what happened afterward. You cannot have sections with duplicated names else it will have problems when saving the stage data."),
+              Text(
+                appLocal.creditsStage,
+                style: theme.typography.title,
               ),
               const SizedBox(height: 15),
               ButtonWithIcon(
@@ -152,7 +175,8 @@ class _CreditsConfigState extends State<CreditsConfigPage> {
                 itemCount: config.sections.length,
                 itemBuilder: (context, index) {
                   return Container(
-                    margin: const EdgeInsets.fromLTRB(10, 20, 10, 0),
+                    key: UniqueKey(),
+                    margin: const EdgeInsets.fromLTRB(0, 20, 0, 0),
                     child: Expander(
                       header: TextBox(
                         controller: sectionNameControls[index],
@@ -162,19 +186,58 @@ class _CreditsConfigState extends State<CreditsConfigPage> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           TextBox(
+                            maxLines: null,
                             controller: creditsControls[index],
                             placeholder:
                                 appLocal.creditSectionContentPlaceholder,
                           ),
-                          ButtonWithIcon(
-                            icon: const Icon(FluentIcons.delete),
-                            onPressed: () {
-                              config.sections.removeAt(index);
-                              sectionNameControls.removeAt(index);
-                              creditsControls.removeAt(index);
-                              setState(() {});
-                            },
-                            child: Text(appLocal.delete),
+                          const Gap(10),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Expanded(
+                                child: ButtonWithIcon(
+                                  icon: const Icon(FluentIcons.delete),
+                                  onPressed: () {
+                                    config.sections.removeAt(index);
+                                    sectionNameControls.removeAt(index);
+                                    creditsControls.removeAt(index);
+                                    setState(() {});
+                                  },
+                                  child: Text(appLocal.delete),
+                                ),
+                              ),
+                              const Gap(5),
+                              Expanded(
+                                child: ButtonWithIcon(
+                                  icon: const Icon(FluentIcons.up),
+                                  onPressed: () {
+                                    int newIndex = index - 1;
+                                    if (newIndex < 0) {
+                                      return;
+                                    }
+                                    cloneAndMoveCreditsSection(index, newIndex);
+                                    setState(() {});
+                                  },
+                                  child: const Text("Move Up"),
+                                ),
+                              ),
+                              const Gap(5),
+                              Expanded(
+                                child: ButtonWithIcon(
+                                  icon: const Icon(FluentIcons.down),
+                                  onPressed: () {
+                                    int newIndex = index + 1;
+                                    if (newIndex >= config.sections.length) {
+                                      return;
+                                    }
+                                    cloneAndMoveCreditsSection(index, newIndex);
+                                    setState(() {});
+                                  },
+                                  child: const Text("Move Down"),
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),

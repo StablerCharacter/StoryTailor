@@ -50,13 +50,27 @@
       }
     }
   },
-  "fileSize": "Size: {size}",
+  "fileSize": "File Size: {size}",
   "@fileSize": {
     "description": "The size of a file",
     "placeholders": {
       "size": {
         "type": "String",
         "example": "36.68KB"
+      }
+    }
+  },
+  "imageResolution": "Image Resolution: {width}x{height}",
+  "@imageResolution": {
+    "description": "The resolution of the image file.",
+    "placeholders": {
+      "width": {
+        "type": "int",
+        "example": "1920"
+      },
+      "height": {
+        "type": "int",
+        "example": "1080"
       }
     }
   },
@@ -166,6 +180,8 @@
 
   "stageInfo": "Stage Info",
 
+  "mainMenuStage": "Main Menu Stage",
+  "storyStage": "Story Stage",
   "creditsStage": "Credits Stage",
   "newCreditSection": "New Section",
   "creditSectionNamePlaceholder": "Enter the name of this credit section.",

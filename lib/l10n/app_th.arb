@@ -26,7 +26,8 @@
 
   "refresh": "รีโหลด",
   "lastModified": "แก้ไขครั้งล่าสุดเมื่อ {date}",
-  "fileSize": "ขนาด: {size}",
+  "fileSize": "ขนาดไฟล์: {size}",
+  "imageResolution": "ขนาดรูปภาพ: {width}x{height}",
   "aboutAppBtn": "เกี่ยวกับแอป",
   "tutorials": "การสอนใช้",
   "bugreport": "รายงานข้อผิดพลาด",
@@ -88,6 +89,8 @@
 
   "stageInfo": "ข้อมูลฉาก",
 
+  "mainMenuStage": "ฉากหน้าเมนูหลัก",
+  "storyStage": "ฉากเนื้อเรื่อง",
   "creditsStage": "ฉากเครดิต",
   "newCreditSection": "ส่วนเครดิตใหม่",
   "creditSectionNamePlaceholder": "โปรดใส่ชื่อของเครดิตส่วนนี้",

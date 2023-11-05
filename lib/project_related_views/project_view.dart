@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:storytailor/project_related_views/main_menu_config.dart';
+import 'package:storytailor/project_related_views/story_config.dart';
 
 import '/game_objects/project.dart';
 import '../views/settings_page.dart';
@@ -69,13 +71,13 @@ class _ProjectPageState extends State<ProjectPage> {
           PaneItemSeparator(color: theme.cardColor, thickness: 2),
           PaneItem(
             icon: const Icon(FluentIcons.context_menu),
-            title: Text("Main Menu Stage", style: theme.typography.body),
-            body: Container(),
+            title: Text(appLocal.mainMenuStage, style: theme.typography.body),
+            body: MainMenuConfigPage(widget.project),
           ),
           PaneItem(
             icon: const Icon(FluentIcons.storyboard),
-            title: Text("Story Stage", style: theme.typography.body),
-            body: Container(),
+            title: Text(appLocal.storyStage, style: theme.typography.body),
+            body: const StoryConfigPage(),
           ),
           PaneItem(
             icon: const Icon(FluentIcons.circle_stop),

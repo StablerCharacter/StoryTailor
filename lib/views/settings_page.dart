@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storytailor/components/button_with_icon.dart';
@@ -72,16 +73,10 @@ class _SettingsPageState extends State<SettingsPage> {
     SharedPreferences.getInstance().then((value) => prefs = value);
 
     _authSubscription = _supabase.auth.onAuthStateChange.listen((data) {
-      final AuthChangeEvent event = data.event;
-
-      if (event == AuthChangeEvent.signedIn) {
-        showSnackbar(context, InfoBar(title: Text(loggedIn)));
-      } else if (event == AuthChangeEvent.signedOut) {
-        showSnackbar(context, InfoBar(title: Text(loggedOut)));
-      }
       setState(() {});
     }, onError: (error) {
-      showSnackbar(context, InfoBar(title: Text(error)), duration: snackbarLongDuration);
+      showSnackbar(context, InfoBar(title: Text(error)),
+          duration: snackbarLongDuration);
     });
   }
 
@@ -96,6 +91,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     FluentThemeData theme = FluentTheme.of(context);
     AppLocalizations appLocal = AppLocalizations.of(context)!;
+    Axis buttonsAxis = MediaQuery.of(context).size.width >= 600 ? Axis.horizontal : Axis.vertical;
 
     loggedIn = appLocal.loginSuccess;
     loggedOut = appLocal.loggedOut;
@@ -106,48 +102,57 @@ class _SettingsPageState extends State<SettingsPage> {
           margin: const EdgeInsets.all(30.0),
           child: Column(
             children: [
-              Visibility(
-                visible: _supabase.auth.currentUser == null,
-                replacement: Column(
-                  children: [
-                    ButtonWithIcon(
+              Flex(
+                direction: buttonsAxis,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Visibility(
+                    visible: _supabase.auth.currentUser == null,
+                    replacement: Flex(
+                      direction: buttonsAxis,
+                      children: [ButtonWithIcon(
+                        icon: const Icon(FluentIcons.sign_out),
+                        child: Text(appLocal.logOut),
+                        onPressed: () {
+                          _supabase.auth.signOut();
+                        },
+                      ),const Gap(10),],
+                    ),
+                    child: ButtonWithIcon(
+                      icon: const Icon(FluentIcons.signin),
+                      child: Text(appLocal.login),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          FluentPageRoute(
+                            builder: (context) => const LoginPage(),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  Visibility(
+                    visible: _supabase.auth.currentUser != null,
+                    child: ButtonWithIcon(
                       icon: const Icon(FluentIcons.player_settings),
                       child: Text(appLocal.accountSettings),
                       onPressed: () {},
                     ),
-                    ButtonWithIcon(
-                      icon: const Icon(FluentIcons.sign_out),
-                      child: Text(appLocal.logOut),
-                      onPressed: () {
-                        _supabase.auth.signOut();
-                      },
-                    ),
-                  ],
-                ),
-                child: ButtonWithIcon(
-                  icon: const Icon(FluentIcons.signin),
-                  child: Text(appLocal.login),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      FluentPageRoute(
-                        builder: (context) => const LoginPage(),
-                      ),
-                    );
-                  },
-                ),
-              ),
-              ButtonWithIcon(
-                icon: const Icon(FluentIcons.info),
-                child: Text(appLocal.about),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    FluentPageRoute(
-                      builder: (context) => const AboutPage(),
-                    ),
-                  );
-                },
+                  ),
+                  const Gap(10),
+                  ButtonWithIcon(
+                    icon: const Icon(FluentIcons.info),
+                    child: Text(appLocal.about),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        FluentPageRoute(
+                          builder: (context) => const AboutPage(),
+                        ),
+                      );
+                    },
+                  ),
+                ],
               ),
               const SizedBox(height: 20),
               Text(appLocal.preferences, style: theme.typography.titleLarge),
@@ -179,6 +184,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           value.theme = newValue!;
                         }),
                       ),
+                      const Gap(10),
                       InfoLabel(
                         label: appLocal.language,
                         labelStyle: theme.typography.bodyStrong,
