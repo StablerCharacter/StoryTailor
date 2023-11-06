@@ -74,7 +74,9 @@ class _NewProjectPageState extends State<NewProjectPage> {
           padding: const EdgeInsets.all(30),
           child: Column(
             children: [
-              InfoLabel(label: appLocal.projectName, labelStyle: theme.typography.bodyLarge),
+              InfoLabel(
+                  label: appLocal.projectName,
+                  labelStyle: theme.typography.bodyLarge),
               TextBox(
                 controller: _projectNameControl,
                 onChanged: (newValue) => project.name = newValue,
@@ -83,11 +85,14 @@ class _NewProjectPageState extends State<NewProjectPage> {
                 margin: const EdgeInsets.fromLTRB(0, 30, 0, 0),
                 child: Column(
                   children: [
-                    Text(appLocal.backendEngine, style: theme.typography.bodyLarge),
+                    Text(appLocal.backendEngine,
+                        style: theme.typography.bodyLarge),
                     ComboBox(
                       items: const [
                         ComboBoxItem(
-                            value: BackendEngines.haxe, child: Text("Haxe")),
+                          value: BackendEngines.haxe,
+                          child: Text("HaxeFlixel"),
+                        ),
                         ComboBoxItem(
                           value: BackendEngines.flame,
                           child: Text("Flame Engine"),
@@ -110,22 +115,22 @@ class _NewProjectPageState extends State<NewProjectPage> {
                     ),
                     Text(appLocal.canChangeLater),
                     const SizedBox(height: 15),
-                    Text(appLocal.projectLocation, style: theme.typography.bodyLarge),
-                    Text(appLocal.projectLocationDescription),
-                    ComboBox(
-                      items: [
-                        ComboBoxItem(
-                          value: ProjectLocation.local,
-                          child: Text(appLocal.locationLocal),
-                        ),
-                        ComboBoxItem(
-                          value: ProjectLocation.cloud,
-                          child: Text(appLocal.locationCloud),
-                        ),
-                      ],
-                      value: project.projectLocation,
-                      onChanged: (location) => setState(() => project.projectLocation = location!),
-                    ),
+                    // Text(appLocal.projectLocation, style: theme.typography.bodyLarge),
+                    // Text(appLocal.projectLocationDescription),
+                    // ComboBox(
+                    //   items: [
+                    //     ComboBoxItem(
+                    //       value: ProjectLocation.local,
+                    //       child: Text(appLocal.locationLocal),
+                    //     ),
+                    //     ComboBoxItem(
+                    //       value: ProjectLocation.cloud,
+                    //       child: Text(appLocal.locationCloud),
+                    //     ),
+                    //   ],
+                    //   value: project.projectLocation,
+                    //   onChanged: (location) => setState(() => project.projectLocation = location!),
+                    // ),
                   ],
                 ),
               ),
@@ -155,8 +160,8 @@ class _NewProjectPageState extends State<NewProjectPage> {
                     project.projectDirectory = projDir;
                     Directory("${projDir.path}/assets/").createSync();
                     Directory("${projDir.path}/stages/").createSync();
-                    Directory storyDirectory = Directory("${projDir.path}/story/")
-                      ..createSync();
+                    Directory storyDirectory =
+                        Directory("${projDir.path}/story/")..createSync();
                     project.story
                       ..storyDirectory = storyDirectory
                       ..saveChaptersToFile();

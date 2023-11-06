@@ -1,4 +1,6 @@
 {
+  "developmentVersionWarning": "This version of the application is still under heavy development, It is not advised for you to use this version of the application for production uses.",
+
   "login": "Login",
   "register": "Register",
   "email": "Email",

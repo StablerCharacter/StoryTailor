@@ -24,6 +24,10 @@ class StoryManager {
   Future<void> saveChapterToFile(int chapterIndex) async {
     Chapter chapter = chapters[chapterIndex];
 
+    if (chapter.branches == null) {
+      return;
+    }
+
     if (chapter.newName != null) {
       await File(
               "${storyDirectory!.path}/${systemFriendlyFileName(chapter.name)}.json")

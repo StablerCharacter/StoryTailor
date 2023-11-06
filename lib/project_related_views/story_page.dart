@@ -97,7 +97,11 @@ class _StoryPageState extends State<StoryPage> {
                   SlidableAction(
                     backgroundColor: theme.cardColor,
                     foregroundColor: theme.typography.body!.color,
-                    onPressed: (context) {},
+                    onPressed: (context) {
+                      story.chapters[index].chaptersFile!.deleteSync();
+                      story.chapters.removeAt(index);
+                      setState(() {});
+                    },
                     borderRadius: BorderRadius.circular(5),
                     icon: FluentIcons.delete,
                   ),
@@ -129,8 +133,8 @@ class _StoryPageState extends State<StoryPage> {
                 labelStyle: theme.typography.bodyStrong,
               ),
               TextBox(
-                controller: TextEditingController(text: current.name),
-                onChanged: (newValue) => current.name = newValue,
+                controller: TextEditingController(text: current.newName ?? current.name),
+                onChanged: (newValue) => current.newName = newValue,
               ),
               const SizedBox(height: 15),
               ListView.builder(

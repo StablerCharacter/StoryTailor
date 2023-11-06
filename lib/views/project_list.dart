@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:intl/intl.dart';
@@ -169,6 +170,11 @@ class _ProjectListState extends State<ProjectList> {
       child: Column(
         children: [
           Text(appLocal.projects, style: theme.typography.titleLarge),
+          Visibility(
+            visible: kDebugMode,
+            child: Text(appLocal.developmentVersionWarning,
+                style: theme.typography.bodyStrong),
+          ),
           const SizedBox(height: 15),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,

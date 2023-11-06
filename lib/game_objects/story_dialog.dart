@@ -40,7 +40,7 @@ class StoryDialog extends GameObject {
 }
 
 class _StoryDialogComponent extends RectangleComponent
-    with HasGameReference<GamePreview>, TapCallbacks {
+    with HasGameReference<GamePreview>, TapCallbacks, KeyboardHandler {
   final TextPaint textPaint = TextPaint(
     style: TextStyle(
       color: BasicPalette.black.color,
