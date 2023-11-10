@@ -84,6 +84,7 @@
   "@tutorials": {
     "description": "The tutorials section in the Main Menu"
   },
+  "openTutorial": "Open Tutorial",
   "bugreport": "Bug report",
   "bugdetails": "Bug details",
   "bugdetailsplaceholder": "Please enter your bug report details here.",

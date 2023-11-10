@@ -59,8 +59,7 @@ class _NewProjectPageState extends State<NewProjectPage> {
           ),
         ),
       ),
-      content: SingleChildScrollView(
-        child: Container(
+      content: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topLeft,
@@ -187,7 +186,6 @@ class _NewProjectPageState extends State<NewProjectPage> {
             ],
           ),
         ),
-      ),
     );
   }
 }

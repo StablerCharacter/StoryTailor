@@ -32,6 +32,7 @@
   "imageResolution": "ขนาดรูปภาพ: {width}x{height}",
   "aboutAppBtn": "เกี่ยวกับแอป",
   "tutorials": "การสอนใช้",
+  "openTutorial": "เปิดการสอนใช้",
   "bugreport": "รายงานข้อผิดพลาด",
   "bugdetails": "รายละเอียดข้อผิดพลาด",
   "bugdetailsplaceholder": "กรุณาใส่รายละเอียดของข้อผิดพลาด",

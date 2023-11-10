@@ -1,12 +1,16 @@
+import 'dart:io';
+
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:storytailor/views/mobile_tutorial_page.dart';
 import 'package:storytailor/views/project_list.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:system_theme/system_theme.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'views/bug_report.dart';
 import 'views/settings_page.dart';
@@ -101,6 +105,11 @@ class _MyHomePageState extends State<MyHomePage> {
   int selectedTab = 0;
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     FluentThemeData theme = FluentTheme.of(context);
     AppLocalizations appLocal = AppLocalizations.of(context)!;
@@ -131,43 +140,25 @@ class _MyHomePageState extends State<MyHomePage> {
           PaneItem(
             icon: const Icon(FluentIcons.documentation),
             title: Text(appLocal.tutorials, style: theme.typography.body),
-            body: Container(
-              margin: const EdgeInsets.all(30),
-              child: Column(
-                children: [
-                  Text(appLocal.tutorials, style: theme.typography.titleLarge),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: 1,
-                    itemBuilder: (context, index) {
-                      return Button(
-                        onPressed: () {},
-                        child: Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: Column(
-                            children: [
-                              SizedBox(
-                                height: 100,
-                                child: Container(
-                                  color: Colors.white,
-                                ),
-                              ),
-                              const SizedBox(height: 15),
-                              Text(
-                                "Getting Started",
-                                style: theme.typography.bodyLarge,
-                              ),
-                              const Text(
-                                  "Wanna start creating some games? Start here!")
-                            ],
-                          ),
+            body: Platform.isAndroid || Platform.isIOS
+                ? MobileTutorialPage()
+                : Container(
+                    margin: const EdgeInsets.all(30),
+                    child: Column(
+                      children: [
+                        Text(appLocal.tutorials,
+                            style: theme.typography.titleLarge),
+                        const Gap(10),
+                        Button(
+                          onPressed: () {
+                            launchUrl(Uri.parse(
+                                "https://stablercharacter.github.io/StoryTailor/introduction.html"));
+                          },
+                          child: Text(appLocal.openTutorial),
                         ),
-                      );
-                    },
+                      ],
+                    ),
                   ),
-                ],
-              ),
-            ),
           ),
         ],
         footerItems: [
