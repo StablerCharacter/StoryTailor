@@ -5,7 +5,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '/game_objects/project.dart';
-import '../game_preview.dart';
+import '/game_preview.dart';
 
 class PreviewPage extends StatefulWidget {
   const PreviewPage(this.project, {super.key});
@@ -75,7 +75,7 @@ class _PreviewPageState extends State<PreviewPage> {
                     context,
                     FluentPageRoute(
                       builder: (context) => GameWidget(
-                        game: GamePreview(widget.project.story),
+                        game: GamePreview(widget.project, stage),
                         overlayBuilderMap: {
                           "devtools":
                               (BuildContext context, GamePreview preview) {

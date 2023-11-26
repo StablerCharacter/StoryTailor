@@ -28,32 +28,32 @@ class _BugReportPageState extends State<BugReportPage> {
     FluentThemeData theme = FluentTheme.of(context);
     AppLocalizations appLocal = AppLocalizations.of(context)!;
 
-    return ScaffoldPage(
-      content: Container(
-        margin: const EdgeInsets.all(30.0),
-        child: Column(
-          children: [
-            Text(
-              appLocal.bugreport,
-              style: theme.typography.title,
-            ),
-            InfoLabel(label: appLocal.bugdetails),
-            TextBox(
-              controller: controller,
-              placeholder: appLocal.bugdetailsplaceholder,
-              minLines: 5,
-              maxLines: 20,
-            ),
-            ButtonWithIcon(
-              icon: const Icon(FluentIcons.flag),
-              onPressed: () {
-                launchUrl(Uri.parse(mailTemplate));
-              },
-              child: Text(appLocal.reportbug),
-            ),
-          ],
+    return ScaffoldPage.scrollable(
+      padding: const EdgeInsets.fromLTRB(30, 5, 30, 5),
+      children: [
+        Text(
+          appLocal.bugReport,
+          style: theme.typography.title,
+          textAlign: TextAlign.center,
         ),
-      ),
+        Text(
+          appLocal.bugDetails,
+          textAlign: TextAlign.center,
+        ),
+        TextBox(
+          controller: controller,
+          placeholder: appLocal.bugDetailsPlaceholder,
+          minLines: 5,
+          maxLines: 20,
+        ),
+        ButtonWithIcon(
+          icon: const Icon(FluentIcons.flag),
+          onPressed: () {
+            launchUrl(Uri.parse(mailTemplate));
+          },
+          child: Text(appLocal.reportBug),
+        ),
+      ],
     );
   }
 }

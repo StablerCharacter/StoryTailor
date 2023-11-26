@@ -46,6 +46,10 @@ class Chapter {
     return current.dialogs[current.dialogIndex];
   }
 
+  factory Chapter.loadOnlyInfoFromJson(Map<String, dynamic> data) {
+    return Chapter(data["chapter_info"]["name"], null);
+  }
+
   factory Chapter.fromJson(Map<String, dynamic> data) {
     String name = data["chapter_info"]["name"];
     data.remove("chapter_info");

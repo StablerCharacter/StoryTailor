@@ -3,8 +3,6 @@ import 'dart:io';
 import 'package:path/path.dart' as p;
 import 'package:storytailor/story_structure/chapter.dart';
 
-import '/story_structure/branch.dart';
-import '/story_structure/dialog.dart';
 import '/story_structure/story_manager.dart';
 import '../db/key_value_database.dart';
 import 'game_object.dart';
@@ -49,11 +47,7 @@ class Project extends GameObject {
   BackendEngines backendEngine;
   Directory projectDirectory;
   int currentSceneIndex = 0;
-  StoryManager story = StoryManager([
-    Chapter("The beginning of the Adventure", {
-      "main": Branch(<Dialog>[Dialog("a")])
-    }),
-  ]);
+  StoryManager story = StoryManager([]);
 
   Project({
     super.name = "New Project",

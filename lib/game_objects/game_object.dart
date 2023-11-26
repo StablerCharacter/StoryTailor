@@ -11,6 +11,8 @@ class GameObject {
     this.children = const [],
   });
 
+  void initialize() {}
+
   Component createComponent() => Component();
 
   Map<String, dynamic> toMap() {

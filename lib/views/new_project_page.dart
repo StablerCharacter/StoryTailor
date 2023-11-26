@@ -3,11 +3,15 @@ import 'dart:io';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:storytailor/story_structure/branch.dart';
+import 'package:storytailor/story_structure/chapter.dart';
+import 'package:storytailor/story_structure/dialog.dart';
+import 'package:storytailor/story_structure/story_manager.dart';
 
 import '/game_objects/project.dart';
 import '/utils/string_utility.dart';
 import '/db/key_value_database.dart';
-import '/project_related_views/project_view.dart';
+import './project_related/project_view.dart';
 
 class NewProjectPage extends StatefulWidget {
   const NewProjectPage({super.key});
@@ -46,7 +50,7 @@ class _NewProjectPageState extends State<NewProjectPage> {
     AppLocalizations appLocal = AppLocalizations.of(context)!;
     FluentThemeData theme = FluentTheme.of(context);
 
-    return ScaffoldPage(
+    return ScaffoldPage.scrollable(
       header: Container(
         margin: const EdgeInsets.fromLTRB(30, 15, 30, 0),
         child: PageHeader(
@@ -59,7 +63,8 @@ class _NewProjectPageState extends State<NewProjectPage> {
           ),
         ),
       ),
-      content: Container(
+      children: [
+        Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topLeft,
@@ -161,7 +166,11 @@ class _NewProjectPageState extends State<NewProjectPage> {
                     Directory("${projDir.path}/stages/").createSync();
                     Directory storyDirectory =
                         Directory("${projDir.path}/story/")..createSync();
-                    project.story
+                    project.story = StoryManager([
+                      Chapter("The beginning of the Adventure", {
+                        "main": Branch(<Dialog>[Dialog("Hello there.")])
+                      }),
+                    ])
                       ..storyDirectory = storyDirectory
                       ..saveChaptersToFile();
 
@@ -185,7 +194,8 @@ class _NewProjectPageState extends State<NewProjectPage> {
               ),
             ],
           ),
-        ),
+        )
+      ],
     );
   }
 }

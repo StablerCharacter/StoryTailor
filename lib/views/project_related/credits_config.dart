@@ -6,8 +6,10 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gap/gap.dart';
 import 'package:path/path.dart' as p;
 import 'package:storytailor/components/button_with_icon.dart';
+import 'package:storytailor/components/image_asset_field.dart';
 import 'package:storytailor/game_objects/project.dart';
 import 'package:storytailor/utils/list_utility.dart';
+import 'package:storytailor/utils/stretch_mode.dart';
 
 class CreditsSection {
   String name;
@@ -29,14 +31,24 @@ class CreditsSection {
 
 class CreditsConfig {
   bool enabled = true;
+  String stageBackground = "";
   List<CreditsSection> sections = [
     CreditsSection("Made with", "Game made with StoryTailor.")
   ];
+  Stretch backgroundStretch;
 
-  CreditsConfig({this.enabled = true});
+  CreditsConfig({
+    this.enabled = true,
+    this.stageBackground = "",
+    this.backgroundStretch = Stretch.scaleToCover,
+  });
 
   factory CreditsConfig.fromMap(Map<String, dynamic> map) {
-    CreditsConfig config = CreditsConfig(enabled: map["enabled"]!);
+    CreditsConfig config = CreditsConfig(
+      enabled: map["enabled"]!,
+      stageBackground: map["stageBackground"]!,
+      backgroundStretch: Stretch.fromDisplayName(map["backgroundStretch"]),
+    );
 
     config.sections = (map["sections"]! as List<dynamic>)
         .map(
@@ -54,6 +66,8 @@ class CreditsConfig {
   Map<String, dynamic> toMap() {
     return {
       "enabled": enabled,
+      "stageBackground": stageBackground,
+      "backgroundStretch": backgroundStretch.displayName,
       "sections": sections.map((e) => e.toMap()).toList(growable: false),
     };
   }
@@ -65,13 +79,13 @@ class CreditsConfigPage extends StatefulWidget {
   final Project project;
 
   @override
-  State<CreditsConfigPage> createState() => _CreditsConfigState();
+  State<CreditsConfigPage> createState() => CreditsConfigState();
 }
 
-class _CreditsConfigState extends State<CreditsConfigPage> {
-  _CreditsConfigState();
+class CreditsConfigState extends State<CreditsConfigPage> {
+  CreditsConfigState();
 
-  CreditsConfig config = CreditsConfig();
+  static CreditsConfig config = CreditsConfig();
   List<TextEditingController> sectionNameControls = [];
   List<TextEditingController> creditsControls = [];
   late File stageFile;
@@ -81,7 +95,12 @@ class _CreditsConfigState extends State<CreditsConfigPage> {
     stageFile = File(
         p.join(widget.project.projectDirectory.path, "stages", "credits.json"));
     if (stageFile.existsSync()) {
-      config = CreditsConfig.fromMap(jsonDecode(stageFile.readAsStringSync()));
+      try {
+        config =
+            CreditsConfig.fromMap(jsonDecode(stageFile.readAsStringSync()));
+      } catch (_) {
+        stageFile.writeAsStringSync(jsonEncode(config.toMap()));
+      }
     } else {
       stageFile.create();
       stageFile.writeAsStringSync(jsonEncode(config.toMap()));
@@ -156,19 +175,55 @@ class _CreditsConfigState extends State<CreditsConfigPage> {
                 appLocal.creditsStage,
                 style: theme.typography.title,
               ),
-              const SizedBox(height: 15),
+              const Gap(15),
+              Text(
+                appLocal.stageBackground,
+                style: theme.typography.bodyStrong,
+              ),
+              ImageAssetField(
+                widget.project,
+                initialValue: config.stageBackground.isNotEmpty
+                    ? File(
+                        "${widget.project.projectDirectory.path}/assets/${config.stageBackground}",
+                      )
+                    : null,
+                mainAxisAlignment: MainAxisAlignment.center,
+                onImageSelected: (file) {
+                  if (file == null) {
+                    config.stageBackground = "";
+                    return;
+                  }
+
+                  config.stageBackground = p.relative(
+                    file.path,
+                    from: "${widget.project.projectDirectory.path}/assets/",
+                  );
+                },
+              ),
+              const Gap(10),
+              Text(
+                appLocal.stretchMode,
+                style: theme.typography.bodyStrong,
+              ),
+              StretchModeComboBox(
+                value: config.backgroundStretch,
+                onChange: (newValue) =>
+                    config.backgroundStretch = newValue ?? Stretch.scaleToCover,
+              ),
+              const Gap(15),
               ButtonWithIcon(
-                  icon: const Icon(FluentIcons.add),
-                  child: Text(appLocal.newCreditSection),
-                  onPressed: () {
-                    int sectionNumber = config.sections.length + 1;
-                    config.sections.add(CreditsSection(
-                        "Section Name $sectionNumber", "Content"));
-                    sectionNameControls.add(TextEditingController(
-                        text: "Section Name $sectionNumber"));
-                    creditsControls.add(TextEditingController(text: "Content"));
-                    setState(() {});
-                  }),
+                icon: const Icon(FluentIcons.add),
+                child: Text(appLocal.newCreditSection),
+                onPressed: () {
+                  int sectionNumber = config.sections.length + 1;
+                  config.sections.add(
+                      CreditsSection("Section Name $sectionNumber", "Content"));
+                  sectionNameControls.add(TextEditingController(
+                      text: "Section Name $sectionNumber"));
+                  creditsControls.add(TextEditingController(text: "Content"));
+                  setState(() {});
+                },
+              ),
               ListView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
@@ -192,50 +247,44 @@ class _CreditsConfigState extends State<CreditsConfigPage> {
                                 appLocal.creditSectionContentPlaceholder,
                           ),
                           const Gap(10),
-                          Row(
+                          CommandBar(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Expanded(
-                                child: ButtonWithIcon(
-                                  icon: const Icon(FluentIcons.delete),
-                                  onPressed: () {
-                                    config.sections.removeAt(index);
-                                    sectionNameControls.removeAt(index);
-                                    creditsControls.removeAt(index);
-                                    setState(() {});
-                                  },
-                                  child: Text(appLocal.delete),
-                                ),
+                            compactBreakpointWidth: 600,
+                            overflowBehavior: CommandBarOverflowBehavior.wrap,
+                            primaryItems: [
+                              CommandBarButton(
+                                onPressed: () {
+                                  config.sections.removeAt(index);
+                                  sectionNameControls.removeAt(index);
+                                  creditsControls.removeAt(index);
+                                  setState(() {});
+                                },
+                                icon: const Icon(FluentIcons.delete),
+                                label: Text(appLocal.delete),
                               ),
-                              const Gap(5),
-                              Expanded(
-                                child: ButtonWithIcon(
-                                  icon: const Icon(FluentIcons.up),
-                                  onPressed: () {
-                                    int newIndex = index - 1;
-                                    if (newIndex < 0) {
-                                      return;
-                                    }
-                                    cloneAndMoveCreditsSection(index, newIndex);
-                                    setState(() {});
-                                  },
-                                  child: const Text("Move Up"),
-                                ),
+                              CommandBarButton(
+                                icon: const Icon(FluentIcons.up),
+                                onPressed: () {
+                                  int newIndex = index - 1;
+                                  if (newIndex < 0) {
+                                    return;
+                                  }
+                                  cloneAndMoveCreditsSection(index, newIndex);
+                                  setState(() {});
+                                },
+                                label: Text(appLocal.moveUp),
                               ),
-                              const Gap(5),
-                              Expanded(
-                                child: ButtonWithIcon(
-                                  icon: const Icon(FluentIcons.down),
-                                  onPressed: () {
-                                    int newIndex = index + 1;
-                                    if (newIndex >= config.sections.length) {
-                                      return;
-                                    }
-                                    cloneAndMoveCreditsSection(index, newIndex);
-                                    setState(() {});
-                                  },
-                                  child: const Text("Move Down"),
-                                ),
+                              CommandBarButton(
+                                icon: const Icon(FluentIcons.down),
+                                onPressed: () {
+                                  int newIndex = index + 1;
+                                  if (newIndex >= config.sections.length) {
+                                    return;
+                                  }
+                                  cloneAndMoveCreditsSection(index, newIndex);
+                                  setState(() {});
+                                },
+                                label: Text(appLocal.moveDown),
                               ),
                             ],
                           ),

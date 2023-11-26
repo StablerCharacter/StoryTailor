@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:io';
 
+import 'package:ffmpeg_helper/ffmpeg_helper.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gap/gap.dart';
@@ -7,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storytailor/components/button_with_icon.dart';
 import 'package:storytailor/views/about_page.dart';
+import 'package:storytailor/views/ffmpeg_windows_setup.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'login.dart';
@@ -63,6 +66,8 @@ class _SettingsPageState extends State<SettingsPage> {
   late final SharedPreferences prefs;
   late StreamSubscription<AuthState> _authSubscription;
 
+  Future<bool>? isFfmpegPresent;
+
   String loggedIn = "Signed in";
   String loggedOut = "Signed out";
 
@@ -78,6 +83,8 @@ class _SettingsPageState extends State<SettingsPage> {
       showSnackbar(context, InfoBar(title: Text(error)),
           duration: snackbarLongDuration);
     });
+
+    isFfmpegPresent = FFMpegHelper.instance.isFFMpegPresent();
   }
 
   @override
@@ -91,7 +98,9 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     FluentThemeData theme = FluentTheme.of(context);
     AppLocalizations appLocal = AppLocalizations.of(context)!;
-    Axis buttonsAxis = MediaQuery.of(context).size.width >= 600 ? Axis.horizontal : Axis.vertical;
+    Axis buttonsAxis = MediaQuery.of(context).size.width >= 600
+        ? Axis.horizontal
+        : Axis.vertical;
 
     loggedIn = appLocal.loginSuccess;
     loggedOut = appLocal.loggedOut;
@@ -110,13 +119,16 @@ class _SettingsPageState extends State<SettingsPage> {
                     visible: _supabase.auth.currentUser == null,
                     replacement: Flex(
                       direction: buttonsAxis,
-                      children: [ButtonWithIcon(
-                        icon: const Icon(FluentIcons.sign_out),
-                        child: Text(appLocal.logOut),
-                        onPressed: () {
-                          _supabase.auth.signOut();
-                        },
-                      ),const Gap(10),],
+                      children: [
+                        ButtonWithIcon(
+                          icon: const Icon(FluentIcons.sign_out),
+                          child: Text(appLocal.logOut),
+                          onPressed: () {
+                            _supabase.auth.signOut();
+                          },
+                        ),
+                        const Gap(5),
+                      ],
                     ),
                     child: ButtonWithIcon(
                       icon: const Icon(FluentIcons.signin),
@@ -139,7 +151,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       onPressed: () {},
                     ),
                   ),
-                  const Gap(10),
+                  const Gap(5),
                   ButtonWithIcon(
                     icon: const Icon(FluentIcons.info),
                     child: Text(appLocal.about),
@@ -201,6 +213,80 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                     ],
                   );
+                },
+              ),
+              const Gap(10),
+              Text("FFmpeg", style: theme.typography.bodyStrong),
+              Text(appLocal.ffmpegDescription),
+              FutureBuilder(
+                future: isFfmpegPresent,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    if (snapshot.data == true) {
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(FluentIcons.check_mark),
+                          const Gap(5),
+                          Text(appLocal.ffmpegInstalled)
+                        ],
+                      );
+                    }
+
+                    return Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(FluentIcons.chrome_close),
+                            const Gap(5),
+                            Text(appLocal.ffmpegNotInstalled),
+                          ],
+                        ),
+                        const Gap(5),
+                        Button(
+                          onPressed: () {
+                            if (Platform.isWindows) {
+                              Navigator.push(
+                                context,
+                                FluentPageRoute(
+                                  builder: (context) =>
+                                      const FFmpegWindowsSetup(),
+                                ),
+                              );
+                            } else if (Platform.isLinux) {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return ContentDialog(
+                                      title: Text(appLocal.ffmpegLinux),
+                                      content: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(appLocal.ffmpegLinuxInstall),
+                                          const SelectableText("sudo apt-get install ffmpeg\nsudo snap install ffmpeg"),
+                                        ],
+                                      ),
+                                      actions: [
+                                        FilledButton(
+                                          child: Text(
+                                              appLocal.returnToPreviousPage),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  });
+                            }
+                          },
+                          child: Text(appLocal.installFFmpeg),
+                        )
+                      ],
+                    );
+                  }
+
+                  return const ProgressRing();
                 },
               ),
             ],

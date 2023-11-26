@@ -1,6 +1,8 @@
 import 'dart:io';
 
+import 'package:ffmpeg_helper/ffmpeg_helper.dart';
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -17,6 +19,10 @@ import 'views/settings_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  Animate.restartOnHotReload = true;
+
+  FFMpegHelper.instance.initialize();
 
   SystemTheme.fallbackColor = Colors.blue;
   await SystemTheme.accentColor.load();
@@ -103,11 +109,6 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int selectedTab = 0;
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {

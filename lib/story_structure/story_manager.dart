@@ -42,7 +42,7 @@ class StoryManager {
     await chapterFile.writeAsString(jsonEncode(chapter.toJson()));
   }
 
-  void loadChaptersFromDirectory() async {
+  Future<void> loadChaptersFromDirectory() async {
     if (storyDirectory == null) {
       return;
     }

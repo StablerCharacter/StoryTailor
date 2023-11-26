@@ -62,6 +62,25 @@
       }
     }
   },
+  "errorDownloadSize": "Error getting download size. It is not advised that you continue the installation. Please try again later. ({errorCode})",
+  "@errorDownloadSize": {
+    "placeholders": {
+      "errorCode": {
+        "type": "int",
+        "example": "404"
+      }
+    }
+  },
+  "downloadSize": "Download Size: {size}",
+  "@downloadSize": {
+    "description": "The download size of a file",
+    "placeholders": {
+      "size": {
+        "type": "String",
+        "example": "135.85MB"
+      }
+    }
+  },
   "imageResolution": "Image Resolution: {width}x{height}",
   "@imageResolution": {
     "description": "The resolution of the image file.",
@@ -85,10 +104,10 @@
     "description": "The tutorials section in the Main Menu"
   },
   "openTutorial": "Open Tutorial",
-  "bugreport": "Bug report",
-  "bugdetails": "Bug details",
-  "bugdetailsplaceholder": "Please enter your bug report details here.",
-  "reportbug": "Report bug",
+  "bugReport": "Bug report",
+  "bugDetails": "Bug details",
+  "bugDetailsPlaceholder": "Please enter your bug report details here.",
+  "reportBug": "Report bug",
 
   "create": "Create",
   "cancel": "Cancel",
@@ -112,7 +131,81 @@
   "newBtn": "New...",
   "renameFile": "Rename",
   "@renameFile": {
-    "description": "Renaming a file"
+    "description": "Appears on a button which when clicked will rename the file."
+  },
+  "editAsText": "Edit as Text",
+  "@editAsText": {
+    "description": "A button which when clicked will edit a file in a text editor view."
+  },
+  "deleteFile": "Delete File",
+  "fileDeletionConfirmation": "Do you want to permanently delete the file?",
+  "audioNotSupported": "This audio format is not supported on your editor platform.",
+  "@audioNotSupported": {
+    "description": "This message appears when an audio format is not supported on the current editor platform."
+  },
+  "chooseFile": "Choose File",
+  "@chooseFile": {
+    "description": "Appears when choosing a file in the Asset Picker."
+  },
+  "noFileSelected": "No File Selected",
+  "noneFile": "None",
+  "@noneFile": {
+    "description": "The word is shown in the Asset Picker dialog. When clicked, Nothing will be selected. The file input field will be emptied."
+  },
+  "reimport": "Reimport",
+  "reimportError": "An error occurred while reimporting asset(s).",
+  "reimportDoNotCloseApp": "Reimporting asset(s), please do not close the app.",
+  "reimporting": "Reimporting...",
+  "assetReimported": "Asset(s) reimported.",
+  "revert": "Revert",
+  "audioSettings": "Audio Settings",
+
+  "advancedManagement": "Advanced Management",
+  "@advancedManagement": {
+    "description": "Advanced management for a file."
+  },
+  "bitrate": "Bitrate: {bitrate}/s",
+  "@bitrate": {
+    "placeholders": {
+      "bitrate": {
+        "type": "String",
+        "example": "706.31KB"
+      }
+    }
+  },
+  "format": "Format: {format}",
+  "@format": {
+    "placeholders": {
+      "format": {
+        "type": "String",
+        "example": "ogg"
+      }
+    }
+  },
+  "audioStreamNo": "Audio Stream #{index}",
+  "@audioStreamNo": {
+    "description": "A label for an audio stream with an index."
+  },
+  "sampleRate": "Sample Rate: {sampleRate}Hz",
+  "@sampleRate": {
+    "description": "A sample rate of an audio stream",
+    "placeholders": {
+      "sampleRate": {
+        "type": "String",
+        "example": "48000"
+      }
+    }
+  },
+  "wordCodec": "Codec",
+  "codecTeller": "Codec: {codec}",
+  "@codecTeller": {
+    "description": "A codec of an audio or video stream",
+    "placeholders": {
+      "codec": {
+        "type": "String",
+        "example": "vorbis"
+      }
+    }
   },
 
   "objects": "Objects",
@@ -134,7 +227,7 @@
   "toRename": "To rename the project, please rename it from the project list by touch/click and hold on the project.",
   "renameProject": "Rename project",
   "deleteProject": "Delete project",
-  "deletionConfirmation": "Are you sure you want to permanently delete the project? The project will be gone forever and it cannot be accessed.",
+  "projectDeletionConfirmation": "Are you sure you want to permanently delete the project? The project will be gone forever and it cannot be accessed.",
   "projectDeleted": "Project deleted.",
   "projectNameCannotBeEmpty": "The project name cannot be empty.",
   "invalidProjectName": "Invalid project name. It must contain at least one character or number to be valid.",
@@ -180,15 +273,42 @@
   "lightTheme": "Light",
   "systemTheme": "System",
   "language": "Language",
+  "ffmpegInstalled": "FFmpeg for StoryTailor is installed.",
+  "ffmpegNotInstalled": "FFmpeg for StoryTailor is NOT installed.",
+  "installFFmpeg": "Download & Install FFmpeg",
+  "ffmpegDescription": "FFmpeg is a program to convert audio and video files.",
+  "installFailed": "Installation failed.",
+  "ffmpegLinux": "FFmpeg for Linux",
+  "ffmpegLinuxInstall": "You can run one of the following commands to install FFmpeg on Linux:",
+
+  "preparation": "Preparation",
+  "installation": "Installation",
+  "download": "Download",
+  "downloading": "Downloading...",
+  "decompress": "Decompress",
+  "decompressing": "Decompressing...",
+  "returnToPreviousPage": "Return",
+  "finished": "Finished",
 
   "stageInfo": "Stage Info",
+  "stageBackground": "Stage Background",
 
   "mainMenuStage": "Main Menu Stage",
   "storyStage": "Story Stage",
+
   "creditsStage": "Credits Stage",
   "newCreditSection": "New Section",
   "creditSectionNamePlaceholder": "Enter the name of this credit section.",
   "creditSectionContentPlaceholder": "Enter the content of this credit section.",
+  "moveUp": "Move Up",
+  "moveDown": "Move Down",
+
+  "stretchMode": "Stretch Mode",
+  "noStretch": "No Stretch",
+  "letterbox": "Letterbox",
+  "pillarbox": "Pillarbox",
+  "scaleToCover": "Scale to cover",
+  "stretchToFit": "Stretch to fit",
 
   "devtools": "Developer tools",
   "exitGame": "Exit Game",

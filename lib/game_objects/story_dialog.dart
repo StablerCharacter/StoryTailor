@@ -3,7 +3,9 @@ import 'dart:async';
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/palette.dart';
-import 'package:flutter/painting.dart';
+import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 
 import '../story_structure/story_manager.dart';
 import 'game_object.dart';
@@ -16,7 +18,8 @@ class StoryDialog extends GameObject {
   double height;
   int offsetY;
 
-  StoryDialog(this.story, {
+  StoryDialog(
+    this.story, {
     super.name = "New Story Dialog",
     super.children = const [],
     this.height = 200,
@@ -24,7 +27,8 @@ class StoryDialog extends GameObject {
   });
 
   @override
-  RectangleComponent createComponent() => _StoryDialogComponent(story, height: height, offsetY: offsetY);
+  RectangleComponent createComponent() =>
+      _StoryDialogComponent(story, height: height, offsetY: offsetY);
 
   @override
   Map<String, dynamic> toMap() {
@@ -61,9 +65,21 @@ class _StoryDialogComponent extends RectangleComponent
 
   @override
   FutureOr<void> onLoad() {
-    story.chapters[story.chapterIndex].loadFromFile();
+    String text = "The story has no dialogs.";
+    if (story.chapters.isNotEmpty) {
+      story.chapters[story.chapterIndex].loadFromFile();
+      try {
+        text = story
+            .getCurrentDialog()
+            .text;
+      } catch(e) {
+        if (kDebugMode) {
+          print(e);
+        }
+      }
+    }
     storyText = TextComponent(
-      text: story.getCurrentDialog().text,
+      text: text,
       textRenderer: textPaint,
       position: Vector2(50, 50),
     );
@@ -77,8 +93,23 @@ class _StoryDialogComponent extends RectangleComponent
     updateSizeAndPos(newSize.x, newSize.y);
   }
 
+  void nextDialog() {
+    storyText.text = story.getNextDialog().text;
+  }
+
   @override
   void onTapUp(TapUpEvent event) {
-    storyText.text = story.getNextDialog().text;
+    nextDialog();
+  }
+
+  @override
+  bool onKeyEvent(
+    RawKeyEvent event,
+    Set<LogicalKeyboardKey> keysPressed,
+  ) {
+    if (keysPressed.contains(LogicalKeyboardKey.space) || keysPressed.contains(LogicalKeyboardKey.enter)) {
+      nextDialog();
+    }
+    return true;
   }
 }

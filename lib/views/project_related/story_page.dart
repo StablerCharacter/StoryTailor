@@ -5,11 +5,11 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '/game_objects/project.dart';
-import '../story_structure/branch.dart';
-import '../story_structure/chapter.dart';
-import '../story_structure/dialog.dart';
-import '../story_structure/story_manager.dart';
-import '../utils/string_utility.dart';
+import '/story_structure/branch.dart';
+import '/story_structure/chapter.dart';
+import '/story_structure/dialog.dart';
+import '/story_structure/story_manager.dart';
+import '/utils/string_utility.dart';
 
 class StoryPage extends StatefulWidget {
   const StoryPage(this.project, {super.key});
@@ -28,11 +28,6 @@ class _StoryPageState extends State<StoryPage> {
   int selectedDialogIndex = -1;
   StoryObjects currentlyViewingObject = StoryObjects.storyManager;
   StoryManager get story => widget.project.story;
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   void deactivate() {
@@ -291,6 +286,7 @@ class _StoryPageState extends State<StoryPage> {
                             "main": Branch(<Dialog>[]),
                           }),
                         );
+                        story.saveChapterToFile(story.chapters.length - 1);
                         Navigator.pop(context);
                       });
                     }),

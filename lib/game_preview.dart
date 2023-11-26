@@ -2,17 +2,20 @@ import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/widgets.dart' hide Route;
+import 'package:storytailor/game_objects/credits_stage.dart';
+import 'package:storytailor/game_objects/project.dart';
 
 import 'game_objects/story_dialog.dart';
-import 'story_structure/story_manager.dart';
 
 class GamePreview extends FlameGame
     with HasKeyboardHandlerComponents, LongPressDetector {
+  late final RouterComponent router;
   static const String devtools = "devtools";
-  StoryManager story;
+  String stage;
+  Project project;
 
-  GamePreview(this.story);
+  GamePreview(this.project, this.stage);
 
   @override
   Future<void> onLoad() async {
@@ -35,7 +38,19 @@ class GamePreview extends FlameGame
         },
       ),
     );
-    add(StoryDialog(story).createComponent());
+    add(
+      router = RouterComponent(
+        initialRoute: stage,
+        routes: {
+          "mainMenu": Route(Component.new),
+          "story": Route(() => StoryDialog(project.story).createComponent()),
+          "credits": Route(
+            () => CreditsStage(project).createComponent(),
+            maintainState: false,
+          ),
+        },
+      ),
+    );
   }
 
   @override

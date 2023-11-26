@@ -2,11 +2,11 @@ import 'dart:io';
 
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:storytailor/project_related_views/main_menu_config.dart';
-import 'package:storytailor/project_related_views/story_config.dart';
+import 'package:storytailor/views/project_related/main_menu_config.dart';
+import 'package:storytailor/views/project_related/story_config.dart';
 
 import '/game_objects/project.dart';
-import '../views/settings_page.dart';
+import '/views/settings_page.dart';
 import 'assets_page.dart';
 import 'credits_config.dart';
 import 'preview_page.dart';

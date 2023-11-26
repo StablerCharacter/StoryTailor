@@ -7,5 +7,9 @@ Create stories easily.
 StoryTailor is developed with Dart and Flutter, 
 with Flame inside.
 
+It is highly not recommended to use StoryTailor 
+for production uses right now, as breaking changes 
+might occur even every commit.
+
 ## Contributing
 Please see [contributing.md](contributing.md)
