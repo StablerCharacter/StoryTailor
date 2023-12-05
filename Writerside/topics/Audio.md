@@ -1,7 +1,5 @@
 # Audio
 
-**Implementation Stage:** Partially Implemented
-
 If configured, StoryTailor automatically converts unsupported 
 audio containers for platforms.
 
@@ -13,6 +11,8 @@ for platforms.
 
 **Note:** StoryTailor considers what format is supported 
 by the file extension, the audio container.
+
+**Implementation Stage:** Partially Implemented
 
 ## "Advanced Management"
 The advanced management page of an audio file is accessible 

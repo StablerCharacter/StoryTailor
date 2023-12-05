@@ -1,7 +1,5 @@
 # Backend Engines
 
-**Implementation Stage:** Partially Implemented
-
 <tldr>
     <b>TL;DR</b>
     <p>Use Flame Engine. Source: Trust me, bro.</p>
@@ -16,6 +14,8 @@ The limitation of being only able to preview in Flame Engine might be
 removed in the future. However, It will only be removed in the PC version 
 of the software because you can't just casually install compilers on 
 Android without the help of special apps.
+
+**Implementation Stage:** Partially Implemented
 
 HaxeFlixel
 : HaxeFlixel is a game engine made for the programming language "Haxe"

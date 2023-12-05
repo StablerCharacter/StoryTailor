@@ -4,25 +4,38 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gap/gap.dart';
 import 'package:path/path.dart' as p;
-import 'package:storytailor/components/asset_field.dart';
 
+import 'package:storytailor/game_objects/project.dart';
 import 'package:storytailor/views/project_related/asset_picker.dart';
-import 'package:storytailor/views/project_related/assets_page.dart';
 
-class ImageAssetField extends AssetField<File> {
-  const ImageAssetField(
-    super.project, {
+class AssetField<F extends FileSystemEntity> extends StatefulWidget {
+  const AssetField(
+    this.project, {
     super.key,
-    super.mainAxisAlignment = MainAxisAlignment.start,
-    super.onAssetSelected,
-    super.initialValue,
+    this.mainAxisAlignment = MainAxisAlignment.start,
+    this.onAssetSelected,
+    this.initialValue,
   });
 
+  final Project project;
+  final MainAxisAlignment mainAxisAlignment;
+  final F? initialValue;
+  final void Function(F?)? onAssetSelected;
+
   @override
-  State<AssetField<File>> createState() => _ImageAssetFieldState();
+  State<AssetField> createState() => AssetFieldState<F>();
 }
 
-class _ImageAssetFieldState extends AssetFieldState<File> {
+class AssetFieldState<F extends FileSystemEntity> extends State<AssetField<F>> {
+  F? entity;
+
+  @override
+  void initState() {
+    super.initState();
+
+    entity = widget.initialValue;
+  }
+
   @override
   Widget build(BuildContext context) {
     AppLocalizations appLocal = AppLocalizations.of(context)!;
@@ -35,13 +48,6 @@ class _ImageAssetFieldState extends AssetFieldState<File> {
           padding: kDefaultButtonPadding,
           decoration: BoxDecoration(
             color: theme.cardColor,
-            image: entity != null
-                ? DecorationImage(
-                    image: FileImage(entity!),
-                    fit: BoxFit.cover,
-                    opacity: 0.5,
-                  )
-                : null,
             borderRadius: const BorderRadius.all(
               Radius.circular(4),
             ),
@@ -56,26 +62,18 @@ class _ImageAssetFieldState extends AssetFieldState<File> {
           child: IconButton(
             icon: const Icon(FluentIcons.open_file),
             onPressed: () {
-              showAssetPicker(context, widget.project,
-                      fileFormats: AssetsPage.imageExt)
-                  .then(
+              showAssetPicker(
+                context,
+                widget.project,
+              ).then(
                 (value) {
                   if (value == null) {
                     return;
                   }
 
-                  if (value.isClearingField) {
-                    entity = null;
-                  }
-
-                  if (value.entity != null && value.entity is File) {
-                    entity = value.entity as File?;
-                  }
-
-                  if (widget.onAssetSelected != null) {
-                    widget.onAssetSelected!(entity);
-                  }
-                  setState(() {});
+                  setState(() {
+                    entity = value.entity as F?;
+                  });
                 },
               );
             },

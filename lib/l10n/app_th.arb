@@ -84,6 +84,9 @@
   "projectSettings": "การตั้งค่าโปรเจกต์",
   "toRename": "ในการเปลี่ยนชื่อโปรเจกต์ กรุณาเปลี่ยนชื่อจากหน้ารายชื่อโปรเจกต์โดยการคลิกหรือแตะค้างที่โปรเจกต์",
   "renameProject": "เปลี่ยนชื่อโปรเจกต์",
+  "exportingProject": "กำลังส่งออกโปรเจกต์...",
+  "exportProjectToZip": "ส่งออกเป็นไฟล์ซิป",
+  "savedTo": "ถูกบันทึกไปยัง: {filePath}",
   "deleteProject": "ลบโปรเจกต์",
   "projectDeletionConfirmation": "คุณแน่ใจหรือไม่ว่าจะลบโปรเจกต์นี้ถาวร โปรเจกต์จะหายไปตลอดการและไม่สามารถถูกเข้าถึงได้อีก",
   "projectDeleted": "ลบโปรเจกต์แล้ว",
@@ -131,7 +134,9 @@
   "finished": "เสร็จสิ้น",
 
   "stageInfo": "ข้อมูลฉาก",
+  "stageEnvironment": "สิ่งแวดล้อมฉาก",
   "stageBackground": "พื้นหลังฉาก",
+  "stageBackgroundMusic": "เพลงพื้นหลังฉาก",
 
   "mainMenuStage": "ฉากหน้าเมนูหลัก",
   "storyStage": "ฉากเนื้อเรื่อง",

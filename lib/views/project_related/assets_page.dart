@@ -213,46 +213,48 @@ class _AssetsPageState extends State<AssetsPage> {
     FluentThemeData theme = FluentTheme.of(context);
     AppLocalizations appLocal = AppLocalizations.of(context)!;
 
-    return ScaffoldPage(
-      content: DropRegion(
-        formats: Formats.standardFormats,
-        onDropOver: (DropOverEvent event) {
-          if (event.session.allowedOperations.contains(DropOperation.copy)) {
-            return DropOperation.copy;
-          } else {
-            return DropOperation.none;
-          }
-        },
-        onPerformDrop: (PerformDropEvent event) async {
-          for (final item in event.session.items) {
-            item.dataReader!.getFile(null, (file) async {
-              if (file.fileName == null) {
-                return;
-              }
-              File targetFile = File("${assetsFolder.path}${file.fileName!}")
-                ..createSync();
-              IOSink sink = targetFile.openWrite();
-              await sink.addStream(file.getStream());
-              await sink.flush();
-              sink.close();
-              setState(() {});
-            });
-          }
-        },
-        child: Container(
-          margin: const EdgeInsets.all(30.0),
-          child: Column(
-            children: [
-              Text(
-                appLocal.assets,
-                style: theme.typography.titleLarge,
-              ),
-              Container(
-                padding: const EdgeInsets.all(10),
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
+    return ScaffoldPage.scrollable(
+      children: [
+        DropRegion(
+          formats: Formats.standardFormats,
+          onDropOver: (DropOverEvent event) {
+            if (event.session.allowedOperations.contains(DropOperation.copy)) {
+              return DropOperation.copy;
+            } else {
+              return DropOperation.none;
+            }
+          },
+          onPerformDrop: (PerformDropEvent event) async {
+            for (final item in event.session.items) {
+              item.dataReader!.getFile(null, (file) async {
+                if (file.fileName == null) {
+                  return;
+                }
+                File targetFile = File("${assetsFolder.path}${file.fileName!}")
+                  ..createSync();
+                IOSink sink = targetFile.openWrite();
+                await sink.addStream(file.getStream());
+                await sink.flush();
+                sink.close();
+                setState(() {});
+              });
+            }
+          },
+          child: Container(
+            margin: const EdgeInsets.all(30.0),
+            child: Column(
+              children: [
+                Text(
+                  appLocal.assets,
+                  style: theme.typography.titleLarge,
+                ),
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  child: LayoutBuilder(builder: (context, constraints) {
                     return Flex(
-                      direction: constraints.maxWidth >= 400 ? Axis.horizontal : Axis.vertical,
+                      direction: constraints.maxWidth >= 400
+                          ? Axis.horizontal
+                          : Axis.vertical,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         ButtonWithIcon(
@@ -281,7 +283,8 @@ class _AssetsPageState extends State<AssetsPage> {
                             icon: const Icon(FluentIcons.add),
                             child: Text(appLocal.newBtn),
                             onPressed: () {
-                              newEntityFlyoutControl.showFlyout(builder: (context) {
+                              newEntityFlyoutControl.showFlyout(
+                                  builder: (context) {
                                 return FlyoutContent(
                                   child: SizedBox(
                                     width: 125,
@@ -312,147 +315,203 @@ class _AssetsPageState extends State<AssetsPage> {
                         ),
                       ],
                     );
-                  }
+                  }),
                 ),
-              ),
-              TreeView(
-                selectionMode: TreeViewSelectionMode.single,
-                onSelectionChanged: (selected) async {
-                  if (selected.isEmpty) return;
+                TreeView(
+                  selectionMode: TreeViewSelectionMode.single,
+                  onSelectionChanged: (selected) async {
+                    if (selected.isEmpty) return;
 
-                  FileSystemEntity entity =
-                      selected.single.value as FileSystemEntity;
-                  if (entity is File) {
-                    String basename = p.basename(entity.path);
-                    String extension = p.extension(entity.path);
+                    FileSystemEntity entity =
+                        selected.single.value as FileSystemEntity;
+                    if (entity is File) {
+                      String basename = p.basename(entity.path);
+                      String extension = p.extension(entity.path);
 
-                    ListTile renameFileTile = ListTile(
-                      leading: const Icon(FluentIcons.rename),
-                      title: Text(appLocal.renameFile),
-                      onPressed: () {
-                        showFileRenameDialog(
-                          context,
-                          entity,
-                          () {
-                            Navigator.pop(context);
-                            setState(() {});
-                          },
-                        );
-                      },
-                    );
-                    ListTile deleteFileTile = ListTile(
-                      leading: const Icon(FluentIcons.delete),
-                      title: Text(appLocal.delete),
-                      onPressed: () {
-                        showDialog<bool>(
-                          context: context,
-                          builder: (context) => ContentDialog(
-                            title: Text(appLocal.deleteFile),
-                            content: Text(appLocal.fileDeletionConfirmation),
-                            actions: [
-                              Button(
-                                onPressed: () {
-                                  Navigator.pop(context, true);
-                                  Navigator.pop(context);
-                                },
-                                child: Text(appLocal.delete),
-                              ),
-                              FilledButton(
-                                onPressed: () => Navigator.pop(context, false),
-                                child: Text(appLocal.cancel),
-                              ),
-                            ],
-                          ),
-                        ).then((confirmation) {
-                          if (confirmation ?? false) {
-                            entity.delete().then((_) => setState(() {}));
-                          }
-                        });
-                      },
-                    );
-                    String fileSize =
-                        SizeUnitConversion.bytesToAppropriateUnits(
-                            entity.lengthSync());
-
-                    if (AssetsPage.imageExt.contains(extension)) {
-                      var decodedImage =
-                          await decodeImageFromList(await entity.readAsBytes());
-                      if (!context.mounted) return;
-                      await showBottomSheet(
-                        context: context,
-                        builder: (context) {
-                          return Padding(
-                            padding: const EdgeInsets.all(20),
-                            child: ListView(
-                              shrinkWrap: true,
-                              children: [
-                                Container(
-                                  margin: const EdgeInsets.all(16.0),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          const Icon(LineIcons.imageFile,
-                                              size: 18),
-                                          const Gap(5),
-                                          Text(
-                                            basename,
-                                            style: theme.typography.bodyLarge,
-                                          ),
-                                        ],
-                                      ),
-                                      const Gap(5),
-                                      Image.file(entity,
-                                          height: 300,
-                                          alignment: Alignment.centerLeft),
-                                      const Gap(5),
-                                      Text(
-                                        appLocal.imageResolution(
-                                          decodedImage.width,
-                                          decodedImage.height,
-                                        ),
-                                      ),
-                                      Text(
-                                        appLocal.fileSize(fileSize),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                renameFileTile,
-                                deleteFileTile,
-                              ],
-                            ),
+                      ListTile renameFileTile = ListTile(
+                        leading: const Icon(FluentIcons.rename),
+                        title: Text(appLocal.renameFile),
+                        onPressed: () {
+                          showFileRenameDialog(
+                            context,
+                            entity,
+                            () {
+                              Navigator.pop(context);
+                              setState(() {});
+                            },
                           );
                         },
                       );
-                    } else if (AssetsPage.audioExt.contains(extension)) {
-                      bool isSupported = true;
-                      File metaFile = getMetadataFile(entity);
-                      KeyValueDatabase? db;
-                      File? alternativeVersion;
+                      ListTile deleteFileTile = ListTile(
+                        leading: const Icon(FluentIcons.delete),
+                        title: Text(appLocal.delete),
+                        onPressed: () {
+                          showDialog<bool>(
+                            context: context,
+                            builder: (context) => ContentDialog(
+                              title: Text(appLocal.deleteFile),
+                              content: Text(appLocal.fileDeletionConfirmation),
+                              actions: [
+                                Button(
+                                  onPressed: () {
+                                    Navigator.pop(context, true);
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text(appLocal.delete),
+                                ),
+                                FilledButton(
+                                  onPressed: () =>
+                                      Navigator.pop(context, false),
+                                  child: Text(appLocal.cancel),
+                                ),
+                              ],
+                            ),
+                          ).then((confirmation) {
+                            if (confirmation ?? false) {
+                              entity.delete().then((_) => setState(() {}));
+                            }
+                          });
+                        },
+                      );
+                      String fileSize =
+                          SizeUnitConversion.bytesToAppropriateUnits(
+                              entity.lengthSync());
 
-                      if (metaFile.existsSync()) {
-                        db = KeyValueDatabase(metaFile);
-                        await db.loadFromFileAsync();
-                      }
+                      if (AssetsPage.imageExt.contains(extension)) {
+                        var decodedImage = await decodeImageFromList(
+                            await entity.readAsBytes());
+                        if (!context.mounted) return;
+                        await showBottomSheet(
+                          context: context,
+                          builder: (context) {
+                            return Padding(
+                              padding: const EdgeInsets.all(20),
+                              child: ListView(
+                                shrinkWrap: true,
+                                children: [
+                                  Container(
+                                    margin: const EdgeInsets.all(16.0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            const Icon(LineIcons.imageFile,
+                                                size: 18),
+                                            const Gap(5),
+                                            Text(
+                                              basename,
+                                              style: theme.typography.bodyLarge,
+                                            ),
+                                          ],
+                                        ),
+                                        const Gap(5),
+                                        Image.file(entity,
+                                            height: 300,
+                                            alignment: Alignment.centerLeft),
+                                        const Gap(5),
+                                        Text(
+                                          appLocal.imageResolution(
+                                            decodedImage.width,
+                                            decodedImage.height,
+                                          ),
+                                        ),
+                                        Text(
+                                          appLocal.fileSize(fileSize),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  renameFileTile,
+                                  deleteFileTile,
+                                ],
+                              ),
+                            );
+                          },
+                        );
+                      } else if (AssetsPage.audioExt.contains(extension)) {
+                        bool isSupported = true;
+                        File metaFile = getMetadataFile(entity);
+                        KeyValueDatabase? db;
+                        File? alternativeVersion;
 
-                      if (Platform.isWindows &&
-                          !AssetsPage.windowsAudioFormat.contains(extension)) {
-                        // See if the audio contain an alternative version for Windows
-                        if (db != null && db.data["windows"] != null) {
-                          alternativeVersion = db.data["windows"];
-                        } else {
-                          isSupported = false;
+                        if (metaFile.existsSync()) {
+                          db = KeyValueDatabase(metaFile);
+                          await db.loadFromFileAsync();
                         }
-                      }
 
-                      if (!context.mounted) {
-                        return;
-                      }
+                        if (Platform.isWindows &&
+                            !AssetsPage.windowsAudioFormat
+                                .contains(extension)) {
+                          // See if the audio contain an alternative version for Windows
+                          if (db != null && db.data["windows"] != null) {
+                            alternativeVersion = db.data["windows"];
+                          } else {
+                            isSupported = false;
+                          }
+                        }
 
-                      await showBottomSheet(
+                        if (!context.mounted) {
+                          return;
+                        }
+
+                        print(entity.path);
+
+                        await showBottomSheet(
+                            context: context,
+                            builder: (context) {
+                              return Padding(
+                                padding: const EdgeInsets.all(20),
+                                child: ListView(
+                                  shrinkWrap: true,
+                                  children: [
+                                    ListTile(
+                                      leading: const Icon(LineIcons.audioFile),
+                                      title: Text(
+                                        basename,
+                                        style: theme.typography.bodyStrong,
+                                      ),
+                                    ),
+                                    isSupported
+                                        ? AudioPlayerWidget(
+                                            DeviceFileSource(
+                                              alternativeVersion == null
+                                                  ? entity.path
+                                                  : alternativeVersion.path,
+                                            ),
+                                          )
+                                        : Text(appLocal.audioNotSupported),
+                                    Text(
+                                      appLocal.fileSize(fileSize),
+                                    ),
+                                    renameFileTile,
+                                    ListTile(
+                                      leading: const Icon(
+                                          FluentIcons.document_management),
+                                      title: Text(appLocal.advancedManagement),
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                        Navigator.push(
+                                          context,
+                                          FluentPageRoute(
+                                            builder: (context) =>
+                                                AdvancedAudioFileConfig(
+                                              entity,
+                                              updateCallback: () =>
+                                                  setState(() {}),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                    deleteFileTile,
+                                  ],
+                                ),
+                              );
+                            });
+                      } else {
+                        await showBottomSheet(
                           context: context,
                           builder: (context) {
                             return Padding(
@@ -461,105 +520,54 @@ class _AssetsPageState extends State<AssetsPage> {
                                 shrinkWrap: true,
                                 children: [
                                   ListTile(
-                                    leading: const Icon(LineIcons.audioFile),
-                                    title: Text(
-                                      basename,
-                                      style: theme.typography.bodyStrong,
-                                    ),
+                                    leading: const Icon(FluentIcons.page),
+                                    title: Text(basename,
+                                        style: theme.typography.bodyStrong),
                                   ),
-                                  isSupported
-                                      ? AudioPlayerWidget(
-                                          DeviceFileSource(
-                                              alternativeVersion == null
-                                                  ? entity.path
-                                                  : alternativeVersion.path),
-                                        )
-                                      : Text(appLocal.audioNotSupported),
                                   Text(
                                     appLocal.fileSize(fileSize),
                                   ),
-                                  renameFileTile,
                                   ListTile(
-                                    leading: const Icon(
-                                        FluentIcons.document_management),
-                                    title: Text(appLocal.advancedManagement),
+                                    title: Text(appLocal.editAsText),
                                     onPressed: () {
-                                      Navigator.pop(context);
                                       Navigator.push(
                                         context,
                                         FluentPageRoute(
-                                          builder: (context) =>
-                                              AdvancedAudioFileConfig(
+                                          builder: (context) => CodeView(
                                             entity,
-                                            updateCallback: () =>
-                                                setState(() {}),
+                                            onFileDelete: () => setState(() {}),
                                           ),
                                         ),
                                       );
                                     },
                                   ),
+                                  renameFileTile,
                                   deleteFileTile,
                                 ],
                               ),
                             );
-                          });
-                    } else {
-                      await showBottomSheet(
-                        context: context,
-                        builder: (context) {
-                          return Padding(
-                            padding: const EdgeInsets.all(20),
-                            child: ListView(
-                              shrinkWrap: true,
-                              children: [
-                                ListTile(
-                                  leading: const Icon(FluentIcons.page),
-                                  title: Text(basename,
-                                      style: theme.typography.bodyStrong),
-                                ),
-                                Text(
-                                  appLocal.fileSize(fileSize),
-                                ),
-                                ListTile(
-                                  title: Text(appLocal.editAsText),
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      FluentPageRoute(
-                                        builder: (context) => CodeView(
-                                          entity,
-                                          onFileDelete: () => setState(() {}),
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                                renameFileTile,
-                                deleteFileTile,
-                              ],
-                            ),
-                          );
-                        },
-                      );
+                          },
+                        );
+                      }
                     }
-                  }
-                },
-                items: [
-                  TreeViewItem(
-                    content: Text(appLocal.assets,
-                        style: theme.typography.bodyStrong),
-                    expanded: true,
-                    leading: const Icon(FluentIcons.fabric_folder),
-                    collapsable: false,
-                    value: assetsFolder,
-                    children: AssetsPage.getDirTree(assetsFolder),
-                  )
-                ],
-              ),
-            ],
+                  },
+                  items: [
+                    TreeViewItem(
+                      content: Text(appLocal.assets,
+                          style: theme.typography.bodyStrong),
+                      expanded: true,
+                      leading: const Icon(FluentIcons.fabric_folder),
+                      collapsable: false,
+                      value: assetsFolder,
+                      children: AssetsPage.getDirTree(assetsFolder),
+                    )
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
-      ),
+      ],
     );
   }
 }

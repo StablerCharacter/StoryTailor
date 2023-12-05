@@ -217,7 +217,10 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
               const Gap(10),
               Text("FFmpeg", style: theme.typography.bodyStrong),
-              Text(appLocal.ffmpegDescription),
+              Text(
+                appLocal.ffmpegDescription,
+                textAlign: TextAlign.center,
+              ),
               FutureBuilder(
                 future: isFfmpegPresent,
                 builder: (context, snapshot) {
@@ -264,7 +267,8 @@ class _SettingsPageState extends State<SettingsPage> {
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
                                           Text(appLocal.ffmpegLinuxInstall),
-                                          const SelectableText("sudo apt-get install ffmpeg\nsudo snap install ffmpeg"),
+                                          const SelectableText(
+                                              "sudo apt-get install ffmpeg\nsudo snap install ffmpeg"),
                                         ],
                                       ),
                                       actions: [

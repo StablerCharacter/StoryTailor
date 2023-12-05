@@ -1,7 +1,5 @@
 # Vector2
 
-**Implementation Stage:** Implemented
-
 This is an object with two properties, Indicating the position 
 of an object in a 2D space.
 
@@ -11,6 +9,8 @@ corner.
 
 In some engines, These float values will be cast to an [int]
 and the floating point will be lost.
+
+**Implementation Stage:** Implemented
 
 x [float]
 : The X (horizontal) position.

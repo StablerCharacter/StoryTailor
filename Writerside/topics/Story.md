@@ -1,11 +1,11 @@
 # Story
 
-**Implementation Stage:** Partially Implemented
-
 The Story stage is where the story all starts.
 
 The "Story Stage" tab in the application is mainly for customizing 
 appearances of the stage.
+
+**Implementation Stage:** Partially Implemented
 
 ## Customization Options
 

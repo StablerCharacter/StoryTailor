@@ -226,6 +226,16 @@
   },
   "toRename": "To rename the project, please rename it from the project list by touch/click and hold on the project.",
   "renameProject": "Rename project",
+  "exportingProject": "Exporting project...",
+  "exportProjectToZip": "Export to Zip",
+  "savedTo": "Saved to: {filePath}",
+  "@savedTo": {
+    "placeholders": {
+      "filePath": {
+        "type": "String"
+      }
+    }
+  },
   "deleteProject": "Delete project",
   "projectDeletionConfirmation": "Are you sure you want to permanently delete the project? The project will be gone forever and it cannot be accessed.",
   "projectDeleted": "Project deleted.",
@@ -291,7 +301,9 @@
   "finished": "Finished",
 
   "stageInfo": "Stage Info",
+  "stageEnvironment": "Stage Environment",
   "stageBackground": "Stage Background",
+  "stageBackgroundMusic": "Stage Background Music",
 
   "mainMenuStage": "Main Menu Stage",
   "storyStage": "Story Stage",

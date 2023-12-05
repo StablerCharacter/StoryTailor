@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:storytailor/db/key_value_database.dart';
 import 'package:storytailor/game_objects/project.dart';
+import 'package:storytailor/views/project_related/export_to_zip.dart';
 import 'package:storytailor/views/project_related/project_view.dart';
 import 'package:storytailor/utils/dialog_util.dart';
 import 'package:storytailor/utils/size_unit_conversion.dart';
@@ -76,8 +77,9 @@ class _ProjectListState extends State<ProjectList> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              HyperlinkButton(
-                child: Text(appLocal.renameProject),
+              ListTile(
+                leading: const Icon(FluentIcons.rename),
+                title: Text(appLocal.renameProject),
                 onPressed: () {
                   askString(
                     context,
@@ -113,8 +115,24 @@ class _ProjectListState extends State<ProjectList> {
                   });
                 },
               ),
-              HyperlinkButton(
-                child: Text(appLocal.deleteProject),
+              ListTile(
+                title: Text(appLocal.exportProjectToZip),
+                onPressed: () {
+                  Navigator.pop(context);
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return ExportProjectToZip(
+                        dir,
+                        "${documentsDir!.path}/StoryTailor/project.zip",
+                      );
+                    },
+                    dismissWithEsc: false,
+                  );
+                },
+              ),
+              ListTile(
+                title: Text(appLocal.deleteProject),
                 onPressed: () {
                   Navigator.pop(context);
                   showDialog(

@@ -1,41 +1,27 @@
 import 'dart:io';
 
-import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gap/gap.dart';
 import 'package:path/path.dart' as p;
-
-import 'package:storytailor/game_objects/project.dart';
+import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:storytailor/components/asset_field.dart';
 import 'package:storytailor/views/project_related/asset_picker.dart';
+import 'package:storytailor/views/project_related/assets_page.dart';
 
-class ProjectAssetField extends StatefulWidget {
-  const ProjectAssetField(
-    this.project, {
+class AudioAssetField extends AssetField<File> {
+  const AudioAssetField(
+    super.project, {
     super.key,
-    this.mainAxisAlignment = MainAxisAlignment.start,
-        this.onAssetSelected,
-        this.initialValue,
+    super.mainAxisAlignment = MainAxisAlignment.start,
+    super.onAssetSelected,
+    super.initialValue,
   });
 
-  final Project project;
-  final MainAxisAlignment mainAxisAlignment;
-  final FileSystemEntity? initialValue;
-  final Function(FileSystemEntity)? onAssetSelected;
-
   @override
-  State<ProjectAssetField> createState() => _ProjectAssetFieldState();
+  State<AssetField<File>> createState() => _AudioAssetFieldState();
 }
 
-class _ProjectAssetFieldState extends State<ProjectAssetField> {
-  FileSystemEntity? entity;
-
-  @override
-  void initState() {
-    super.initState();
-
-    entity = widget.initialValue;
-  }
-
+class _AudioAssetFieldState extends AssetFieldState<File> {
   @override
   Widget build(BuildContext context) {
     AppLocalizations appLocal = AppLocalizations.of(context)!;
@@ -62,18 +48,26 @@ class _ProjectAssetFieldState extends State<ProjectAssetField> {
           child: IconButton(
             icon: const Icon(FluentIcons.open_file),
             onPressed: () {
-              showAssetPicker(
-                context,
-                widget.project,
-              ).then(
-                (value) {
+              showAssetPicker(context, widget.project,
+                  fileFormats: AssetsPage.audioExt)
+                  .then(
+                    (value) {
                   if (value == null) {
                     return;
                   }
 
-                  setState(() {
-                    entity = value.entity;
-                  });
+                  if (value.isClearingField) {
+                    entity = null;
+                  }
+
+                  if (value.entity != null && value.entity is File) {
+                    entity = value.entity as File?;
+                  }
+
+                  if (widget.onAssetSelected != null) {
+                    widget.onAssetSelected!(entity);
+                  }
+                  setState(() {});
                 },
               );
             },

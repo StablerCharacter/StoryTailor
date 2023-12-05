@@ -61,6 +61,9 @@ dependencies:
       url: https://github.com/lines-of-codes/ffmpeg_helper.git
       ref: main
   http: ^1.1.0
+  window_manager: ^0.3.7
+  archive: ^3.4.9
+  share_plus: ^7.2.1
 
 dev_dependencies:
   flutter_test:

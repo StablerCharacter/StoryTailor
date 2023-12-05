@@ -82,43 +82,46 @@ class _AdvancedAudioFileConfigState extends State<AdvancedAudioFileConfig> {
     String outputFilePath =
         "${p.dirname(widget.audioFile.path)}/${p.basenameWithoutExtension(widget.audioFile.path)}${getFormat()}";
     FFMpegHelper.instance.runAsync(
-        FFMpegCommand(
-          inputs: [
-            FFMpegInput.asset(
-              '"${widget.audioFile.path}"',
-            )
-          ],
-          args: [
-            const OverwriteArgument(),
-            const LogLevelArgument(LogLevel.debug),
-            CustomArgument([
-              "-acodec",
-              codecValue!,
-            ]),
-          ],
-          outputFilepath: '"$outputFilePath"',
-        ), onComplete: (file) {
-      Navigator.pop(dialogContext);
-      if (file == null) {
+      FFMpegCommand(
+        inputs: [
+          FFMpegInput.asset(
+            Platform.isAndroid ? '"${widget.audioFile.path}"' : widget.audioFile.path,
+          )
+        ],
+        args: [
+          const OverwriteArgument(),
+          const LogLevelArgument(LogLevel.debug),
+          CustomArgument([
+            "-acodec",
+            codecValue!,
+          ]),
+        ],
+        outputFilepath:
+            Platform.isAndroid ? '"$outputFilePath"' : outputFilePath,
+      ),
+      onComplete: (file) {
+        Navigator.pop(dialogContext);
+        if (file == null) {
+          showSnackbar(
+            dialogContext,
+            InfoBar(
+              title: Text(appLocal.reimportError),
+            ),
+          );
+          return;
+        }
+        widget.audioFile.delete();
+        if (widget.updateCallback != null) {
+          widget.updateCallback!();
+        }
         showSnackbar(
           dialogContext,
           InfoBar(
-            title: Text(appLocal.reimportError),
+            title: Text(appLocal.assetReimported),
           ),
         );
-        return;
-      }
-      widget.audioFile.delete();
-      if (widget.updateCallback != null) {
-        widget.updateCallback!();
-      }
-      showSnackbar(
-        dialogContext,
-        InfoBar(
-          title: Text(appLocal.assetReimported),
-        ),
-      );
-    });
+      },
+    );
 
     if (!context.mounted) {
       return;

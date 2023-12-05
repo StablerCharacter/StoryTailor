@@ -1,6 +1,7 @@
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
+import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart' hide Route;
 import 'package:storytailor/game_objects/credits_stage.dart';
@@ -19,6 +20,7 @@ class GamePreview extends FlameGame
 
   @override
   Future<void> onLoad() async {
+    FlameAudio.bgm.initialize();
     add(
       KeyboardListenerComponent(
         keyUp: {
@@ -51,6 +53,11 @@ class GamePreview extends FlameGame
         },
       ),
     );
+  }
+
+  @override
+  void onRemove() {
+    FlameAudio.bgm.stop();
   }
 
   @override

@@ -1,9 +1,14 @@
 import 'dart:io';
+import 'dart:math';
+import 'dart:ui';
 
+import 'package:path/path.dart' as p;
 import 'package:flame/components.dart';
-import 'package:flutter/rendering.dart';
+import 'package:flame_audio/flame_audio.dart';
+import 'package:fluent_ui/fluent_ui.dart';
 import 'package:storytailor/game_objects/game_object.dart';
 import 'package:storytailor/game_objects/project.dart';
+import 'package:storytailor/utils/assets_utility.dart';
 import 'package:storytailor/utils/stretch_mode.dart';
 import 'package:storytailor/views/project_related/credits_config.dart';
 
@@ -16,8 +21,16 @@ class CreditsStage extends GameObject {
   CreditsStage(this.project, {super.name = "Credits Scene"});
 
   @override
-  Component createComponent() =>
-      _CreditsStageComponent(CreditsConfigState.config, project);
+  Component createComponent() {
+    CreditsConfigState.tryLoad(File(
+      p.join(
+        project.projectDirectory.path,
+        "stages",
+        "credits.json",
+      ),
+    ));
+    return _CreditsStageComponent(CreditsConfigState.config, project);
+  }
 }
 
 class _CreditsStageComponent extends Component {
@@ -29,6 +42,7 @@ class _CreditsStageComponent extends Component {
   late TextComponent headingText;
   late TextComponent bodyText;
   bool isOnLoadCalled = false;
+  double lerpValue = 0;
 
   _CreditsStageComponent(this.config, this.project);
 
@@ -37,20 +51,35 @@ class _CreditsStageComponent extends Component {
     if (config.stageBackground.isNotEmpty) {
       background = Sprite(
         await decodeImageFromList(
-          await File(
-                  "${project.projectDirectory.path}/assets/${config.stageBackground}")
-              .readAsBytes(),
+          await getAssetFromRelativePath(
+            project,
+            config.stageBackground,
+          ).readAsBytes(),
         ),
       );
     }
+
+    if (config.stageBackgroundMusic.isNotEmpty) {
+      await FlameAudio.bgm.audioPlayer.release();
+      await FlameAudio.bgm.audioPlayer.setReleaseMode(ReleaseMode.loop);
+      await FlameAudio.bgm.audioPlayer.setSourceDeviceFile(
+          getAssetFromRelativePath(project, config.stageBackgroundMusic).path);
+      FlameAudio.bgm.audioPlayer.resume();
+      FlameAudio.bgm.isPlaying = true;
+    }
+
     headingText = TextComponent(
       text: config.sections[0].name,
       textRenderer: TextPaint(
-        style: const TextStyle(fontWeight: FontWeight.bold),
+        style:
+            const TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
       ),
     );
     bodyText = TextComponent(
       text: config.sections[0].content,
+      textRenderer: TextPaint(
+        style: const TextStyle(color: Colors.black),
+      ),
     );
     recalculateObjectPosition();
     isOnLoadCalled = true;
@@ -80,6 +109,19 @@ class _CreditsStageComponent extends Component {
   @override
   void render(Canvas canvas) {
     background?.render(canvas, size: backgroundSize);
+  }
+
+  @override
+  void update(double dt) {
+    if (lerpValue == 1.0) return;
+    lerpValue += dt / config.animationDuration.inSeconds;
+    lerpValue = min(lerpValue, 1.0);
+    int alpha =
+        lerpDouble(0, 255, config.animationCurve.transform(lerpValue))!.round();
+    headingText.textRenderer = (headingText.textRenderer as TextPaint)
+        .copyWith((ts) => ts.copyWith(color: ts.color?.withAlpha(alpha)));
+    bodyText.textRenderer = (bodyText.textRenderer as TextPaint)
+        .copyWith((ts) => ts.copyWith(color: ts.color?.withAlpha(alpha)));
   }
 
   @override

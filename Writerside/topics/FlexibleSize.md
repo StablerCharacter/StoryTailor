@@ -1,13 +1,13 @@
 # FlexibleSize
 
-**Implementation Stage:** Planned.
-
 A data type which allows the width and height to be set dynamically 
 based on the size of parent. Often used to set object size based on 
 screen size.
 
 When a value of this data type is represented in this guide, It is 
 represented as "\[width\]\[px or %\] W, \[height\]\[px or %\] H"
+
+**Implementation Stage:** Planned.
 
 isWidthFlexible [boolean]
 : If the width variable is flexible or not.

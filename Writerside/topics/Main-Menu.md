@@ -1,13 +1,13 @@
 # Main Menu
 
-**Implementation Stage:** Planned
-
 The main menu is the entry point of your game, just like what
 you usually see in games where when you open the game, you see
 the play button, settings, and the quit button.
 
 The main menu might be the scene with the most customization 
 options available. As the main menu is likely unique to each game.
+
+**Implementation Stage:** Planned
 
 ## Customization Options
 

@@ -1,7 +1,5 @@
 # Story Structure
 
-**Implementation Stage:** Implemented
-
 This page explains the structure of the Story in StoryTailor.
 
 <tldr>
@@ -15,6 +13,8 @@ The story object consists of four types in StoryTailor. Which are:
 - Chapters
 - Branches
 - Dialogues
+
+**Implementation Stage:** Implemented
 
 ## StoryManager
 StoryManager is a story object which basically, 

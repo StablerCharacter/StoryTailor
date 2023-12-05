@@ -1,5 +1,5 @@
 # Credits
 
-**Implementation Stage:** Partially Implemented
-
 This is the end credits scene.
+
+**Implementation Stage:** Partially Implemented

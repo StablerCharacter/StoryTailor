@@ -13,12 +13,18 @@ import 'package:storytailor/views/project_list.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:system_theme/system_theme.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:window_manager/window_manager.dart';
 
 import 'views/bug_report.dart';
 import 'views/settings_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  if (Platform.isWindows || Platform.isMacOS || Platform.isLinux) {
+    await windowManager.ensureInitialized();
+    WindowManager.instance.setMinimumSize(const Size(350, 460));
+  }
 
   Animate.restartOnHotReload = true;
 
