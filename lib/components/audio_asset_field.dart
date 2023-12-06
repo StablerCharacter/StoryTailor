@@ -12,7 +12,6 @@ class AudioAssetField extends AssetField<File> {
   const AudioAssetField(
     super.project, {
     super.key,
-    super.mainAxisAlignment = MainAxisAlignment.start,
     super.onAssetSelected,
     super.initialValue,
   });
@@ -28,7 +27,7 @@ class _AudioAssetFieldState extends AssetFieldState<File> {
     FluentThemeData theme = FluentTheme.of(context);
 
     return Row(
-      mainAxisAlignment: widget.mainAxisAlignment,
+      mainAxisSize: MainAxisSize.min,
       children: [
         Container(
           padding: kDefaultButtonPadding,

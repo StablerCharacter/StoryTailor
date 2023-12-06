@@ -13,7 +13,6 @@ class ImageAssetField extends AssetField<File> {
   const ImageAssetField(
     super.project, {
     super.key,
-    super.mainAxisAlignment = MainAxisAlignment.start,
     super.onAssetSelected,
     super.initialValue,
   });
@@ -29,7 +28,7 @@ class _ImageAssetFieldState extends AssetFieldState<File> {
     FluentThemeData theme = FluentTheme.of(context);
 
     return Row(
-      mainAxisAlignment: widget.mainAxisAlignment,
+      mainAxisSize: MainAxisSize.min,
       children: [
         Container(
           padding: kDefaultButtonPadding,

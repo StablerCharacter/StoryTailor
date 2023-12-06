@@ -116,6 +116,7 @@ class _ProjectListState extends State<ProjectList> {
                 },
               ),
               ListTile(
+                leading: const Icon(FluentIcons.share),
                 title: Text(appLocal.exportProjectToZip),
                 onPressed: () {
                   Navigator.pop(context);
@@ -132,6 +133,7 @@ class _ProjectListState extends State<ProjectList> {
                 },
               ),
               ListTile(
+                leading: const Icon(FluentIcons.delete),
                 title: Text(appLocal.deleteProject),
                 onPressed: () {
                   Navigator.pop(context);

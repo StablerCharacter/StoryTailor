@@ -182,7 +182,6 @@ class CreditsConfigState extends State<CreditsConfigPage> {
   Widget build(BuildContext context) {
     AppLocalizations appLocal = AppLocalizations.of(context)!;
     FluentThemeData theme = FluentTheme.of(context);
-    MediaQueryData mediaQuery = MediaQuery.of(context);
 
     return ScaffoldPage(
       content: SingleChildScrollView(
@@ -197,19 +196,9 @@ class CreditsConfigState extends State<CreditsConfigPage> {
               const Gap(15),
               Expander(
                 header: Text(appLocal.stageEnvironment),
-                content: GridView.count(
-                  shrinkWrap: true,
-                  crossAxisCount: mediaQuery.size.width > 800
-                      ? 3
-                      : mediaQuery.size.width > 500
-                          ? 2
-                          : 1,
-                  // Don't ask me where these magic numbers came from, I don't know either
-                  childAspectRatio: 16 / mediaQuery.size.width > 1000
-                      ? 2
-                      : mediaQuery.size.width > 600
-                          ? 2
-                          : 3.5,
+                content: Wrap(
+                  spacing: 20,
+                  alignment: WrapAlignment.spaceEvenly,
                   children: [
                     Column(
                       mainAxisSize: MainAxisSize.min,
@@ -224,7 +213,6 @@ class CreditsConfigState extends State<CreditsConfigPage> {
                               ? getAssetFromRelativePath(
                                   widget.project, config.stageBackground)
                               : null,
-                          mainAxisAlignment: MainAxisAlignment.center,
                           onAssetSelected: (file) {
                             if (file == null) {
                               config.stageBackground = "";
@@ -262,7 +250,6 @@ class CreditsConfigState extends State<CreditsConfigPage> {
                         ),
                         AudioAssetField(
                           widget.project,
-                          mainAxisAlignment: MainAxisAlignment.center,
                           initialValue: config.stageBackgroundMusic.isNotEmpty
                               ? getAssetFromRelativePath(
                                   widget.project, config.stageBackgroundMusic)

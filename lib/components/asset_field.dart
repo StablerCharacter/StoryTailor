@@ -12,13 +12,11 @@ class AssetField<F extends FileSystemEntity> extends StatefulWidget {
   const AssetField(
     this.project, {
     super.key,
-    this.mainAxisAlignment = MainAxisAlignment.start,
     this.onAssetSelected,
     this.initialValue,
   });
 
   final Project project;
-  final MainAxisAlignment mainAxisAlignment;
   final F? initialValue;
   final void Function(F?)? onAssetSelected;
 
@@ -42,7 +40,7 @@ class AssetFieldState<F extends FileSystemEntity> extends State<AssetField<F>> {
     FluentThemeData theme = FluentTheme.of(context);
 
     return Row(
-      mainAxisAlignment: widget.mainAxisAlignment,
+      mainAxisSize: MainAxisSize.min,
       children: [
         Container(
           padding: kDefaultButtonPadding,
