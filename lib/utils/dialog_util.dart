@@ -1,4 +1,4 @@
-import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter/material.dart';
 
 Future<String?> askString(
     BuildContext context,
@@ -12,32 +12,45 @@ Future<String?> askString(
 
   return showDialog<String>(
     context: context,
-    builder: (context) => ContentDialog(
+    builder: (context) => AlertDialog(
       title: Text(title),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           description ?? const SizedBox.shrink(),
-          InfoLabel(label: fieldName),
-          TextBox(
+          Text(fieldName),
+          TextField(
             controller: controller,
-            placeholder: placeholder,
+            decoration: InputDecoration(
+              hintText: placeholder,
+            ),
           ),
         ],
       ),
       actions: [
         FilledButton(
-            child: Text(confirm),
-            onPressed: () {
-              Navigator.pop(context, controller.text);
-            }),
-        Button(
+          child: Text(confirm),
+          onPressed: () {
+            Navigator.pop(context, controller.text);
+          },
+        ),
+        OutlinedButton(
           child: Text(cancel),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
       ],
+    ),
+  );
+}
+
+void showMessage(BuildContext context, Widget? title, Widget? content) {
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: title,
+      content: content,
     ),
   );
 }

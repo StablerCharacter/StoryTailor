@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:flame/game.dart';
-import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '/game_objects/project.dart';
@@ -23,37 +23,40 @@ class _PreviewPageState extends State<PreviewPage> {
 
   @override
   Widget build(BuildContext context) {
-    FluentThemeData theme = FluentTheme.of(context);
+    ThemeData theme = Theme.of(context);
     AppLocalizations appLocal = AppLocalizations.of(context)!;
 
-    return ScaffoldPage(
-      content: Container(
-        margin: const EdgeInsets.all(30.0),
+    return Scaffold(
+      body: Center(
         child: Column(
           children: [
-            Text(appLocal.preview, style: theme.typography.titleLarge),
+            Text(appLocal.preview, style: theme.textTheme.titleLarge),
             Container(
               margin: const EdgeInsets.fromLTRB(0, 15, 0, 0),
               child: Column(
                 children: [
-                  InfoLabel(label: "Game Stage"),
-                  ComboBox<String>(
-                    value: stage,
-                    items: const [
-                      ComboBoxItem(
+                  Text(
+                    "Game Stage",
+                    style: theme.textTheme.bodyLarge,
+                  ),
+                  DropdownMenu<String>(
+                    controller: TextEditingController(text: stage),
+                    enableFilter: false,
+                    dropdownMenuEntries: const [
+                      DropdownMenuEntry(
                         value: "mainMenu",
-                        child: Text("Main Menu"),
+                        label: "Main Menu",
                       ),
-                      ComboBoxItem(
+                      DropdownMenuEntry(
                         value: "story",
-                        child: Text("Story"),
+                        label: "Story",
                       ),
-                      ComboBoxItem(
+                      DropdownMenuEntry(
                         value: "credits",
-                        child: Text("Credits"),
+                        label: "Credits",
                       ),
                     ],
-                    onChanged: (v) {
+                    onSelected: (v) {
                       setState(() {
                         stage = v!;
                       });
@@ -68,12 +71,12 @@ class _PreviewPageState extends State<PreviewPage> {
                 child: Text(
                   appLocal.runPreviewBtn,
                   style:
-                      theme.typography.bodyLarge?.copyWith(color: Colors.black),
+                      theme.textTheme.bodyLarge?.copyWith(color: Colors.black),
                 ),
                 onPressed: () {
                   Navigator.push(
                     context,
-                    FluentPageRoute(
+                    MaterialPageRoute(
                       builder: (context) => GameWidget(
                         game: GamePreview(widget.project, stage),
                         overlayBuilderMap: {
@@ -95,12 +98,12 @@ class _PreviewPageState extends State<PreviewPage> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(appLocal.devtools,
-                                          style: theme.typography.title),
-                                      Button(
+                                          style: theme.textTheme.titleMedium),
+                                      OutlinedButton(
                                           onPressed: () =>
                                               Navigator.pop(context),
                                           child: Text(appLocal.exitGame)),
-                                      Button(
+                                      OutlinedButton(
                                           child: Text(appLocal.closeOverlay),
                                           onPressed: () =>
                                               preview.closeOverlay("devtools")),

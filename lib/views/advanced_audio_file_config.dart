@@ -1,13 +1,13 @@
 import 'dart:io';
 
-import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:ffmpeg_helper/ffmpeg_helper.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gap/gap.dart';
+import 'package:path/path.dart' as p;
 import 'package:storytailor/db/key_value_database.dart';
 import 'package:storytailor/utils/assets_utility.dart';
 import 'package:storytailor/utils/size_unit_conversion.dart';
-import 'package:path/path.dart' as p;
 
 class AdvancedAudioFileConfig extends StatefulWidget {
   const AdvancedAudioFileConfig(this.audioFile,
@@ -85,7 +85,9 @@ class _AdvancedAudioFileConfigState extends State<AdvancedAudioFileConfig> {
       FFMpegCommand(
         inputs: [
           FFMpegInput.asset(
-            Platform.isAndroid ? '"${widget.audioFile.path}"' : widget.audioFile.path,
+            Platform.isAndroid
+                ? '"${widget.audioFile.path}"'
+                : widget.audioFile.path,
           )
         ],
         args: [
@@ -102,10 +104,9 @@ class _AdvancedAudioFileConfigState extends State<AdvancedAudioFileConfig> {
       onComplete: (file) {
         Navigator.pop(dialogContext);
         if (file == null) {
-          showSnackbar(
-            dialogContext,
-            InfoBar(
-              title: Text(appLocal.reimportError),
+          ScaffoldMessenger.of(dialogContext).showSnackBar(
+            SnackBar(
+              content: Text(appLocal.reimportError),
             ),
           );
           return;
@@ -114,10 +115,9 @@ class _AdvancedAudioFileConfigState extends State<AdvancedAudioFileConfig> {
         if (widget.updateCallback != null) {
           widget.updateCallback!();
         }
-        showSnackbar(
-          dialogContext,
-          InfoBar(
-            title: Text(appLocal.assetReimported),
+        ScaffoldMessenger.of(dialogContext).showSnackBar(
+          SnackBar(
+            content: Text(appLocal.assetReimported),
           ),
         );
       },
@@ -132,14 +132,14 @@ class _AdvancedAudioFileConfigState extends State<AdvancedAudioFileConfig> {
       context: context,
       builder: (context) {
         dialogContext = context;
-        return ContentDialog(
+        return AlertDialog(
           title: Text(appLocal.reimporting),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(appLocal.reimportDoNotCloseApp),
               const Gap(10),
-              const ProgressBar(),
+              const LinearProgressIndicator(),
             ],
           ),
         );
@@ -149,104 +149,117 @@ class _AdvancedAudioFileConfigState extends State<AdvancedAudioFileConfig> {
 
   @override
   Widget build(BuildContext context) {
-    FluentThemeData theme = FluentTheme.of(context);
+    ThemeData theme = Theme.of(context);
     AppLocalizations appLocal = AppLocalizations.of(context)!;
 
-    return ScaffoldPage.scrollable(
-      header: Container(
-        padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
-        child: PageHeader(
-          title: Text(appLocal.advancedManagement),
-          leading: IconButton(
-            icon: const Icon(FluentIcons.back),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(appLocal.advancedManagement),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ),
       ),
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(15.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              FutureBuilder(
-                future: mediaInfo,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done &&
-                      snapshot.hasData) {
-                    MediaInformation data = snapshot.data!;
-                    List<StreamInformation> streams = data.getStreams();
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(appLocal.bitrate(
-                            SizeUnitConversion.bytesToAppropriateUnits(
-                                int.parse(data.getBitrate() ?? "0")))),
-                        Text(appLocal.format(data.getFormat() ?? "")),
-                        Text(appLocal.fileSize(
-                            SizeUnitConversion.bytesToAppropriateUnits(
-                                int.parse(data.getSize() ?? "0")))),
-                        ListView.builder(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: streams.length,
-                          itemBuilder: (context, index) {
-                            StreamInformation stream = streams[index];
-                            if (stream.getType() != "audio") {
-                              return Container();
-                            }
-                            return ListTile(
-                              title: Text(appLocal.audioStreamNo(
-                                  stream.getIndex() ?? "Unknown")),
-                              subtitle: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(appLocal.sampleRate(
-                                      stream.getSampleRate() ?? "")),
-                                  Text(appLocal
-                                      .codecTeller(stream.getCodec() ?? "")),
-                                  Text(appLocal.bitrate(SizeUnitConversion
-                                      .bytesToAppropriateUnits(int.parse(
-                                          stream.getBitrate() ?? "0"))))
-                                ],
-                              ),
-                            );
-                          },
-                        ),
-                      ],
-                    );
-                  }
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                FutureBuilder(
+                  future: mediaInfo,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done &&
+                        snapshot.hasData) {
+                      MediaInformation data = snapshot.data!;
+                      List<StreamInformation> streams = data.getStreams();
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(appLocal.bitrate(
+                              SizeUnitConversion.bytesToAppropriateUnits(
+                                  int.parse(data.getBitrate() ?? "0")))),
+                          Text(appLocal.format(data.getFormat() ?? "")),
+                          Text(appLocal.fileSize(
+                              SizeUnitConversion.bytesToAppropriateUnits(
+                                  int.parse(data.getSize() ?? "0")))),
+                          ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: streams.length,
+                            itemBuilder: (context, index) {
+                              StreamInformation stream = streams[index];
+                              if (stream.getType() != "audio") {
+                                return Container();
+                              }
+                              return ListTile(
+                                title: Text(appLocal.audioStreamNo(
+                                    stream.getIndex() ?? "Unknown")),
+                                subtitle: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(appLocal.sampleRate(
+                                        stream.getSampleRate() ?? "")),
+                                    Text(appLocal
+                                        .codecTeller(stream.getCodec() ?? "")),
+                                    Text(appLocal.bitrate(SizeUnitConversion
+                                        .bytesToAppropriateUnits(int.parse(
+                                            stream.getBitrate() ?? "0"))))
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      );
+                    }
 
-                  return Container(
-                      alignment: Alignment.center, child: const ProgressRing());
-                },
-              ),
-              Expander(
-                initiallyExpanded: true,
-                header: Text(appLocal.audioSettings),
-                content: Column(
+                    return Container(
+                        alignment: Alignment.center,
+                        child: const CircularProgressIndicator());
+                  },
+                ),
+                Text(
+                  appLocal.audioSettings,
+                  style: theme.textTheme.titleLarge,
+                ),
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       appLocal.wordCodec,
-                      style: theme.typography.bodyStrong,
+                      style: theme.textTheme.bodyLarge,
                     ),
                     const Gap(5),
-                    ComboBox(
-                      items: const [
-                        ComboBoxItem(
-                            value: "pcm_s16le",
-                            child: Text("PCM (High Quality)")),
-                        ComboBoxItem(
-                            value: "pcm_u8", child: Text("PCM (Low Quality)")),
-                        ComboBoxItem(value: "adpcm_ms", child: Text("ADPCM")),
-                        ComboBoxItem(value: "mp3", child: Text("MP3")),
-                        ComboBoxItem(value: "aac", child: Text("AAC")),
+                    DropdownMenu(
+                      dropdownMenuEntries: const [
+                        DropdownMenuEntry(
+                          value: "pcm_s16le",
+                          label: "PCM (High Quality)",
+                        ),
+                        DropdownMenuEntry(
+                          value: "pcm_u8",
+                          label: "PCM (Low Quality)",
+                        ),
+                        DropdownMenuEntry(
+                          value: "adpcm_ms",
+                          label: "ADPCM",
+                        ),
+                        DropdownMenuEntry(
+                          value: "mp3",
+                          label: "MP3",
+                        ),
+                        DropdownMenuEntry(
+                          value: "aac",
+                          label: "AAC",
+                        ),
                       ],
-                      value: codecValue,
-                      onChanged: (newValue) => setState(() {
+                      enableFilter: false,
+                      controller: TextEditingController(text: codecValue),
+                      onSelected: (newValue) => setState(() {
                         isChanged =
                             newValue != codecValue && newValue != initialValue;
                         codecValue = newValue;
@@ -255,7 +268,7 @@ class _AdvancedAudioFileConfigState extends State<AdvancedAudioFileConfig> {
                     const Gap(10),
                     Row(
                       children: [
-                        Button(
+                        OutlinedButton(
                           onPressed: isChanged
                               ? () {
                                   setState(() {
@@ -274,63 +287,63 @@ class _AdvancedAudioFileConfigState extends State<AdvancedAudioFileConfig> {
                       ],
                     ),
                   ],
-                ),
-              ),
-              // I decided that it is not necessary for now.
-              // Text("Platform Specific Versions", style: theme.typography.subtitle),
-              // SizedBox(
-              //   height: 300,
-              //   child: TabView(
-              //     currentIndex: platformTabIndex,
-              //     onChanged: (newIndex) {
-              //       setState(() {
-              //         platformTabIndex = newIndex;
-              //       });
-              //     },
-              //     tabs: [
-              //       Tab(
-              //         icon: const Icon(LineIcons.windows),
-              //         text: const Text("Windows"),
-              //         body: Container(
-              //           color: theme.menuColor,
-              //           child: const PlatformSpecificAudioConversion(),
-              //         ),
-              //       ),
-              //       Tab(
-              //         text: const Text("macOS"),
-              //         body: Container(
-              //           color: theme.menuColor,
-              //         ),
-              //       ),
-              //       Tab(
-              //         icon: const Icon(LineIcons.linux),
-              //         text: const Text("Linux"),
-              //         body: Container(
-              //           color: theme.menuColor,
-              //         ),
-              //       ),
-              //       Tab(
-              //         icon: const Icon(LineIcons.android),
-              //         text: const Text("Android"),
-              //         body: Container(
-              //           color: theme.menuColor,
-              //         ),
-              //       ),
-              //       Tab(
-              //         text: const Text("iOS"),
-              //         body: Container(
-              //           color: theme.menuColor,
-              //         ),
-              //       ),
-              //     ],
-              //     tabWidthBehavior: TabWidthBehavior.sizeToContent,
-              //     closeButtonVisibility: CloseButtonVisibilityMode.never,
-              //   ),
-              // ),
-            ],
+                )
+                // I decided that it is not necessary for now.
+                // Text("Platform Specific Versions", style: theme.typography.subtitle),
+                // SizedBox(
+                //   height: 300,
+                //   child: TabView(
+                //     currentIndex: platformTabIndex,
+                //     onChanged: (newIndex) {
+                //       setState(() {
+                //         platformTabIndex = newIndex;
+                //       });
+                //     },
+                //     tabs: [
+                //       Tab(
+                //         icon: const Icon(LineIcons.windows),
+                //         text: const Text("Windows"),
+                //         body: Container(
+                //           color: theme.menuColor,
+                //           child: const PlatformSpecificAudioConversion(),
+                //         ),
+                //       ),
+                //       Tab(
+                //         text: const Text("macOS"),
+                //         body: Container(
+                //           color: theme.menuColor,
+                //         ),
+                //       ),
+                //       Tab(
+                //         icon: const Icon(LineIcons.linux),
+                //         text: const Text("Linux"),
+                //         body: Container(
+                //           color: theme.menuColor,
+                //         ),
+                //       ),
+                //       Tab(
+                //         icon: const Icon(LineIcons.android),
+                //         text: const Text("Android"),
+                //         body: Container(
+                //           color: theme.menuColor,
+                //         ),
+                //       ),
+                //       Tab(
+                //         text: const Text("iOS"),
+                //         body: Container(
+                //           color: theme.menuColor,
+                //         ),
+                //       ),
+                //     ],
+                //     tabWidthBehavior: TabWidthBehavior.sizeToContent,
+                //     closeButtonVisibility: CloseButtonVisibilityMode.never,
+                //   ),
+                // ),
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

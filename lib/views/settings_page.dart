@@ -2,15 +2,16 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:ffmpeg_helper/ffmpeg_helper.dart';
-import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gap/gap.dart';
+import 'package:pocketbase/pocketbase.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storytailor/components/button_with_icon.dart';
+import 'package:storytailor/db/pocketbase.dart';
 import 'package:storytailor/views/about_page.dart';
 import 'package:storytailor/views/ffmpeg_windows_setup.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'login.dart';
 
@@ -61,10 +62,10 @@ class ModelSettings extends ChangeNotifier {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  final _supabase = Supabase.instance.client;
+  final _pb = PocketBaseClient.instance;
 
   late final SharedPreferences prefs;
-  late StreamSubscription<AuthState> _authSubscription;
+  late StreamSubscription<AuthStoreEvent> _authSubscription;
 
   Future<bool>? isFfmpegPresent;
 
@@ -77,11 +78,17 @@ class _SettingsPageState extends State<SettingsPage> {
 
     SharedPreferences.getInstance().then((value) => prefs = value);
 
-    _authSubscription = _supabase.auth.onAuthStateChange.listen((data) {
+    _authSubscription = _pb.authStore.onChange.listen((data) {
       setState(() {});
     }, onError: (error) {
-      showSnackbar(context, InfoBar(title: Text(error)),
-          duration: snackbarLongDuration);
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(error),
+            duration: const Duration(seconds: 5),
+          ),
+        );
+      }
     });
 
     isFfmpegPresent = FFMpegHelper.instance.isFFMpegPresent();
@@ -96,7 +103,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    FluentThemeData theme = FluentTheme.of(context);
+    ThemeData theme = Theme.of(context);
     AppLocalizations appLocal = AppLocalizations.of(context)!;
     Axis buttonsAxis = MediaQuery.of(context).size.width >= 600
         ? Axis.horizontal
@@ -105,8 +112,8 @@ class _SettingsPageState extends State<SettingsPage> {
     loggedIn = appLocal.loginSuccess;
     loggedOut = appLocal.loggedOut;
 
-    return ScaffoldPage(
-      content: SingleChildScrollView(
+    return Scaffold(
+      body: SingleChildScrollView(
         child: Container(
           margin: const EdgeInsets.all(30.0),
           child: Column(
@@ -116,27 +123,27 @@ class _SettingsPageState extends State<SettingsPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Visibility(
-                    visible: _supabase.auth.currentUser == null,
+                    visible: _pb.authStore.record == null,
                     replacement: Flex(
                       direction: buttonsAxis,
                       children: [
                         ButtonWithIcon(
-                          icon: const Icon(FluentIcons.sign_out),
+                          icon: const Icon(Icons.logout),
                           child: Text(appLocal.logOut),
                           onPressed: () {
-                            _supabase.auth.signOut();
+                            _pb.authStore.clear();
                           },
                         ),
                         const Gap(5),
                       ],
                     ),
                     child: ButtonWithIcon(
-                      icon: const Icon(FluentIcons.signin),
+                      icon: const Icon(Icons.login),
                       child: Text(appLocal.login),
                       onPressed: () {
                         Navigator.push(
                           context,
-                          FluentPageRoute(
+                          MaterialPageRoute(
                             builder: (context) => const LoginPage(),
                           ),
                         );
@@ -144,21 +151,21 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                   ),
                   Visibility(
-                    visible: _supabase.auth.currentUser != null,
+                    visible: _pb.authStore.record != null,
                     child: ButtonWithIcon(
-                      icon: const Icon(FluentIcons.player_settings),
+                      icon: const Icon(Icons.manage_accounts),
                       child: Text(appLocal.accountSettings),
                       onPressed: () {},
                     ),
                   ),
                   const Gap(5),
                   ButtonWithIcon(
-                    icon: const Icon(FluentIcons.info),
+                    icon: const Icon(Icons.info),
                     child: Text(appLocal.about),
                     onPressed: () {
                       Navigator.push(
                         context,
-                        FluentPageRoute(
+                        MaterialPageRoute(
                           builder: (context) => const AboutPage(),
                         ),
                       );
@@ -167,56 +174,75 @@ class _SettingsPageState extends State<SettingsPage> {
                 ],
               ),
               const SizedBox(height: 20),
-              Text(appLocal.preferences, style: theme.typography.titleLarge),
+              Text(appLocal.preferences, style: theme.textTheme.titleLarge),
               Consumer<ModelSettings>(
                 builder: (context, ModelSettings value, child) {
                   return Column(
                     children: [
-                      InfoLabel(
-                        label: appLocal.theme,
-                        labelStyle: theme.typography.bodyStrong,
+                      Text(
+                        appLocal.theme,
+                        style: theme.textTheme.bodyLarge,
                       ),
-                      ComboBox(
-                        items: [
-                          ComboBoxItem(
+                      SegmentedButton(
+                        segments: [
+                          ButtonSegment(
+                            icon: const Icon(Icons.dark_mode),
                             value: "dark",
-                            child: Text(appLocal.darkTheme),
+                            label: Text(appLocal.darkTheme),
                           ),
-                          ComboBoxItem(
+                          ButtonSegment(
+                            icon: const Icon(Icons.light_mode),
                             value: "light",
-                            child: Text(appLocal.lightTheme),
+                            label: Text(appLocal.lightTheme),
                           ),
-                          ComboBoxItem(
+                          ButtonSegment(
                             value: "system",
-                            child: Text(appLocal.systemTheme),
+                            label: Text(appLocal.systemTheme),
                           ),
                         ],
-                        value: value.theme,
-                        onChanged: (newValue) => setState(() {
-                          value.theme = newValue!;
+                        selected: {value.theme},
+                        onSelectionChanged: (newValue) => setState(() {
+                          value.theme = newValue.first;
                         }),
                       ),
                       const Gap(10),
-                      InfoLabel(
-                        label: appLocal.language,
-                        labelStyle: theme.typography.bodyStrong,
+                      Text(
+                        appLocal.language,
+                        style: theme.textTheme.bodyLarge,
                       ),
-                      ComboBox(
-                        items: const [
-                          ComboBoxItem(value: "en", child: Text("English")),
-                          ComboBoxItem(value: "th", child: Text("ไทย")),
-                        ],
-                        value: value.language.languageCode,
-                        onChanged: (newValue) => setState(() {
-                          value.language = Locale(newValue!);
-                        }),
+                      SizedBox(
+                        width: 750,
+                        child: Column(
+                          children: [
+                            ListTile(
+                              leading: Radio.adaptive(
+                                value: "en",
+                                groupValue: value.language.languageCode,
+                                onChanged: (newValue) => setState(() {
+                                  value.language = Locale(newValue!);
+                                }),
+                              ),
+                              title: const Text("English"),
+                            ),
+                            ListTile(
+                              leading: Radio.adaptive(
+                                value: "th",
+                                groupValue: value.language.languageCode,
+                                onChanged: (newValue) => setState(() {
+                                  value.language = Locale(newValue!);
+                                }),
+                              ),
+                              title: const Text("ไทย"),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   );
                 },
               ),
               const Gap(10),
-              Text("FFmpeg", style: theme.typography.bodyStrong),
+              Text("FFmpeg", style: theme.textTheme.bodyLarge),
               Text(
                 appLocal.ffmpegDescription,
                 textAlign: TextAlign.center,
@@ -229,7 +255,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       return Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(FluentIcons.check_mark),
+                          const Icon(Icons.check),
                           const Gap(5),
                           Text(appLocal.ffmpegInstalled)
                         ],
@@ -241,18 +267,18 @@ class _SettingsPageState extends State<SettingsPage> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Icon(FluentIcons.chrome_close),
+                            const Icon(Icons.close),
                             const Gap(5),
                             Text(appLocal.ffmpegNotInstalled),
                           ],
                         ),
                         const Gap(5),
-                        Button(
+                        OutlinedButton(
                           onPressed: () {
                             if (Platform.isWindows) {
                               Navigator.push(
                                 context,
-                                FluentPageRoute(
+                                MaterialPageRoute(
                                   builder: (context) =>
                                       const FFmpegWindowsSetup(),
                                 ),
@@ -261,7 +287,7 @@ class _SettingsPageState extends State<SettingsPage> {
                               showDialog(
                                   context: context,
                                   builder: (context) {
-                                    return ContentDialog(
+                                    return AlertDialog.adaptive(
                                       title: Text(appLocal.ffmpegLinux),
                                       content: Column(
                                         mainAxisSize: MainAxisSize.min,
@@ -290,7 +316,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     );
                   }
 
-                  return const ProgressRing();
+                  return const CircularProgressIndicator();
                 },
               ),
             ],

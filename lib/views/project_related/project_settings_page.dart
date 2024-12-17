@@ -1,4 +1,4 @@
-import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '/game_objects/project.dart';
@@ -16,21 +16,22 @@ class _ProjectSettingsState extends State<ProjectSettingsPage> {
   @override
   Widget build(BuildContext context) {
     AppLocalizations appLocal = AppLocalizations.of(context)!;
-    FluentThemeData theme = FluentTheme.of(context);
+    ThemeData theme = Theme.of(context);
 
-    return ScaffoldPage(
-      content: SingleChildScrollView(
+    return Scaffold(
+      body: SingleChildScrollView(
         child: Container(
           margin: const EdgeInsets.all(30.0),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 appLocal.projectSettings,
-                style: theme.typography.title,
+                style: theme.textTheme.titleLarge,
               ),
-              Text(appLocal.projectName, style: theme.typography.bodyStrong),
+              Text(appLocal.projectName, style: theme.textTheme.bodyLarge),
               Text(widget.project.name),
-              Text(appLocal.toRename, style: theme.typography.caption),
+              Text(appLocal.toRename, style: theme.textTheme.bodySmall),
             ],
           ),
         ),

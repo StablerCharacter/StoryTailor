@@ -1,6 +1,7 @@
-import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:storytailor/db/pocketbase.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -10,7 +11,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginState extends State<LoginPage> {
-  final _supabase = Supabase.instance.client;
+  final _pb = PocketBaseClient.instance;
 
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -24,65 +25,59 @@ class _LoginState extends State<LoginPage> {
   }
 
   void login() {
-    _supabase.auth.signInWithPassword(
-      email: emailController.text,
-      password: passwordController.text,
-    );
+    _pb.collection("users").authWithPassword(
+          emailController.text,
+          passwordController.text,
+        );
     Navigator.pop(context);
   }
 
   void register() {
-    _supabase.auth.signUp(
-      email: emailController.text,
-      password: passwordController.text,
-    );
+    _pb.collection("users").create(body: <String, dynamic>{
+      "password": passwordController.text,
+      "passwordConfirm": passwordController.text,
+      "email": emailController.text,
+    });
     Navigator.pop(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    FluentThemeData theme = FluentTheme.of(context);
+    ThemeData theme = Theme.of(context);
     AppLocalizations appLocal = AppLocalizations.of(context)!;
 
-    return ScaffoldPage(
-      header: Container(
-        margin: const EdgeInsets.fromLTRB(30, 15, 30, 0),
-        child: PageHeader(
-          title: Text(appLocal.login),
-          leading: IconButton(
-            icon: const Icon(FluentIcons.back),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(appLocal.login),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ),
       ),
-      content: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Color(0x43434343),
-              Colors.transparent,
-            ],
-          ),
-        ),
+      body: Container(
         padding: const EdgeInsets.all(30),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(appLocal.login, style: theme.typography.title),
-            TextBox(
-              controller: emailController,
-              keyboardType: TextInputType.emailAddress,
-              placeholder: appLocal.email,
+            Text(appLocal.login, style: theme.textTheme.titleLarge),
+            SizedBox(
+              width: 750,
+              child: TextField(
+                controller: emailController,
+                keyboardType: TextInputType.emailAddress,
+                decoration: InputDecoration(labelText: appLocal.email),
+              ),
             ),
-            PasswordBox(
-              controller: passwordController,
-              revealMode: PasswordRevealMode.peekAlways,
-              placeholder: appLocal.password,
+            SizedBox(
+              width: 750,
+              child: TextField(
+                controller: passwordController,
+                obscureText: true,
+                decoration: InputDecoration(labelText: appLocal.password),
+              ),
             ),
             const SizedBox(height: 15),
             Row(
@@ -93,7 +88,7 @@ class _LoginState extends State<LoginPage> {
                   child: Text(appLocal.login),
                 ),
                 const SizedBox(width: 10),
-                Button(
+                OutlinedButton(
                   onPressed: register,
                   child: Text(appLocal.register),
                 ),
@@ -102,10 +97,15 @@ class _LoginState extends State<LoginPage> {
             Container(
               margin: const EdgeInsets.all(5.0),
               child: Text(appLocal.or,
-                  style: TextStyle(color: theme.inactiveColor)),
+                  style: TextStyle(color: theme.dividerColor)),
             ),
-            OutlinedButton(
-              onPressed: () => _supabase.auth.signInWithOAuth(Provider.google),
+            TextButton(
+              onPressed: () => _pb.collection("users").authWithOAuth2(
+                "google",
+                (url) async {
+                  await launchUrl(url);
+                },
+              ),
               child: Text(appLocal.continueGoogle),
             ),
           ],

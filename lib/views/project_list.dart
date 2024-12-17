@@ -1,19 +1,20 @@
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:fluent_ui/fluent_ui.dart';
 import 'package:intl/intl.dart';
+import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:storytailor/db/key_value_database.dart';
 import 'package:storytailor/game_objects/project.dart';
-import 'package:storytailor/views/project_related/export_to_zip.dart';
-import 'package:storytailor/views/project_related/project_view.dart';
-import 'package:storytailor/utils/dialog_util.dart';
 import 'package:storytailor/utils/size_unit_conversion.dart';
 import 'package:storytailor/utils/string_utility.dart';
 import 'package:storytailor/views/new_project_page.dart';
-import 'package:path/path.dart' as p;
+import 'package:storytailor/views/project_related/export_to_zip.dart';
+import 'package:storytailor/views/project_related/project_view.dart';
+
+import '../utils/dialog_util.dart';
 
 class ProjectList extends StatefulWidget {
   const ProjectList({super.key});
@@ -69,7 +70,7 @@ class _ProjectListState extends State<ProjectList> {
   void showExtraProjectOptions(BuildContext context, Directory dir) {
     AppLocalizations appLocal = AppLocalizations.of(context)!;
 
-    showBottomSheet(
+    showModalBottomSheet(
       context: context,
       builder: (context) {
         return Padding(
@@ -78,9 +79,9 @@ class _ProjectListState extends State<ProjectList> {
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                leading: const Icon(FluentIcons.rename),
+                leading: const Icon(Icons.edit),
                 title: Text(appLocal.renameProject),
-                onPressed: () {
+                onTap: () {
                   askString(
                     context,
                     appLocal.renameProject,
@@ -93,13 +94,17 @@ class _ProjectListState extends State<ProjectList> {
                     if (name == null) {
                       return;
                     } else if (name.isEmpty) {
-                      showSnackbar(
-                          context,
-                          InfoBar(
-                              title: Text(appLocal.projectNameCannotBeEmpty)));
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(appLocal.projectNameCannotBeEmpty),
+                        ),
+                      );
                     } else if (systemFriendlyFileName(name).isEmpty) {
-                      showSnackbar(context,
-                          InfoBar(title: Text(appLocal.invalidProjectName)));
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(appLocal.invalidProjectName),
+                        ),
+                      );
                     }
                     List<String> pathSections = p.split(dir.path);
                     String oldName = pathSections.removeLast();
@@ -116,9 +121,9 @@ class _ProjectListState extends State<ProjectList> {
                 },
               ),
               ListTile(
-                leading: const Icon(FluentIcons.share),
+                leading: const Icon(Icons.share),
                 title: Text(appLocal.exportProjectToZip),
-                onPressed: () {
+                onTap: () {
                   Navigator.pop(context);
                   showDialog(
                     context: context,
@@ -128,30 +133,28 @@ class _ProjectListState extends State<ProjectList> {
                         "${documentsDir!.path}/StoryTailor/project.zip",
                       );
                     },
-                    dismissWithEsc: false,
                   );
                 },
               ),
               ListTile(
-                leading: const Icon(FluentIcons.delete),
+                leading: const Icon(Icons.delete),
                 title: Text(appLocal.deleteProject),
-                onPressed: () {
+                onTap: () {
                   Navigator.pop(context);
                   showDialog(
                     context: context,
                     builder: (context) {
-                      return ContentDialog(
+                      return AlertDialog(
                         title: Text(appLocal.deleteProject),
                         content: Text(appLocal.projectDeletionConfirmation),
                         actions: [
-                          HyperlinkButton(
+                          TextButton(
                             child: Text(appLocal.delete),
                             onPressed: () {
                               dir.delete(recursive: true).then((_) {
-                                showSnackbar(
-                                  context,
-                                  InfoBar(
-                                    title: Text(appLocal.projectDeleted),
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(appLocal.projectDeleted),
                                   ),
                                 );
                                 setState(() {});
@@ -181,21 +184,22 @@ class _ProjectListState extends State<ProjectList> {
   @override
   Widget build(BuildContext context) {
     AppLocalizations appLocal = AppLocalizations.of(context)!;
-    FluentThemeData theme = FluentTheme.of(context);
+    ThemeData theme = Theme.of(context);
     DateFormat dateFormat =
         DateFormat.yMMMMEEEEd(Localizations.localeOf(context).languageCode);
 
-    return ScaffoldPage.scrollable(
+    return ListView(
       padding: const EdgeInsets.all(30),
       children: [
         Column(
           children: [
-            Text(appLocal.projects, style: theme.typography.titleLarge),
+            Text(appLocal.projects, style: theme.textTheme.titleLarge),
             Visibility(
               visible: kDebugMode,
               child: Text(
                 appLocal.developmentVersionWarning,
-                style: theme.typography.bodyStrong,
+                style: theme.textTheme.bodyMedium
+                    ?.copyWith(fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -207,14 +211,14 @@ class _ProjectListState extends State<ProjectList> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      FluentPageRoute(
+                      MaterialPageRoute(
                           builder: (context) => const NewProjectPage()),
                     );
                   },
                   child: Text(appLocal.newProjectBtn),
                 ),
                 const SizedBox(width: 25),
-                Button(
+                OutlinedButton(
                   onPressed: () {
                     setState(() {
                       projects = getProjectsList();
@@ -243,63 +247,58 @@ class _ProjectListState extends State<ProjectList> {
 
                         FileStat fileStat = dir.statSync();
 
-                        return Button(
+                        return ListTile(
                           onLongPress: () {
                             showExtraProjectOptions(context, dir);
                           },
-                          onPressed: () {
+                          onTap: () {
                             if (!dir.existsSync()) {
-                              displayInfoBar(context,
-                                  builder: (context, close) {
-                                return InfoBar(
-                                  title: Text(appLocal.projectDoesntExist),
-                                  content: Text(
-                                    appLocal.projectDoesntExistExplaination,
-                                    softWrap: true,
-                                  ),
-                                  action: IconButton(
-                                    icon: const Icon(FluentIcons.clear),
-                                    onPressed: close,
-                                  ),
-                                  severity: InfoBarSeverity.warning,
-                                );
-                              });
-                              setState(() {
-                                projects = getProjectsList();
-                              });
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog.adaptive(
+                                    title: Text(appLocal.projectDoesntExist),
+                                    content: Text(
+                                      appLocal.projectDoesntExistExplaination,
+                                      softWrap: true,
+                                    ),
+                                    actions: [
+                                      IconButton(
+                                        icon: const Icon(Icons.clear),
+                                        onPressed: () =>
+                                            Navigator.of(context).pop(),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+
                               return;
                             }
 
                             Navigator.push(
                               context,
-                              FluentPageRoute(
+                              MaterialPageRoute(
                                 builder: (context) => ProjectPage(
                                   project: Project.fromDir(dir),
                                 ),
                               ),
                             );
                           },
-                          child: Container(
-                            margin: const EdgeInsets.all(15),
-                            child: Column(
-                              children: [
-                                Text(
-                                  p.basename(dir.path),
-                                  style: theme.typography.bodyLarge,
-                                ),
-                                Text(
-                                  "${appLocal.lastModified(dateFormat.format(fileStat.changed))} | ${appLocal.fileSize(SizeUnitConversion.bytesToAppropriateUnits(getSize(dir)))}",
-                                  style: theme.typography.caption,
-                                ),
-                              ],
-                            ),
+                          title: Text(
+                            p.basename(dir.path),
+                            style: theme.textTheme.bodyLarge,
+                          ),
+                          subtitle: Text(
+                            "${appLocal.lastModified(dateFormat.format(fileStat.changed))} | ${appLocal.fileSize(SizeUnitConversion.bytesToAppropriateUnits(getSize(dir)))}",
+                            style: theme.textTheme.bodySmall,
                           ),
                         );
                       },
                     ),
                   );
                 } else {
-                  return const ProgressRing();
+                  return const CircularProgressIndicator();
                 }
               },
             ),

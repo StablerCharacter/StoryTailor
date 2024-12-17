@@ -1,8 +1,9 @@
 import 'dart:io';
 
-import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:path/path.dart' as p;
+import 'package:storytailor/components/button_with_icon.dart';
 
 class FileEditPage extends StatefulWidget {
   final File file;
@@ -25,42 +26,39 @@ class _FileEditState extends State<FileEditPage> {
 
   @override
   Widget build(BuildContext context) {
-    FluentThemeData theme = FluentTheme.of(context);
+    ThemeData theme = Theme.of(context);
 
-    return ScaffoldPage(
-      header: Padding(
-        padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-        child: PageHeader(
-          leading: IconButton(
-            icon: const Icon(FluentIcons.back),
-            onPressed: () => Navigator.pop(context),
-          ),
-          title: Text(
-            p.basename(widget.file.path),
-            style: theme.typography.bodyLarge,
-          ),
-          commandBar: CommandBar(
-            mainAxisAlignment: MainAxisAlignment.end,
-            primaryItems: [
-              CommandBarButton(
-                icon: const Icon(FluentIcons.save),
-                label: const Text("Save"),
-                onPressed: () {
-                  widget.file.writeAsString(textFieldControl.text).then(
-                        (value) => showSnackbar(
-                          context,
-                          const InfoBar(
-                            title: Text("File saved successfully."),
-                          ),
-                        ),
-                      );
-                },
-              )
-            ],
-          ),
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pop(context),
         ),
+        title: Text(
+          p.basename(widget.file.path),
+          style: theme.textTheme.bodyLarge,
+        ),
+        actions: [
+          ButtonWithIcon(
+            icon: const Icon(Icons.save),
+            child: const Text("Save"),
+            onPressed: () {
+              widget.file.writeAsString(textFieldControl.text).then(
+                (value) {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text("File saved successfully."),
+                      ),
+                    );
+                  }
+                },
+              );
+            },
+          )
+        ],
       ),
-      content: TextBox(
+      body: TextField(
         controller: textFieldControl,
         style: GoogleFonts.jetBrainsMono(),
         maxLines: null,

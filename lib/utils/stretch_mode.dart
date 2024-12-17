@@ -1,9 +1,9 @@
 import 'dart:math';
 
 import 'package:flame/components.dart';
-import 'package:fluent_ui/fluent_ui.dart';
-import 'package:storytailor/story_structure/chapter.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:storytailor/story_structure/chapter.dart';
 
 enum Stretch {
   noStretch("No Stretch"),
@@ -67,19 +67,29 @@ class StretchModeComboBox extends StatelessWidget {
   final Stretch value;
   final void Function(Stretch?)? onChange;
 
-  const StretchModeComboBox({super.key, this.value = Stretch.scaleToCover, this.onChange,});
+  const StretchModeComboBox({
+    super.key,
+    this.value = Stretch.scaleToCover,
+    this.onChange,
+  });
 
   @override
   Widget build(BuildContext context) {
     AppLocalizations appLocal = AppLocalizations.of(context)!;
 
-    return ComboBox(items: [
-      ComboBoxItem(value: Stretch.noStretch, child: Text(appLocal.noStretch)),
-      ComboBoxItem(value: Stretch.letterbox, child: Text(appLocal.letterbox)),
-      ComboBoxItem(value: Stretch.pillarbox, child: Text(appLocal.pillarbox)),
-      ComboBoxItem(value: Stretch.scaleToCover, child: Text(appLocal.scaleToCover)),
-      ComboBoxItem(value: Stretch.stretchToFit, child: Text(appLocal.stretchToFit)),
-    ], value: value, onChanged: onChange,);
+    return DropdownMenu<Stretch>(
+      dropdownMenuEntries: [
+        DropdownMenuEntry(value: Stretch.noStretch, label: appLocal.noStretch),
+        DropdownMenuEntry(value: Stretch.letterbox, label: appLocal.letterbox),
+        DropdownMenuEntry(value: Stretch.pillarbox, label: appLocal.pillarbox),
+        DropdownMenuEntry(
+            value: Stretch.scaleToCover, label: appLocal.scaleToCover),
+        DropdownMenuEntry(
+            value: Stretch.stretchToFit, label: appLocal.stretchToFit),
+      ],
+      enableFilter: false,
+      onSelected: onChange,
+      controller: TextEditingController(text: value.displayName),
+    );
   }
-
 }

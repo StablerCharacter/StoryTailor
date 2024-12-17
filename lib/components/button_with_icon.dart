@@ -1,4 +1,4 @@
-import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter/material.dart';
 
 class ButtonWithIcon extends StatelessWidget {
   final Widget icon;
@@ -13,7 +13,7 @@ class ButtonWithIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Button(
+    return OutlinedButton(
       onPressed: onPressed,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,

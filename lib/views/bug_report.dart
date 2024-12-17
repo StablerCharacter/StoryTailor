@@ -1,4 +1,4 @@
-import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -15,7 +15,7 @@ class BugReportPage extends StatefulWidget {
 class _BugReportPageState extends State<BugReportPage> {
   TextEditingController controller = TextEditingController();
   String get mailTemplate =>
-      "mailto:linesofcodes@proton.me?subject=[StoryTailor%20Bug%20Report]&body=Hello,%0AI%20have%20found%20a%20bug%20inside%20StoryTailor.%20Bug%20details:%0A${encodeForUrlParam(controller.text)}";
+      "mailto:linesofcodes@dailitation.xyz?subject=[StoryTailor%20Bug%20Report]&body=Hello,%0AI%20have%20found%20a%20bug%20inside%20StoryTailor.%20Bug%20details:%0A${encodeForUrlParam(controller.text)}";
 
   @override
   void dispose() {
@@ -25,29 +25,28 @@ class _BugReportPageState extends State<BugReportPage> {
 
   @override
   Widget build(BuildContext context) {
-    FluentThemeData theme = FluentTheme.of(context);
+    ThemeData theme = Theme.of(context);
     AppLocalizations appLocal = AppLocalizations.of(context)!;
 
-    return ScaffoldPage.scrollable(
-      padding: const EdgeInsets.fromLTRB(30, 5, 30, 5),
+    return Column(
       children: [
         Text(
           appLocal.bugReport,
-          style: theme.typography.title,
+          style: theme.textTheme.titleLarge,
           textAlign: TextAlign.center,
         ),
         Text(
           appLocal.bugDetails,
           textAlign: TextAlign.center,
         ),
-        TextBox(
+        TextField(
           controller: controller,
-          placeholder: appLocal.bugDetailsPlaceholder,
+          decoration: InputDecoration(hintText: appLocal.bugDetailsPlaceholder),
           minLines: 5,
           maxLines: 20,
         ),
         ButtonWithIcon(
-          icon: const Icon(FluentIcons.flag),
+          icon: const Icon(Icons.flag),
           onPressed: () {
             launchUrl(Uri.parse(mailTemplate));
           },

@@ -1,21 +1,21 @@
 import 'dart:io';
 
 import 'package:ffmpeg_helper/ffmpeg_helper.dart';
-import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:storytailor/db/pocketbase.dart';
+import 'package:storytailor/utils/screen_size_utility.dart';
 import 'package:storytailor/views/mobile_tutorial_page.dart';
 import 'package:storytailor/views/project_list.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:system_theme/system_theme.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:window_manager/window_manager.dart';
 
-import 'views/bug_report.dart';
 import 'views/settings_page.dart';
 
 void main() async {
@@ -35,11 +35,7 @@ void main() async {
 
   final prefs = await SharedPreferences.getInstance();
 
-  await Supabase.initialize(
-    url: "https://tdywftpmrgcepddovnic.supabase.co",
-    anonKey:
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRkeXdmdHBtcmdjZXBkZG92bmljIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODM1NTc4NjIsImV4cCI6MTk5OTEzMzg2Mn0.o83mfiCZjVTpnN7JM5uCCxj-Ungvg6HisrV2qY9nTj0",
-  );
+  PocketBaseClient.initialize();
 
   runApp(MyApp(prefs));
 }
@@ -49,39 +45,35 @@ class MyApp extends StatelessWidget {
 
   const MyApp(this.prefs, {super.key});
 
-  Typography? applyFont(Typography typography, Locale locale) {
+  TextTheme applyFont(TextTheme textTheme, Locale locale) {
     if (locale.languageCode == "th") {
-      return typography.apply(
+      return textTheme.apply(
           fontFamily: GoogleFonts.ibmPlexSansThai().fontFamily);
     }
-    return typography;
+    return textTheme;
   }
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    AccentColor accentColor = SystemTheme.accentColor.accent.toAccentColor();
+    Color accentColor = SystemTheme.accentColor.accent;
+    ThemeData lightThemeData = ThemeData.light();
+    ThemeData darkThemeData = ThemeData.dark();
 
     return ChangeNotifierProvider(
       create: (_) => ModelSettings(prefs),
       child: Consumer<ModelSettings>(
         builder: (context, ModelSettings themeNotifier, child) {
-          return FluentApp(
+          return MaterialApp(
             title: 'StoryTailor',
-            theme: FluentThemeData.light().copyWith(
-              accentColor: accentColor,
-              scaffoldBackgroundColor: const Color(0xFFFAFAFA),
-              typography: applyFont(
-                Typography.fromBrightness(brightness: Brightness.light),
-                themeNotifier.language,
-              ),
+            color: accentColor,
+            theme: lightThemeData.copyWith(
+              textTheme:
+                  applyFont(lightThemeData.textTheme, themeNotifier.language),
             ),
-            darkTheme: FluentThemeData.dark().copyWith(
-              accentColor: accentColor,
-              typography: applyFont(
-                Typography.fromBrightness(brightness: Brightness.dark),
-                themeNotifier.language,
-              ),
+            darkTheme: darkThemeData.copyWith(
+              textTheme:
+                  applyFont(darkThemeData.textTheme, themeNotifier.language),
             ),
             themeMode: themeNotifier.getThemeMode(),
             localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -118,71 +110,83 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    FluentThemeData theme = FluentTheme.of(context);
+    ThemeData theme = Theme.of(context);
     AppLocalizations appLocal = AppLocalizations.of(context)!;
-
-    return NavigationView(
-      appBar: NavigationAppBar(
-        leading: Container(
-          margin: const EdgeInsets.fromLTRB(10, 15, 2.5, 7.5),
-          child: const Image(
-            image: AssetImage('assets/icon.png'),
-          ),
-        ),
-        title: Container(
-            margin: const EdgeInsets.fromLTRB(0, 10, 30, 0),
-            child: Text(
-              "StoryTailor",
-              style: theme.typography.title,
-            )),
+    List<NavigationDestination> navDestinations = [
+      NavigationDestination(
+        icon: const Icon(Icons.folder),
+        label: appLocal.projects,
       ),
-      pane: NavigationPane(
-        displayMode: PaneDisplayMode.top,
-        items: [
-          PaneItem(
-            icon: const Icon(FluentIcons.fabric_folder),
-            title: Text(appLocal.projects, style: theme.typography.body),
-            body: const ProjectList(),
-          ),
-          PaneItem(
-            icon: const Icon(FluentIcons.documentation),
-            title: Text(appLocal.tutorials, style: theme.typography.body),
-            body: Platform.isAndroid || Platform.isIOS
-                ? MobileTutorialPage()
-                : Container(
-                    margin: const EdgeInsets.all(30),
-                    child: Column(
-                      children: [
-                        Text(appLocal.tutorials,
-                            style: theme.typography.titleLarge),
-                        const Gap(10),
-                        Button(
-                          onPressed: () {
-                            launchUrl(Uri.parse(
-                                "https://stablercharacter.github.io/StoryTailor/introduction.html"));
-                          },
-                          child: Text(appLocal.openTutorial),
-                        ),
-                      ],
-                    ),
+      NavigationDestination(
+        icon: const Icon(Icons.help),
+        label: appLocal.tutorials,
+      ),
+      NavigationDestination(
+        icon: const Icon(Icons.settings),
+        label: appLocal.preferences,
+      ),
+    ];
+    Widget body = [
+      const ProjectList(),
+      Platform.isAndroid || Platform.isIOS
+          ? MobileTutorialPage()
+          : Container(
+              margin: const EdgeInsets.all(30),
+              child: Column(
+                children: [
+                  Text(appLocal.tutorials, style: theme.textTheme.titleLarge),
+                  const Gap(10),
+                  FilledButton(
+                    onPressed: () {
+                      launchUrl(Uri.parse(
+                          "https://stablercharacter.github.io/StoryTailor/introduction.html"));
+                    },
+                    child: Text(appLocal.openTutorial),
                   ),
-          ),
-        ],
-        footerItems: [
-          PaneItem(
-            icon: const Icon(FluentIcons.bug),
-            body: const BugReportPage(),
-          ),
-          PaneItem(
-            icon: const Icon(FluentIcons.settings),
-            body: const SettingsPage(),
-          ),
-        ],
-        selected: selectedTab,
-        onChanged: (newValue) => setState(() {
+                ],
+              ),
+            ),
+      const SettingsPage()
+    ][selectedTab];
+
+    if (ScreenSizeUtility.isMediumScreen(context)) {
+      return Scaffold(
+        body: Row(
+          children: [
+            NavigationRail(
+              destinations: [
+                ...navDestinations.map(
+                  (dest) => NavigationRailDestination(
+                    icon: dest.icon,
+                    label: Text(dest.label),
+                  ),
+                ),
+              ],
+              labelType: NavigationRailLabelType.selected,
+              selectedIndex: selectedTab,
+              onDestinationSelected: (newValue) => setState(() {
+                selectedTab = newValue;
+              }),
+            ),
+            const VerticalDivider(
+              thickness: 1,
+              width: 1,
+            ),
+            Expanded(child: body),
+          ],
+        ),
+      );
+    }
+
+    return Scaffold(
+      bottomNavigationBar: NavigationBar(
+        onDestinationSelected: (newValue) => setState(() {
           selectedTab = newValue;
         }),
+        destinations: navDestinations,
+        selectedIndex: selectedTab,
       ),
+      body: body,
     );
   }
 }

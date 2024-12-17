@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:gap/gap.dart';
 import 'package:path/path.dart' as p;
 import 'package:storytailor/components/audio_asset_field.dart';
-import 'package:storytailor/components/button_with_icon.dart';
 import 'package:storytailor/components/image_asset_field.dart';
 import 'package:storytailor/game_objects/project.dart';
 import 'package:storytailor/utils/assets_utility.dart';
@@ -181,179 +181,155 @@ class CreditsConfigState extends State<CreditsConfigPage> {
   @override
   Widget build(BuildContext context) {
     AppLocalizations appLocal = AppLocalizations.of(context)!;
-    FluentThemeData theme = FluentTheme.of(context);
+    ThemeData theme = Theme.of(context);
 
-    return ScaffoldPage(
-      content: SingleChildScrollView(
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.add),
+        onPressed: () {
+          int sectionNumber = config.sections.length + 1;
+          config.sections
+              .add(CreditsSection("Section Name $sectionNumber", "Content"));
+          sectionNameControls
+              .add(TextEditingController(text: "Section Name $sectionNumber"));
+          creditsControls.add(TextEditingController(text: "Content"));
+          setState(() {});
+        },
+      ),
+      body: SingleChildScrollView(
         child: Container(
           margin: const EdgeInsets.all(30),
           child: Column(
             children: [
               Text(
                 appLocal.creditsStage,
-                style: theme.typography.title,
+                style: theme.textTheme.displaySmall,
               ),
               const Gap(15),
-              Expander(
-                header: Text(appLocal.stageEnvironment),
-                content: Wrap(
-                  spacing: 20,
-                  alignment: WrapAlignment.spaceEvenly,
-                  children: [
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          appLocal.stageBackground,
-                          style: theme.typography.bodyStrong,
-                        ),
-                        ImageAssetField(
-                          widget.project,
-                          initialValue: config.stageBackground.isNotEmpty
-                              ? getAssetFromRelativePath(
-                                  widget.project, config.stageBackground)
-                              : null,
-                          onAssetSelected: (file) {
-                            if (file == null) {
-                              config.stageBackground = "";
-                              return;
-                            }
+              Text(
+                appLocal.stageEnvironment,
+                style: theme.textTheme.titleLarge,
+              ),
+              Wrap(
+                spacing: 20,
+                alignment: WrapAlignment.spaceEvenly,
+                children: [
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        appLocal.stageBackground,
+                        style: theme.textTheme.bodyLarge,
+                      ),
+                      ImageAssetField(
+                        widget.project,
+                        initialValue: config.stageBackground.isNotEmpty
+                            ? getAssetFromRelativePath(
+                                widget.project, config.stageBackground)
+                            : null,
+                        onAssetSelected: (file) {
+                          if (file == null) {
+                            config.stageBackground = "";
+                            return;
+                          }
 
-                            config.stageBackground = getRelativePathFromAsset(
-                              widget.project,
-                              file.path,
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          appLocal.stretchMode,
-                          style: theme.typography.bodyStrong,
-                        ),
-                        StretchModeComboBox(
-                          value: config.backgroundStretch,
-                          onChange: (newValue) => config.backgroundStretch =
-                              newValue ?? Stretch.scaleToCover,
-                        ),
-                      ],
-                    ),
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          appLocal.stageBackgroundMusic,
-                          style: theme.typography.bodyStrong,
-                        ),
-                        AudioAssetField(
-                          widget.project,
-                          initialValue: config.stageBackgroundMusic.isNotEmpty
-                              ? getAssetFromRelativePath(
-                                  widget.project, config.stageBackgroundMusic)
-                              : null,
-                          onAssetSelected: (file) {
-                            if (file == null) {
-                              config.stageBackgroundMusic = "";
-                              return;
-                            }
+                          config.stageBackground = getRelativePathFromAsset(
+                            widget.project,
+                            file.path,
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        appLocal.stretchMode,
+                        style: theme.textTheme.bodyLarge,
+                      ),
+                      StretchModeComboBox(
+                        value: config.backgroundStretch,
+                        onChange: (newValue) => config.backgroundStretch =
+                            newValue ?? Stretch.scaleToCover,
+                      ),
+                    ],
+                  ),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        appLocal.stageBackgroundMusic,
+                        style: theme.textTheme.bodyLarge,
+                      ),
+                      AudioAssetField(
+                        widget.project,
+                        initialValue: config.stageBackgroundMusic.isNotEmpty
+                            ? getAssetFromRelativePath(
+                                widget.project, config.stageBackgroundMusic)
+                            : null,
+                        onAssetSelected: (file) {
+                          if (file == null) {
+                            config.stageBackgroundMusic = "";
+                            return;
+                          }
 
-                            config.stageBackgroundMusic =
-                                getRelativePathFromAsset(
-                              widget.project,
-                              file.path,
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                          config.stageBackgroundMusic =
+                              getRelativePathFromAsset(
+                            widget.project,
+                            file.path,
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ],
               ),
               const Gap(15),
-              ButtonWithIcon(
-                icon: const Icon(FluentIcons.add),
-                child: Text(appLocal.newCreditSection),
-                onPressed: () {
-                  int sectionNumber = config.sections.length + 1;
-                  config.sections.add(
-                      CreditsSection("Section Name $sectionNumber", "Content"));
-                  sectionNameControls.add(TextEditingController(
-                      text: "Section Name $sectionNumber"));
-                  creditsControls.add(TextEditingController(text: "Content"));
-                  setState(() {});
-                },
-              ),
-              ListView.builder(
+              ReorderableListView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: config.sections.length,
                 itemBuilder: (context, index) {
-                  return Container(
+                  return Slidable(
                     key: UniqueKey(),
-                    margin: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-                    child: Expander(
-                      header: TextBox(
+                    endActionPane: ActionPane(
+                      motion: DrawerMotion(),
+                      children: [
+                        SlidableAction(
+                          onPressed: (context) {
+                            config.sections.removeAt(index);
+                            sectionNameControls.removeAt(index);
+                            creditsControls.removeAt(index);
+                            setState(() {});
+                          },
+                          icon: Icons.delete,
+                          label: appLocal.delete,
+                        ),
+                      ],
+                    ),
+                    child: ListTile(
+                      title: TextField(
                         controller: sectionNameControls[index],
-                        placeholder: appLocal.creditSectionNamePlaceholder,
+                        decoration: InputDecoration(
+                          hintText: appLocal.creditSectionNamePlaceholder,
+                        ),
                       ),
-                      content: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          TextBox(
-                            maxLines: null,
-                            controller: creditsControls[index],
-                            placeholder:
-                                appLocal.creditSectionContentPlaceholder,
-                          ),
-                          const Gap(10),
-                          CommandBar(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            compactBreakpointWidth: 600,
-                            overflowBehavior: CommandBarOverflowBehavior.wrap,
-                            primaryItems: [
-                              CommandBarButton(
-                                onPressed: () {
-                                  config.sections.removeAt(index);
-                                  sectionNameControls.removeAt(index);
-                                  creditsControls.removeAt(index);
-                                  setState(() {});
-                                },
-                                icon: const Icon(FluentIcons.delete),
-                                label: Text(appLocal.delete),
-                              ),
-                              CommandBarButton(
-                                icon: const Icon(FluentIcons.up),
-                                onPressed: () {
-                                  int newIndex = index - 1;
-                                  if (newIndex < 0) {
-                                    return;
-                                  }
-                                  cloneAndMoveCreditsSection(index, newIndex);
-                                  setState(() {});
-                                },
-                                label: Text(appLocal.moveUp),
-                              ),
-                              CommandBarButton(
-                                icon: const Icon(FluentIcons.down),
-                                onPressed: () {
-                                  int newIndex = index + 1;
-                                  if (newIndex >= config.sections.length) {
-                                    return;
-                                  }
-                                  cloneAndMoveCreditsSection(index, newIndex);
-                                  setState(() {});
-                                },
-                                label: Text(appLocal.moveDown),
-                              ),
-                            ],
-                          ),
-                        ],
+                      subtitle: TextField(
+                        maxLines: null,
+                        controller: creditsControls[index],
+                        decoration: InputDecoration(
+                            hintText: appLocal.creditSectionContentPlaceholder),
                       ),
                     ),
                   );
+                },
+                onReorder: (int oldIndex, int newIndex) {
+                  if (oldIndex < newIndex) {
+                    newIndex -= 1;
+                  }
+                  cloneAndMoveCreditsSection(oldIndex, newIndex);
+                  setState(() {});
                 },
               ),
             ],

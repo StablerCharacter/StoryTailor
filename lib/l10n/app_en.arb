@@ -118,7 +118,7 @@
     "description": "The About page title."
   },
   "appSlogan": "Create your own stories.",
-  "aboutApp": "StoryTailor is an application to create visual novel games easily on your phone. Which it has never been this easy to create a visual novel game on your smartphone.\n\nMade with ❤️ in Flutter.\nMade by Satakun Utama (lines-of-codes). Copyright (C) 2023, All rights reserved.",
+  "aboutApp": "StoryTailor is an application to create visual novel games easily on your phone. Which it has never been this easy to create a visual novel game on your smartphone.\n\nMade with ❤️ in Flutter.\nMade by Satakun Utama (lines-of-codes). Licensed under GNU GPLv3.",
   "@aboutApp": {
     "description": "About the app."
   },
@@ -159,6 +159,8 @@
   "assetReimported": "Asset(s) reimported.",
   "revert": "Revert",
   "audioSettings": "Audio Settings",
+  "directory": "Directory",
+  "textFile": "Text File",
 
   "advancedManagement": "Advanced Management",
   "@advancedManagement": {
@@ -324,5 +326,7 @@
 
   "devtools": "Developer tools",
   "exitGame": "Exit Game",
-  "closeOverlay": "Close Overlay"
+  "closeOverlay": "Close Overlay",
+
+  "closeProject": "Close Project"
 }

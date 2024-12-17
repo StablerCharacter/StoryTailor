@@ -1,4 +1,4 @@
-import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AboutPage extends StatelessWidget {
@@ -6,23 +6,20 @@ class AboutPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    FluentThemeData theme = FluentTheme.of(context);
+    ThemeData theme = Theme.of(context);
     AppLocalizations appLocal = AppLocalizations.of(context)!;
 
-    return ScaffoldPage(
-      header: Container(
-        margin: const EdgeInsets.fromLTRB(30, 15, 30, 0),
-        child: PageHeader(
-          title: Text(appLocal.about),
-          leading: IconButton(
-            icon: const Icon(FluentIcons.back),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(appLocal.about),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ),
       ),
-      content: Container(
+      body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
@@ -37,8 +34,8 @@ class AboutPage extends StatelessWidget {
         child: Center(
           child: Column(
             children: [
-              Text("StoryTailor", style: theme.typography.titleLarge),
-              Text(appLocal.appSlogan, style: theme.typography.subtitle),
+              Text("StoryTailor", style: theme.textTheme.titleLarge),
+              Text(appLocal.appSlogan, style: theme.textTheme.titleMedium),
               Text(appLocal.aboutApp, softWrap: true),
             ],
           ),

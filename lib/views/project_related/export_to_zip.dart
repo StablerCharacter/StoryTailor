@@ -1,10 +1,10 @@
 import 'dart:io';
 
-import 'package:path/path.dart' as p;
 import 'package:archive/archive_io.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:path/path.dart' as p;
 import 'package:share_plus/share_plus.dart';
 
 class ExportProjectToZip extends StatefulWidget {
@@ -50,10 +50,9 @@ class _ExportProjectToZipState extends State<ExportProjectToZip> {
 
           if (!context.mounted) return;
 
-          showSnackbar(
-            context,
-            InfoBar(
-              title: Text(appLocal.savedTo(path ?? widget.fileName)),
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(appLocal.savedTo(path ?? widget.fileName)),
             ),
           );
         });
@@ -65,9 +64,12 @@ class _ExportProjectToZipState extends State<ExportProjectToZip> {
   Widget build(BuildContext context) {
     AppLocalizations appLocal = AppLocalizations.of(context)!;
 
-    return ContentDialog(
+    return AlertDialog(
       title: Text(appLocal.exportingProject),
-      content: Container(alignment: Alignment.center, child: ProgressBar(value: compressProgress * 100),),
+      content: Container(
+        alignment: Alignment.center,
+        child: LinearProgressIndicator(value: compressProgress * 100),
+      ),
     );
   }
 }

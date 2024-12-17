@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:fluent_ui/fluent_ui.dart' show FluentIcons;
 import 'package:flutter/material.dart';
 import 'package:flutter_highlight/flutter_highlight.dart';
 import 'package:flutter_highlight/themes/androidstudio.dart';
@@ -50,7 +49,7 @@ class _CodeViewState extends State<CodeView> {
         title: Text(p.basename(widget.file.path)),
       ),
       floatingActionButton: FloatingActionButton(
-        child: const Icon(FluentIcons.edit),
+        child: const Icon(Icons.edit),
         onPressed: () {
           Navigator.push(
             context,

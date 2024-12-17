@@ -2,10 +2,10 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
 
-import 'package:path/path.dart' as p;
 import 'package:flame/components.dart';
 import 'package:flame_audio/flame_audio.dart';
-import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter/material.dart';
+import 'package:path/path.dart' as p;
 import 'package:storytailor/game_objects/game_object.dart';
 import 'package:storytailor/game_objects/project.dart';
 import 'package:storytailor/utils/assets_utility.dart';

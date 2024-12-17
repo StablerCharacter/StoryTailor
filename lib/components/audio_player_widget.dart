@@ -1,6 +1,6 @@
 import 'package:flame_audio/flame_audio.dart';
-import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:storytailor/utils/time_utility.dart';
 
@@ -17,7 +17,7 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
   AudioPlayer audioPlayer = AudioPlayer();
   Duration audioPlayerPosition = const Duration();
   Future<Duration?>? audioSourceDuration;
-  IconData playPauseButtonIcon = FluentIcons.play;
+  IconData playPauseButtonIcon = Icons.play_arrow;
 
   @override
   void initState() {
@@ -53,16 +53,16 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
           onPressed: () {
             switch (audioPlayer.state) {
               case PlayerState.playing:
-                playPauseButtonIcon = FluentIcons.play;
+                playPauseButtonIcon = Icons.play_arrow;
                 audioPlayer.pause();
                 break;
               case PlayerState.paused:
-                playPauseButtonIcon = FluentIcons.pause;
+                playPauseButtonIcon = Icons.pause;
                 audioPlayer.resume();
                 break;
               case PlayerState.stopped:
               case PlayerState.completed:
-                playPauseButtonIcon = FluentIcons.pause;
+                playPauseButtonIcon = Icons.pause;
                 audioPlayer.play(widget.audioSource);
                 break;
               case PlayerState.disposed:
@@ -99,12 +99,12 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
                     },
                     onChangeStart: (startValue) {
                       audioPlayer.pause();
-                      playPauseButtonIcon = FluentIcons.play;
+                      playPauseButtonIcon = Icons.play_arrow;
                       setState(() {});
                     },
                     onChangeEnd: (newValue) {
                       audioPlayer.resume();
-                      playPauseButtonIcon = FluentIcons.pause;
+                      playPauseButtonIcon = Icons.pause;
                       setState(() {});
                     },
                   ),
@@ -115,7 +115,7 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
               );
             }
 
-            return const ProgressRing();
+            return const CircularProgressIndicator();
           },
         ),
       ],

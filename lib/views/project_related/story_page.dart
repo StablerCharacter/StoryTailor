@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter/material.dart' hide Dialog;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
@@ -79,7 +79,7 @@ class _StoryPageState extends State<StoryPage> {
   }
 
   Widget getCurrentObjectList(BuildContext context) {
-    FluentThemeData theme = FluentTheme.of(context);
+    ThemeData theme = Theme.of(context);
     AppLocalizations appLocal = AppLocalizations.of(context)!;
 
     switch (currentlyViewingObject) {
@@ -99,20 +99,20 @@ class _StoryPageState extends State<StoryPage> {
                 children: [
                   SlidableAction(
                     backgroundColor: theme.cardColor,
-                    foregroundColor: theme.typography.body!.color,
+                    foregroundColor: theme.textTheme.bodyMedium!.color,
                     onPressed: (context) {
                       story.chapters[index].chaptersFile!.deleteSync();
                       story.chapters.removeAt(index);
                       setState(() {});
                     },
                     borderRadius: BorderRadius.circular(5),
-                    icon: FluentIcons.delete,
+                    icon: Icons.delete,
                   ),
                 ],
               ),
               child: ListTile(
                 title: Text(story.chapters[index].name),
-                onPressed: () {
+                onTap: () {
                   setState(() {
                     selectedChapterIndex = index;
                     story.chapters[index].loadFromFile();
@@ -131,13 +131,14 @@ class _StoryPageState extends State<StoryPage> {
           margin: const EdgeInsets.all(15),
           child: Column(
             children: [
-              InfoLabel(
-                label: appLocal.chapterName,
-                labelStyle: theme.typography.bodyStrong,
+              Text(
+                appLocal.chapterName,
+                style: theme.textTheme.bodyLarge,
               ),
-              TextBox(
+              TextField(
                 controller: TextEditingController(
                     text: current.newName ?? current.name),
+                decoration: InputDecoration(border: OutlineInputBorder()),
                 onChanged: (newValue) => current.newName = newValue,
               ),
               const SizedBox(height: 15),
@@ -155,19 +156,20 @@ class _StoryPageState extends State<StoryPage> {
                             children: [
                               SlidableAction(
                                 backgroundColor: theme.cardColor,
-                                foregroundColor: theme.typography.body!.color,
+                                foregroundColor:
+                                    theme.textTheme.bodyMedium!.color,
                                 onPressed: (context) {
                                   current.branches?.remove(branchNames[index]);
                                   setState(() {});
                                 },
                                 borderRadius: BorderRadius.circular(5),
-                                icon: FluentIcons.delete,
+                                icon: Icons.delete,
                               ),
                             ],
                           ),
                     child: ListTile(
                       title: Text(branchNames[index]),
-                      onPressed: () {
+                      onTap: () {
                         setState(() {
                           selectedBranch = branchNames[index];
                           currentlyViewingObject = StoryObjects.branch;
@@ -198,19 +200,19 @@ class _StoryPageState extends State<StoryPage> {
                   children: [
                     SlidableAction(
                       backgroundColor: theme.cardColor,
-                      foregroundColor: theme.typography.body!.color,
+                      foregroundColor: theme.textTheme.bodyMedium!.color,
                       borderRadius: BorderRadius.circular(5),
                       onPressed: (context) {
                         setState(() {
                           current.dialogs.removeAt(index);
                         });
                       },
-                      icon: FluentIcons.delete,
+                      icon: Icons.delete,
                     ),
                   ],
                 ),
                 child: ListTile(
-                  onPressed: () {
+                  onTap: () {
                     setState(() {
                       selectedDialogIndex = index;
                       currentlyViewingObject = StoryObjects.dialog;
@@ -230,13 +232,16 @@ class _StoryPageState extends State<StoryPage> {
             margin: const EdgeInsets.all(15),
             child: Column(
               children: [
-                InfoLabel(
-                  label: appLocal.dialogContent,
-                  labelStyle: theme.typography.bodyStrong,
+                Text(
+                  appLocal.dialogContent,
+                  style: theme.textTheme.bodyLarge,
                 ),
-                TextBox(
+                TextField(
                   controller: TextEditingController(text: current.text),
-                  placeholder: appLocal.dialogContentPlaceholder,
+                  decoration: InputDecoration(
+                    hintText: appLocal.dialogContentPlaceholder,
+                    border: OutlineInputBorder(),
+                  ),
                   onChanged: (newValue) => current.text = newValue,
                   maxLines: null,
                 )
@@ -273,14 +278,15 @@ class _StoryPageState extends State<StoryPage> {
       builder: (context) {
         switch (currentlyViewingObject) {
           case StoryObjects.storyManager:
-            return ContentDialog(
+            return AlertDialog(
               title: Text(appLocal.newChapter),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  InfoLabel(label: appLocal.chapterName),
-                  TextBox(
-                    placeholder: appLocal.chapterNamePlaceholder,
+                  Text(appLocal.chapterName),
+                  TextField(
+                    decoration: InputDecoration(
+                        hintText: appLocal.chapterNamePlaceholder),
                     onChanged: (newValue) => name = newValue,
                   ),
                 ],
@@ -299,20 +305,21 @@ class _StoryPageState extends State<StoryPage> {
                         Navigator.pop(context);
                       });
                     }),
-                HyperlinkButton(
+                TextButton(
                     child: Text(appLocal.cancel),
                     onPressed: () => Navigator.pop(context)),
               ],
             );
           case StoryObjects.chapter:
-            return ContentDialog(
+            return AlertDialog(
               title: Text(appLocal.newBranch),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  InfoLabel(label: appLocal.branchName),
-                  TextBox(
-                    placeholder: appLocal.branchNamePlaceholder,
+                  Text(appLocal.branchName),
+                  TextField(
+                    decoration: InputDecoration(
+                        hintText: appLocal.branchNamePlaceholder),
                     onChanged: (newValue) => name = newValue,
                   ),
                 ],
@@ -329,20 +336,21 @@ class _StoryPageState extends State<StoryPage> {
                         Navigator.pop(context);
                       });
                     }),
-                HyperlinkButton(
+                TextButton(
                     child: Text(appLocal.cancel),
                     onPressed: () => Navigator.pop(context)),
               ],
             );
           case StoryObjects.branch:
-            return ContentDialog(
+            return AlertDialog(
               title: Text(appLocal.newDialog),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  InfoLabel(label: appLocal.dialogContent),
-                  TextBox(
-                    placeholder: appLocal.dialogContentPlaceholder,
+                  Text(appLocal.dialogContent),
+                  TextField(
+                    decoration: InputDecoration(
+                        hintText: appLocal.dialogContentPlaceholder),
                     onChanged: (newValue) => name = newValue,
                   ),
                 ],
@@ -358,13 +366,14 @@ class _StoryPageState extends State<StoryPage> {
                         Navigator.pop(context);
                       });
                     }),
-                HyperlinkButton(
-                    child: Text(appLocal.cancel),
-                    onPressed: () => Navigator.pop(context)),
+                TextButton(
+                  child: Text(appLocal.cancel),
+                  onPressed: () => Navigator.pop(context),
+                ),
               ],
             );
           case StoryObjects.dialog:
-            return const ContentDialog();
+            return const AlertDialog();
         }
       },
     );
@@ -372,45 +381,38 @@ class _StoryPageState extends State<StoryPage> {
 
   @override
   Widget build(BuildContext context) {
-    FluentThemeData theme = FluentTheme.of(context);
+    ThemeData theme = Theme.of(context);
     AppLocalizations appLocal = AppLocalizations.of(context)!;
 
-    return ScaffoldPage(
-      content: SingleChildScrollView(
+    return Scaffold(
+      floatingActionButton: currentlyViewingObject == StoryObjects.dialog
+          ? null
+          : FloatingActionButton(
+              child: const Icon(Icons.add), onPressed: () => addNew(context)),
+      body: SingleChildScrollView(
         child: Container(
           margin: const EdgeInsets.fromLTRB(30, 0, 30, 30),
           child: Column(
             children: [
-              Text(appLocal.story, style: theme.typography.titleLarge),
+              Text(appLocal.story, style: theme.textTheme.titleLarge),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
-                    children: [
-                      currentlyViewingObject == StoryObjects.storyManager
-                          ? Container()
-                          : IconButton(
-                              icon: const Icon(
-                                FluentIcons.up,
-                                size: 22,
-                              ),
-                              onPressed: () => setState(() {
-                                goUp();
-                              }),
-                            ),
-                      currentlyViewingObject == StoryObjects.dialog
-                          ? Container()
-                          : IconButton(
-                              icon: const Icon(
-                                FluentIcons.add,
-                                size: 22,
-                              ),
-                              onPressed: () => addNew(context),
-                            ),
-                    ],
+                  currentlyViewingObject == StoryObjects.storyManager
+                      ? Container()
+                      : IconButton(
+                          icon: const Icon(
+                            Icons.arrow_upward,
+                            size: 22,
+                          ),
+                          onPressed: () => setState(() {
+                            goUp();
+                          }),
+                        ),
+                  Text(
+                    getViewingName(appLocal),
+                    style: theme.textTheme.bodySmall,
                   ),
-                  Text(getViewingName(appLocal),
-                      style: theme.typography.subtitle),
                 ],
               ),
               Text(
@@ -418,15 +420,14 @@ class _StoryPageState extends State<StoryPage> {
                 textAlign: TextAlign.center,
               ),
               FutureBuilder(
-                future: loadingChapters,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    return getCurrentObjectList(context);
-                  }
+                  future: loadingChapters,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      return getCurrentObjectList(context);
+                    }
 
-                  return const ProgressRing();
-                }
-              ),
+                    return const CircularProgressIndicator();
+                  }),
             ],
           ),
         ),

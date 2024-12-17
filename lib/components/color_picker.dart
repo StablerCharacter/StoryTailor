@@ -1,4 +1,4 @@
-import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter/material.dart';
 
 Future<Color?> showColorPicker(BuildContext context) {
   return showDialog<Color>(
@@ -6,11 +6,11 @@ Future<Color?> showColorPicker(BuildContext context) {
     builder: (context) {
       ColorPickerController controller = ColorPickerController();
 
-      return ContentDialog(
+      return AlertDialog(
         title: const Text("Pick a color"),
         content: ColorPicker(controller: controller),
         actions: [
-          Button(
+          OutlinedButton(
             child: const Text("Close"),
             onPressed: () {
               Navigator.pop(context, controller.color);
@@ -60,9 +60,9 @@ class _ColorPickerState extends State<ColorPicker> {
 
   void updateRGB() {
     Color color = widget.controller.color;
-    rgbControllers[0].text = color.red.toString();
-    rgbControllers[1].text = color.green.toString();
-    rgbControllers[2].text = color.blue.toString();
+    rgbControllers[0].text = color.r.toString();
+    rgbControllers[1].text = color.g.toString();
+    rgbControllers[2].text = color.b.toString();
   }
 
   void updateHSV() {
@@ -79,14 +79,19 @@ class _ColorPickerState extends State<ColorPicker> {
       hsvColor = hsvColor.withHue(255);
     }
 
-    return TabView(
-      currentIndex: tabIndex,
-      onChanged: (newValue) => setState(() => tabIndex = newValue),
-      closeButtonVisibility: CloseButtonVisibilityMode.never,
-      tabs: [
-        Tab(
-          text: const Text("RGB"),
-          body: Column(
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: TabBar(tabs: [
+          Tab(
+            text: "RGB",
+          ),
+          Tab(
+            text: "HSV",
+          )
+        ]),
+        body: TabBarView(children: [
+          Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Row(
@@ -106,13 +111,13 @@ class _ColorPickerState extends State<ColorPicker> {
                   Flexible(
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(10, 7, 10, 7),
-                      child: InfoLabel(label: "R"),
+                      child: Text("R"),
                     ),
                   ),
                   Expanded(
                     flex: 2,
                     child: Slider(
-                      value: widget.controller.color.red.toDouble(),
+                      value: widget.controller.color.r.toDouble(),
                       max: 255,
                       onChanged: (value) => setState(() {
                         widget.controller.color =
@@ -126,7 +131,7 @@ class _ColorPickerState extends State<ColorPicker> {
                     flex: 1,
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(25, 7, 10, 7),
-                      child: TextBox(
+                      child: TextField(
                         controller: rgbControllers[0],
                         keyboardType: const TextInputType.numberWithOptions(),
                         onChanged: (newValue) => setState(() {
@@ -149,13 +154,13 @@ class _ColorPickerState extends State<ColorPicker> {
                   Flexible(
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(10, 7, 10, 7),
-                      child: InfoLabel(label: "G"),
+                      child: Text("G"),
                     ),
                   ),
                   Expanded(
                     flex: 2,
                     child: Slider(
-                      value: widget.controller.color.green.toDouble(),
+                      value: widget.controller.color.g.toDouble(),
                       max: 255,
                       onChanged: (value) => setState(() {
                         widget.controller.color =
@@ -169,7 +174,7 @@ class _ColorPickerState extends State<ColorPicker> {
                     flex: 1,
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(25, 7, 10, 7),
-                      child: TextBox(
+                      child: TextField(
                         controller: rgbControllers[1],
                         keyboardType: const TextInputType.numberWithOptions(),
                         onChanged: (newValue) => setState(() {
@@ -192,13 +197,13 @@ class _ColorPickerState extends State<ColorPicker> {
                   Flexible(
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(10, 7, 10, 7),
-                      child: InfoLabel(label: "B"),
+                      child: Text("B"),
                     ),
                   ),
                   Expanded(
                     flex: 2,
                     child: Slider(
-                      value: widget.controller.color.blue.toDouble(),
+                      value: widget.controller.color.b.toDouble(),
                       max: 255,
                       onChanged: (value) => setState(
                         () {
@@ -214,7 +219,7 @@ class _ColorPickerState extends State<ColorPicker> {
                     flex: 1,
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(25, 7, 10, 7),
-                      child: TextBox(
+                      child: TextField(
                         controller: rgbControllers[2],
                         keyboardType: const TextInputType.numberWithOptions(),
                         onChanged: (newValue) => setState(() {
@@ -233,10 +238,7 @@ class _ColorPickerState extends State<ColorPicker> {
               ),
             ],
           ),
-        ),
-        Tab(
-          text: const Text("HSV"),
-          body: Column(
+          Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Row(
@@ -256,7 +258,7 @@ class _ColorPickerState extends State<ColorPicker> {
                   Flexible(
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(10, 7, 10, 7),
-                      child: InfoLabel(label: "Hue"),
+                      child: Text("Hue"),
                     ),
                   ),
                   Expanded(
@@ -278,7 +280,7 @@ class _ColorPickerState extends State<ColorPicker> {
                     flex: 1,
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(15, 7, 10, 7),
-                      child: TextBox(
+                      child: TextField(
                         controller: hsvControllers[0],
                         keyboardType: const TextInputType.numberWithOptions(),
                         onChanged: (newValue) => setState(() {
@@ -301,7 +303,7 @@ class _ColorPickerState extends State<ColorPicker> {
                   Flexible(
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(10, 7, 10, 7),
-                      child: InfoLabel(label: "Sat"),
+                      child: Text("Sat"),
                     ),
                   ),
                   Expanded(
@@ -323,7 +325,7 @@ class _ColorPickerState extends State<ColorPicker> {
                     flex: 1,
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(15, 7, 10, 7),
-                      child: TextBox(
+                      child: TextField(
                         controller: hsvControllers[1],
                         keyboardType: const TextInputType.numberWithOptions(),
                         onChanged: (newValue) => setState(() {
@@ -346,7 +348,7 @@ class _ColorPickerState extends State<ColorPicker> {
                   Flexible(
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(10, 7, 10, 7),
-                      child: InfoLabel(label: "Val"),
+                      child: Text("Val"),
                     ),
                   ),
                   Expanded(
@@ -368,7 +370,7 @@ class _ColorPickerState extends State<ColorPicker> {
                     flex: 1,
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(15, 7, 10, 7),
-                      child: TextBox(
+                      child: TextField(
                         controller: hsvControllers[2],
                         keyboardType: const TextInputType.numberWithOptions(),
                         onChanged: (newValue) => setState(() {
@@ -386,9 +388,9 @@ class _ColorPickerState extends State<ColorPicker> {
                 ],
               ),
             ],
-          ),
-        ),
-      ],
+          )
+        ]),
+      ),
     );
   }
 }

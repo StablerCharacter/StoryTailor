@@ -1,4 +1,4 @@
-import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class StoryConfigPage extends StatefulWidget {
@@ -14,15 +14,15 @@ class _StoryConfigState extends State<StoryConfigPage> {
   @override
   Widget build(BuildContext context) {
     AppLocalizations appLocal = AppLocalizations.of(context)!;
-    FluentThemeData theme = FluentTheme.of(context);
+    ThemeData theme = Theme.of(context);
 
-    return ScaffoldPage(
-      content: SingleChildScrollView(
+    return Scaffold(
+      body: SingleChildScrollView(
         child: Container(
           margin: const EdgeInsets.all(30),
           child: Column(
             children: [
-              Text(appLocal.storyStage, style: theme.typography.title),
+              Text(appLocal.storyStage, style: theme.textTheme.titleLarge),
             ],
           ),
         ),
