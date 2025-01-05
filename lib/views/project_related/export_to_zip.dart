@@ -24,7 +24,7 @@ class _ExportProjectToZipState extends State<ExportProjectToZip> {
   void initState() {
     super.initState();
 
-    ZipFileEncoder().zipDirectoryAsync(
+    ZipFileEncoder().zipDirectory(
       widget.directory,
       filename: widget.fileName,
       onProgress: (progress) {
