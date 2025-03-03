@@ -1,19 +1,19 @@
 import 'dart:io';
 
+import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:fluent_ui/fluent_ui.dart';
 import 'package:intl/intl.dart';
+import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:storytailor/db/key_value_database.dart';
 import 'package:storytailor/game_objects/project.dart';
-import 'package:storytailor/views/project_related/export_to_zip.dart';
-import 'package:storytailor/views/project_related/project_view.dart';
 import 'package:storytailor/utils/dialog_util.dart';
 import 'package:storytailor/utils/size_unit_conversion.dart';
 import 'package:storytailor/utils/string_utility.dart';
 import 'package:storytailor/views/new_project_page.dart';
-import 'package:path/path.dart' as p;
+import 'package:storytailor/views/project_related/export_to_zip.dart';
+import 'package:storytailor/views/project_related/project_view.dart';
 
 class ProjectList extends StatefulWidget {
   const ProjectList({super.key});
@@ -26,6 +26,7 @@ class _ProjectListState extends State<ProjectList> {
   late Directory projectsDir;
   Directory? documentsDir;
   Future<List<Directory>>? projects;
+  List<FlyoutController> projectOptionsController = [];
 
   @override
   void initState() {
@@ -66,113 +67,112 @@ class _ProjectListState extends State<ProjectList> {
     return totalSize;
   }
 
-  void showExtraProjectOptions(BuildContext context, Directory dir) {
+  void showExtraProjectOptions(BuildContext context, Directory dir, int index) {
     AppLocalizations appLocal = AppLocalizations.of(context)!;
 
-    showBottomSheet(
-      context: context,
+    projectOptionsController[index].showFlyout(
       builder: (context) {
-        return Padding(
-          padding: const EdgeInsets.all(10),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                leading: const Icon(FluentIcons.rename),
-                title: Text(appLocal.renameProject),
-                onPressed: () {
-                  askString(
-                    context,
-                    appLocal.renameProject,
-                    null,
-                    appLocal.projectName,
-                    "",
-                    appLocal.renameFile,
-                    appLocal.cancel,
-                  ).then((name) {
-                    if (name == null) {
-                      return;
-                    } else if (name.isEmpty) {
-                      showSnackbar(
-                          context,
-                          InfoBar(
-                              title: Text(appLocal.projectNameCannotBeEmpty)));
-                    } else if (systemFriendlyFileName(name).isEmpty) {
-                      showSnackbar(context,
-                          InfoBar(title: Text(appLocal.invalidProjectName)));
-                    }
-                    List<String> pathSections = p.split(dir.path);
-                    String oldName = pathSections.removeLast();
-                    Directory newDir = dir.renameSync(p.join(
-                        pathSections.join(p.separator),
-                        systemFriendlyFileName(name)));
-                    KeyValueDatabase project = KeyValueDatabase.loadFromFile(
-                        File(p.join(newDir.path, "$oldName.json")));
-                    project.data["name"] = name;
-                    project.saveToFile().then((file) => file
-                        .rename(p.join(newDir.path, "$name.json"))
-                        .then((value) => setState(() {})));
-                  });
-                },
-              ),
-              ListTile(
-                leading: const Icon(FluentIcons.share),
-                title: Text(appLocal.exportProjectToZip),
-                onPressed: () {
-                  Navigator.pop(context);
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      return ExportProjectToZip(
-                        dir,
-                        "${documentsDir!.path}/StoryTailor/project.zip",
-                      );
-                    },
-                    dismissWithEsc: false,
-                  );
-                },
-              ),
-              ListTile(
-                leading: const Icon(FluentIcons.delete),
-                title: Text(appLocal.deleteProject),
-                onPressed: () {
-                  Navigator.pop(context);
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      return ContentDialog(
-                        title: Text(appLocal.deleteProject),
-                        content: Text(appLocal.projectDeletionConfirmation),
-                        actions: [
-                          HyperlinkButton(
-                            child: Text(appLocal.delete),
-                            onPressed: () {
-                              dir.delete(recursive: true).then((_) {
-                                showSnackbar(
-                                  context,
-                                  InfoBar(
-                                    title: Text(appLocal.projectDeleted),
-                                  ),
-                                );
-                                setState(() {});
-                              });
-                              Navigator.pop(context);
-                            },
-                          ),
-                          FilledButton(
-                            child: Text(appLocal.cancel),
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                },
-              ),
-            ],
-          ),
+        return MenuFlyout(
+          items: [
+            MenuFlyoutItem(
+              leading: const Icon(FluentIcons.rename),
+              text: Text(appLocal.renameProject),
+              onPressed: () {
+                askString(
+                  context,
+                  appLocal.renameProject,
+                  null,
+                  appLocal.projectName,
+                  "",
+                  appLocal.renameFile,
+                  appLocal.cancel,
+                ).then((name) {
+                  if (name == null) {
+                    return;
+                  } else if (name.isEmpty) {
+                    displayInfoBar(
+                      context,
+                      builder: (context, close) => InfoBar(
+                          title: Text(appLocal.projectNameCannotBeEmpty)),
+                    );
+                  } else if (systemFriendlyFileName(name).isEmpty) {
+                    displayInfoBar(
+                      context,
+                      builder: (context, close) =>
+                          InfoBar(title: Text(appLocal.invalidProjectName)),
+                    );
+                  }
+                  List<String> pathSections = p.split(dir.path);
+                  String oldName = pathSections.removeLast();
+                  Directory newDir = dir.renameSync(p.join(
+                      pathSections.join(p.separator),
+                      systemFriendlyFileName(name)));
+                  KeyValueDatabase project = KeyValueDatabase.loadFromFile(
+                      File(p.join(newDir.path, "$oldName.json")));
+                  project.data["name"] = name;
+                  project.saveToFile().then((file) => file
+                      .rename(p.join(newDir.path, "$name.json"))
+                      .then((value) => setState(() {})));
+                });
+              },
+            ),
+            MenuFlyoutItem(
+              leading: const Icon(FluentIcons.share),
+              text: Text(appLocal.exportProjectToZip),
+              onPressed: () {
+                Navigator.pop(context);
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return ExportProjectToZip(
+                      dir,
+                      "${documentsDir!.path}/StoryTailor/project.zip",
+                    );
+                  },
+                  dismissWithEsc: false,
+                );
+              },
+            ),
+            MenuFlyoutItem(
+              leading: const Icon(FluentIcons.delete),
+              text: Text(appLocal.deleteProject),
+              onPressed: () {
+                Navigator.pop(context);
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return ContentDialog(
+                      title: Text(appLocal.deleteProject),
+                      content: Text(appLocal.projectDeletionConfirmation),
+                      actions: [
+                        HyperlinkButton(
+                          child: Text(appLocal.delete),
+                          onPressed: () {
+                            dir.delete(recursive: true).then((_) {
+                              displayInfoBar(
+                                context,
+                                builder: (context, close) => InfoBar(
+                                  title: Text(appLocal.projectDeleted),
+                                ),
+                              );
+                              setState(() {});
+                            });
+                            Navigator.pop(context);
+                          },
+                        ),
+                        FilledButton(
+                          child: Text(appLocal.cancel),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+            ),
+          ],
         );
       },
     );
@@ -229,6 +229,12 @@ class _ProjectListState extends State<ProjectList> {
               future: projects,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
+                  projectOptionsController.clear();
+
+                  for (int i = 0; i < snapshot.data!.length; i++) {
+                    projectOptionsController.add(FlyoutController());
+                  }
+
                   return SingleChildScrollView(
                     child: ListView.builder(
                       physics: const NeverScrollableScrollPhysics(),
@@ -243,55 +249,58 @@ class _ProjectListState extends State<ProjectList> {
 
                         FileStat fileStat = dir.statSync();
 
-                        return Button(
-                          onLongPress: () {
-                            showExtraProjectOptions(context, dir);
-                          },
-                          onPressed: () {
-                            if (!dir.existsSync()) {
-                              displayInfoBar(context,
-                                  builder: (context, close) {
-                                return InfoBar(
-                                  title: Text(appLocal.projectDoesntExist),
-                                  content: Text(
-                                    appLocal.projectDoesntExistExplaination,
-                                    softWrap: true,
-                                  ),
-                                  action: IconButton(
-                                    icon: const Icon(FluentIcons.clear),
-                                    onPressed: close,
-                                  ),
-                                  severity: InfoBarSeverity.warning,
-                                );
-                              });
-                              setState(() {
-                                projects = getProjectsList();
-                              });
-                              return;
-                            }
+                        return FlyoutTarget(
+                          controller: projectOptionsController[index],
+                          child: Button(
+                            onLongPress: () {
+                              showExtraProjectOptions(context, dir, index);
+                            },
+                            onPressed: () {
+                              if (!dir.existsSync()) {
+                                displayInfoBar(context,
+                                    builder: (context, close) {
+                                  return InfoBar(
+                                    title: Text(appLocal.projectDoesntExist),
+                                    content: Text(
+                                      appLocal.projectDoesntExistExplaination,
+                                      softWrap: true,
+                                    ),
+                                    action: IconButton(
+                                      icon: const Icon(FluentIcons.clear),
+                                      onPressed: close,
+                                    ),
+                                    severity: InfoBarSeverity.warning,
+                                  );
+                                });
+                                setState(() {
+                                  projects = getProjectsList();
+                                });
+                                return;
+                              }
 
-                            Navigator.push(
-                              context,
-                              FluentPageRoute(
-                                builder: (context) => ProjectPage(
-                                  project: Project.fromDir(dir),
+                              Navigator.push(
+                                context,
+                                FluentPageRoute(
+                                  builder: (context) => ProjectPage(
+                                    project: Project.fromDir(dir),
+                                  ),
                                 ),
+                              );
+                            },
+                            child: Container(
+                              margin: const EdgeInsets.all(15),
+                              child: Column(
+                                children: [
+                                  Text(
+                                    p.basename(dir.path),
+                                    style: theme.typography.bodyLarge,
+                                  ),
+                                  Text(
+                                    "${appLocal.lastModified(dateFormat.format(fileStat.changed))} | ${appLocal.fileSize(SizeUnitConversion.bytesToAppropriateUnits(getSize(dir)))}",
+                                    style: theme.typography.caption,
+                                  ),
+                                ],
                               ),
-                            );
-                          },
-                          child: Container(
-                            margin: const EdgeInsets.all(15),
-                            child: Column(
-                              children: [
-                                Text(
-                                  p.basename(dir.path),
-                                  style: theme.typography.bodyLarge,
-                                ),
-                                Text(
-                                  "${appLocal.lastModified(dateFormat.format(fileStat.changed))} | ${appLocal.fileSize(SizeUnitConversion.bytesToAppropriateUnits(getSize(dir)))}",
-                                  style: theme.typography.caption,
-                                ),
-                              ],
                             ),
                           ),
                         );

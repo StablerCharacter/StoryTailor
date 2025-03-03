@@ -1,6 +1,8 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:pocketbase/pocketbase.dart';
+import 'package:storytailor/db/pocketbase.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -10,7 +12,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginState extends State<LoginPage> {
-  final _supabase = Supabase.instance.client;
+  final _pb = PocketBaseClient.instance;
+  RecordService get _users => _pb.collection("users");
 
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -24,17 +27,20 @@ class _LoginState extends State<LoginPage> {
   }
 
   void login() {
-    _supabase.auth.signInWithPassword(
-      email: emailController.text,
-      password: passwordController.text,
+    _users.authWithPassword(
+      emailController.text,
+      passwordController.text,
     );
     Navigator.pop(context);
   }
 
   void register() {
-    _supabase.auth.signUp(
-      email: emailController.text,
-      password: passwordController.text,
+    _users.create(
+      body: {
+        "email": emailController.text,
+        "password": passwordController.text,
+        "passwordConfirm": passwordController.text
+      },
     );
     Navigator.pop(context);
   }
@@ -105,7 +111,12 @@ class _LoginState extends State<LoginPage> {
                   style: TextStyle(color: theme.inactiveColor)),
             ),
             OutlinedButton(
-              onPressed: () => _supabase.auth.signInWithOAuth(Provider.google),
+              onPressed: () => _users.authWithOAuth2(
+                "google",
+                (url) async {
+                  await launchUrl(url);
+                },
+              ),
               child: Text(appLocal.continueGoogle),
             ),
           ],

@@ -1,13 +1,13 @@
 import 'dart:io';
 
+import 'package:ffmpeg_helper/ffmpeg_helper.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:ffmpeg_helper/ffmpeg_helper.dart';
 import 'package:gap/gap.dart';
+import 'package:path/path.dart' as p;
 import 'package:storytailor/db/key_value_database.dart';
 import 'package:storytailor/utils/assets_utility.dart';
 import 'package:storytailor/utils/size_unit_conversion.dart';
-import 'package:path/path.dart' as p;
 
 class AdvancedAudioFileConfig extends StatefulWidget {
   const AdvancedAudioFileConfig(this.audioFile,
@@ -85,7 +85,9 @@ class _AdvancedAudioFileConfigState extends State<AdvancedAudioFileConfig> {
       FFMpegCommand(
         inputs: [
           FFMpegInput.asset(
-            Platform.isAndroid ? '"${widget.audioFile.path}"' : widget.audioFile.path,
+            Platform.isAndroid
+                ? '"${widget.audioFile.path}"'
+                : widget.audioFile.path,
           )
         ],
         args: [
@@ -102,9 +104,9 @@ class _AdvancedAudioFileConfigState extends State<AdvancedAudioFileConfig> {
       onComplete: (file) {
         Navigator.pop(dialogContext);
         if (file == null) {
-          showSnackbar(
+          displayInfoBar(
             dialogContext,
-            InfoBar(
+            builder: (context, close) => InfoBar(
               title: Text(appLocal.reimportError),
             ),
           );
@@ -114,9 +116,9 @@ class _AdvancedAudioFileConfigState extends State<AdvancedAudioFileConfig> {
         if (widget.updateCallback != null) {
           widget.updateCallback!();
         }
-        showSnackbar(
+        displayInfoBar(
           dialogContext,
-          InfoBar(
+          builder: (context, close) => InfoBar(
             title: Text(appLocal.assetReimported),
           ),
         );
@@ -156,7 +158,7 @@ class _AdvancedAudioFileConfigState extends State<AdvancedAudioFileConfig> {
       header: Container(
         padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
         child: PageHeader(
-          title: Text(appLocal.advancedManagement),
+          title: Text(appLocal.advancedOptions),
           leading: IconButton(
             icon: const Icon(FluentIcons.back),
             onPressed: () {

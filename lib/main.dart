@@ -8,9 +8,9 @@ import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:storytailor/db/pocketbase.dart';
 import 'package:storytailor/views/mobile_tutorial_page.dart';
 import 'package:storytailor/views/project_list.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:system_theme/system_theme.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:window_manager/window_manager.dart';
@@ -35,11 +35,7 @@ void main() async {
 
   final prefs = await SharedPreferences.getInstance();
 
-  await Supabase.initialize(
-    url: "https://tdywftpmrgcepddovnic.supabase.co",
-    anonKey:
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRkeXdmdHBtcmdjZXBkZG92bmljIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODM1NTc4NjIsImV4cCI6MTk5OTEzMzg2Mn0.o83mfiCZjVTpnN7JM5uCCxj-Ungvg6HisrV2qY9nTj0",
-  );
+  PocketBaseClient.initialize();
 
   runApp(MyApp(prefs));
 }

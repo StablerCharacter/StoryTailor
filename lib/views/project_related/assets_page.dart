@@ -175,7 +175,12 @@ class _AssetsPageState extends State<AssetsPage> {
         builder: (context) {
           return ContentDialog(
             title: Text(appLocal.renameFile),
-            content: TextBox(controller: fileName),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextBox(controller: fileName),
+              ],
+            ),
             actions: [
               FilledButton(
                 child: Text(appLocal.renameFile),
@@ -190,8 +195,11 @@ class _AssetsPageState extends State<AssetsPage> {
                   )
                       .then(
                     (_) {
-                      showSnackbar(
-                          context, const InfoBar(title: Text("File renamed.")));
+                      displayInfoBar(
+                        context,
+                        builder: (context, close) =>
+                            const InfoBar(title: Text("File renamed.")),
+                      );
                       onFileRenamed();
                     },
                   );
@@ -381,12 +389,12 @@ class _AssetsPageState extends State<AssetsPage> {
                         var decodedImage = await decodeImageFromList(
                             await entity.readAsBytes());
                         if (!context.mounted) return;
-                        await showBottomSheet(
+                        showDialog(
                           context: context,
+                          barrierDismissible: true,
                           builder: (context) {
-                            return Padding(
-                              padding: const EdgeInsets.all(20),
-                              child: ListView(
+                            return ContentDialog(
+                              content: ListView(
                                 shrinkWrap: true,
                                 children: [
                                   Container(
@@ -408,7 +416,7 @@ class _AssetsPageState extends State<AssetsPage> {
                                         ),
                                         const Gap(5),
                                         Image.file(entity,
-                                            height: 300,
+                                            height: 200,
                                             alignment: Alignment.centerLeft),
                                         const Gap(5),
                                         Text(
@@ -456,14 +464,12 @@ class _AssetsPageState extends State<AssetsPage> {
                           return;
                         }
 
-                        print(entity.path);
-
-                        await showBottomSheet(
+                        showDialog(
                             context: context,
+                            barrierDismissible: true,
                             builder: (context) {
-                              return Padding(
-                                padding: const EdgeInsets.all(20),
-                                child: ListView(
+                              return ContentDialog(
+                                content: ListView(
                                   shrinkWrap: true,
                                   children: [
                                     ListTile(
@@ -489,7 +495,7 @@ class _AssetsPageState extends State<AssetsPage> {
                                     ListTile(
                                       leading: const Icon(
                                           FluentIcons.document_management),
-                                      title: Text(appLocal.advancedManagement),
+                                      title: Text(appLocal.advancedOptions),
                                       onPressed: () {
                                         Navigator.pop(context);
                                         Navigator.push(
@@ -511,12 +517,12 @@ class _AssetsPageState extends State<AssetsPage> {
                               );
                             });
                       } else {
-                        await showBottomSheet(
+                        showDialog(
                           context: context,
+                          barrierDismissible: true,
                           builder: (context) {
-                            return Padding(
-                              padding: const EdgeInsets.all(20),
-                              child: ListView(
+                            return ContentDialog(
+                              content: ListView(
                                 shrinkWrap: true,
                                 children: [
                                   ListTile(

@@ -28,14 +28,6 @@ class _StoryPageState extends State<StoryPage> {
   int selectedDialogIndex = -1;
   StoryObjects currentlyViewingObject = StoryObjects.storyManager;
   StoryManager get story => widget.project.story;
-  Future<void>? loadingChapters;
-
-  @override
-  void initState() {
-    super.initState();
-
-    loadingChapters = story.loadChaptersFromDirectory();
-  }
 
   @override
   void deactivate() {
@@ -417,16 +409,7 @@ class _StoryPageState extends State<StoryPage> {
                 getViewingPath(),
                 textAlign: TextAlign.center,
               ),
-              FutureBuilder(
-                future: loadingChapters,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    return getCurrentObjectList(context);
-                  }
-
-                  return const ProgressRing();
-                }
-              ),
+              getCurrentObjectList(context),
             ],
           ),
         ),

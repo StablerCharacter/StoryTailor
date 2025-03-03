@@ -206,9 +206,9 @@ class _FFmpegWindowsSetupState extends State<FFmpegWindowsSetup> {
                   )
                       .then((value) {
                     if (!value) {
-                      showSnackbar(
+                      displayInfoBar(
                         context,
-                        InfoBar(
+                        builder: (context, close) => InfoBar(
                           title: Text(appLocal.installFailed),
                           severity: InfoBarSeverity.error,
                         ),

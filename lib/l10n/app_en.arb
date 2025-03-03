@@ -160,9 +160,9 @@
   "revert": "Revert",
   "audioSettings": "Audio Settings",
 
-  "advancedManagement": "Advanced Management",
-  "@advancedManagement": {
-    "description": "Advanced management for a file."
+  "advancedOptions": "Advanced Options",
+  "@advancedOptions": {
+    "description": "Advanced options for a file."
   },
   "bitrate": "Bitrate: {bitrate}/s",
   "@bitrate": {

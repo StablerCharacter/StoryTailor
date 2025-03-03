@@ -69,10 +69,8 @@ class _StoryDialogComponent extends RectangleComponent
     if (story.chapters.isNotEmpty) {
       story.chapters[story.chapterIndex].loadFromFile();
       try {
-        text = story
-            .getCurrentDialog()
-            .text;
-      } catch(e) {
+        text = story.getCurrentDialog().text;
+      } catch (e) {
         if (kDebugMode) {
           print(e);
         }
@@ -104,10 +102,11 @@ class _StoryDialogComponent extends RectangleComponent
 
   @override
   bool onKeyEvent(
-    RawKeyEvent event,
+    KeyEvent event,
     Set<LogicalKeyboardKey> keysPressed,
   ) {
-    if (keysPressed.contains(LogicalKeyboardKey.space) || keysPressed.contains(LogicalKeyboardKey.enter)) {
+    if (keysPressed.contains(LogicalKeyboardKey.space) ||
+        keysPressed.contains(LogicalKeyboardKey.enter)) {
       nextDialog();
     }
     return true;

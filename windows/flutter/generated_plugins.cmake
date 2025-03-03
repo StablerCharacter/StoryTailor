@@ -3,10 +3,9 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
-  app_links
   audioplayers_windows
   irondash_engine_context
-  screen_retriever
+  screen_retriever_windows
   share_plus
   super_native_extensions
   system_theme

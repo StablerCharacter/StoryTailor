@@ -5,12 +5,13 @@ import 'package:ffmpeg_helper/ffmpeg_helper.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gap/gap.dart';
+import 'package:pocketbase/pocketbase.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storytailor/components/button_with_icon.dart';
+import 'package:storytailor/db/pocketbase.dart';
 import 'package:storytailor/views/about_page.dart';
 import 'package:storytailor/views/ffmpeg_windows_setup.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'login.dart';
 
@@ -61,10 +62,10 @@ class ModelSettings extends ChangeNotifier {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  final _supabase = Supabase.instance.client;
+  final _pb = PocketBaseClient.instance;
 
   late final SharedPreferences prefs;
-  late StreamSubscription<AuthState> _authSubscription;
+  late StreamSubscription<AuthStoreEvent> _authSubscription;
 
   Future<bool>? isFfmpegPresent;
 
@@ -77,11 +78,16 @@ class _SettingsPageState extends State<SettingsPage> {
 
     SharedPreferences.getInstance().then((value) => prefs = value);
 
-    _authSubscription = _supabase.auth.onAuthStateChange.listen((data) {
+    _authSubscription = _pb.authStore.onChange.listen((data) {
       setState(() {});
     }, onError: (error) {
-      showSnackbar(context, InfoBar(title: Text(error)),
-          duration: snackbarLongDuration);
+      displayInfoBar(
+        context,
+        builder: (context, close) => InfoBar(
+          title: Text(error),
+          severity: InfoBarSeverity.error,
+        ),
+      );
     });
 
     isFfmpegPresent = FFMpegHelper.instance.isFFMpegPresent();
@@ -116,7 +122,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Visibility(
-                    visible: _supabase.auth.currentUser == null,
+                    visible: _pb.authStore.isValid,
                     replacement: Flex(
                       direction: buttonsAxis,
                       children: [
@@ -124,7 +130,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           icon: const Icon(FluentIcons.sign_out),
                           child: Text(appLocal.logOut),
                           onPressed: () {
-                            _supabase.auth.signOut();
+                            _pb.authStore.clear();
                           },
                         ),
                         const Gap(5),
@@ -144,7 +150,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                   ),
                   Visibility(
-                    visible: _supabase.auth.currentUser != null,
+                    visible: !_pb.authStore.isValid,
                     child: ButtonWithIcon(
                       icon: const Icon(FluentIcons.player_settings),
                       child: Text(appLocal.accountSettings),

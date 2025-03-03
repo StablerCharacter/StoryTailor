@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:storytailor/game_objects/project.dart';
 import 'package:path/path.dart' as p;
+import 'package:storytailor/game_objects/project.dart';
 import 'package:storytailor/utils/size_unit_conversion.dart';
 import 'package:storytailor/views/project_related/assets_page.dart';
 
@@ -81,19 +81,19 @@ class _AssetPickerState extends State<AssetPicker> {
                       var decodedImage =
                           await decodeImageFromList(await entity.readAsBytes());
                       if (!context.mounted) return;
-                      await showBottomSheet(
+                      showDialog(
                         context: context,
                         builder: (context) {
-                          return Padding(
-                            padding: const EdgeInsets.all(20),
-                            child: ListView(
+                          return ContentDialog(
+                            title: Text(basename),
+                            content: ListView(
                               shrinkWrap: true,
                               children: [
-                                Text(
-                                  basename,
-                                  style: theme.typography.bodyLarge,
-                                  textAlign: TextAlign.center,
-                                ),
+                                // Text(
+                                //   basename,
+                                //   style: theme.typography.bodyLarge,
+                                //   textAlign: TextAlign.center,
+                                // ),
                                 Image.file(
                                   entity,
                                   height: 300,
@@ -127,19 +127,19 @@ class _AssetPickerState extends State<AssetPicker> {
                         },
                       );
                     } else {
-                      await showBottomSheet(
+                      showDialog(
                         context: context,
                         builder: (context) {
-                          return Padding(
-                            padding: const EdgeInsets.all(20),
-                            child: ListView(
+                          return ContentDialog(
+                            title: Text(basename),
+                            content: ListView(
                               shrinkWrap: true,
                               children: [
-                                ListTile(
-                                  leading: const Icon(FluentIcons.page),
-                                  title: Text(basename,
-                                      style: theme.typography.bodyStrong),
-                                ),
+                                // ListTile(
+                                //   leading: const Icon(FluentIcons.page),
+                                //   title: Text(basename,
+                                //       style: theme.typography.bodyStrong),
+                                // ),
                                 ListTile(
                                   title: Text(appLocal.chooseFile),
                                   onPressed: () {

@@ -67,7 +67,7 @@
   "revert": "ย้อนกลับ",
   "audioSettings": "การตั้งค่าเสียง",
 
-  "advancedManagement": "การจัดการเพิ่มเติม",
+  "advancedOptions": "ตัวเลือกขั้นสูง",
   "bitrate": "บิทเรท: {bitrate}/s",
   "format": "ฟอร์แมท: {format}",
   "audioStreamNo": "สตรีมเสียง #{index}",

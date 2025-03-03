@@ -1,10 +1,10 @@
 # Introduction
 
 **This documentation may contain planned features which are not
-implemented yet. After the first header, A page which is documenting  
-a specific feature will contain an information about the implementation 
-status of the feature. These features will be implemented before the 
-first stable release of StoryTailor v1.0.0**
+implemented yet. A page documenting about a specific feature will 
+contain an information about the implementation status of the feature. 
+These features will be implemented before StoryTailor v1.0.0 is 
+released**
 
 **For Contributors: Please see [the For Contributors section](#for-contributors)**
 
@@ -33,4 +33,6 @@ provide information about the classes, functions, and its parameters.
 The "Data Types" section is there only for the user to reference when 
 looking at the documentation of bigger things.
 
-For example, In the "Stages > Main Menu" page, There is a reference of a 
+For example, In the "Stages > Main Menu" page, There is a reference of 
+the alignment of the main menu contents, which its properties can be 
+viewed in the "Alignments" data type page.

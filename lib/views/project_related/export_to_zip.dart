@@ -1,10 +1,10 @@
 import 'dart:io';
 
-import 'package:path/path.dart' as p;
 import 'package:archive/archive_io.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:path/path.dart' as p;
 import 'package:share_plus/share_plus.dart';
 
 class ExportProjectToZip extends StatefulWidget {
@@ -24,7 +24,7 @@ class _ExportProjectToZipState extends State<ExportProjectToZip> {
   void initState() {
     super.initState();
 
-    ZipFileEncoder().zipDirectoryAsync(
+    ZipFileEncoder().zipDirectory(
       widget.directory,
       filename: widget.fileName,
       onProgress: (progress) {
@@ -33,7 +33,9 @@ class _ExportProjectToZipState extends State<ExportProjectToZip> {
         });
       },
     ).then((_) {
+      if (!context.mounted) return;
       Navigator.pop(context);
+
       if (Platform.isAndroid || Platform.isIOS) {
         Share.shareXFiles([XFile(widget.fileName)]);
       } else {
@@ -48,11 +50,9 @@ class _ExportProjectToZipState extends State<ExportProjectToZip> {
             await oldFile.delete();
           }
 
-          if (!context.mounted) return;
-
-          showSnackbar(
+          displayInfoBar(
             context,
-            InfoBar(
+            builder: (context, close) => InfoBar(
               title: Text(appLocal.savedTo(path ?? widget.fileName)),
             ),
           );
@@ -67,7 +67,10 @@ class _ExportProjectToZipState extends State<ExportProjectToZip> {
 
     return ContentDialog(
       title: Text(appLocal.exportingProject),
-      content: Container(alignment: Alignment.center, child: ProgressBar(value: compressProgress * 100),),
+      content: Container(
+        alignment: Alignment.center,
+        child: ProgressBar(value: compressProgress * 100),
+      ),
     );
   }
 }
