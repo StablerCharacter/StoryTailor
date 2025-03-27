@@ -1,11 +1,11 @@
 import 'dart:io';
 
 import 'package:ffmpeg_helper/ffmpeg_helper.dart';
+import 'package:flame_character/flame_character.dart';
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gap/gap.dart';
 import 'package:path/path.dart' as p;
-import 'package:storytailor/db/key_value_database.dart';
+import 'package:storytailor/l10n/app_localizations.dart';
 import 'package:storytailor/utils/assets_utility.dart';
 import 'package:storytailor/utils/size_unit_conversion.dart';
 

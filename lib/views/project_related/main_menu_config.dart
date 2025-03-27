@@ -3,7 +3,8 @@ import 'dart:io';
 
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:path/path.dart' as p;
-import 'package:storytailor/game_objects/project.dart';
+import 'package:storytailor/l10n/app_localizations.dart';
+import 'package:storytailor/project.dart';
 
 class MainMenuConfig {
   bool enabled = true;
@@ -21,7 +22,7 @@ class MainMenuConfig {
 }
 
 class MainMenuConfigPage extends StatefulWidget {
-  const MainMenuConfigPage(this.project, { super.key });
+  const MainMenuConfigPage(this.project, {super.key});
 
   final Project project;
 
@@ -51,6 +52,20 @@ class _MainMenuConfigState extends State<MainMenuConfigPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    AppLocalizations appLocal = AppLocalizations.of(context)!;
+    FluentThemeData theme = FluentTheme.of(context);
+
+    return ScaffoldPage(
+      content: SingleChildScrollView(
+        child: Container(
+          margin: const EdgeInsets.all(30),
+          child: Column(
+            children: [
+              Text(appLocal.mainMenuStage, style: theme.typography.title),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

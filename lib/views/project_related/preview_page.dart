@@ -2,10 +2,9 @@ import 'dart:ui';
 
 import 'package:flame/game.dart';
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
-import '/game_objects/project.dart';
-import '/game_preview.dart';
+import 'package:storytailor/game_preview.dart';
+import 'package:storytailor/l10n/app_localizations.dart';
+import 'package:storytailor/project.dart';
 
 class PreviewPage extends StatefulWidget {
   const PreviewPage(this.project, {super.key});
@@ -63,13 +62,9 @@ class _PreviewPageState extends State<PreviewPage> {
               ),
             ),
             Container(
-              margin: const EdgeInsets.all(30),
+              margin: const EdgeInsets.all(10),
               child: FilledButton(
-                child: Text(
-                  appLocal.runPreviewBtn,
-                  style:
-                      theme.typography.bodyLarge?.copyWith(color: Colors.black),
-                ),
+                child: Text(appLocal.runPreviewBtn),
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -93,6 +88,7 @@ class _PreviewPageState extends State<PreviewPage> {
                                   child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
+                                    spacing: 4,
                                     children: [
                                       Text(appLocal.devtools,
                                           style: theme.typography.title),

@@ -1,10 +1,12 @@
 import 'package:fluent_ui/fluent_ui.dart';
 
-Future<Color?> showColorPicker(BuildContext context) {
+Future<Color?> showColorPicker(BuildContext context,
+    {Color initialColor = Colors.white}) {
   return showDialog<Color>(
     context: context,
     builder: (context) {
-      ColorPickerController controller = ColorPickerController();
+      ColorPickerController controller =
+          ColorPickerController(color: initialColor);
 
       return ContentDialog(
         title: const Text("Pick a color"),
@@ -60,9 +62,9 @@ class _ColorPickerState extends State<ColorPicker> {
 
   void updateRGB() {
     Color color = widget.controller.color;
-    rgbControllers[0].text = color.red.toString();
-    rgbControllers[1].text = color.green.toString();
-    rgbControllers[2].text = color.blue.toString();
+    rgbControllers[0].text = color.r.toString();
+    rgbControllers[1].text = color.g.toString();
+    rgbControllers[2].text = color.b.toString();
   }
 
   void updateHSV() {
@@ -112,12 +114,12 @@ class _ColorPickerState extends State<ColorPicker> {
                   Expanded(
                     flex: 2,
                     child: Slider(
-                      value: widget.controller.color.red.toDouble(),
-                      max: 255,
+                      value: widget.controller.color.r,
+                      max: 1.0,
                       onChanged: (value) => setState(() {
                         widget.controller.color =
-                            widget.controller.color.withRed(value.toInt());
-                        rgbControllers[0].text = value.toInt().toString();
+                            widget.controller.color.withValues(red: value);
+                        rgbControllers[0].text = value.toString();
                         updateHSV();
                       }),
                     ),
@@ -155,12 +157,12 @@ class _ColorPickerState extends State<ColorPicker> {
                   Expanded(
                     flex: 2,
                     child: Slider(
-                      value: widget.controller.color.green.toDouble(),
-                      max: 255,
+                      value: widget.controller.color.g,
+                      max: 1,
                       onChanged: (value) => setState(() {
                         widget.controller.color =
-                            widget.controller.color.withGreen(value.toInt());
-                        rgbControllers[1].text = value.toInt().toString();
+                            widget.controller.color.withValues(green: value);
+                        rgbControllers[1].text = value.toString();
                         updateHSV();
                       }),
                     ),
@@ -198,13 +200,13 @@ class _ColorPickerState extends State<ColorPicker> {
                   Expanded(
                     flex: 2,
                     child: Slider(
-                      value: widget.controller.color.blue.toDouble(),
-                      max: 255,
+                      value: widget.controller.color.b,
+                      max: 1,
                       onChanged: (value) => setState(
                         () {
                           widget.controller.color =
-                              widget.controller.color.withBlue(value.toInt());
-                          rgbControllers[2].text = value.toInt().toString();
+                              widget.controller.color.withValues(blue: value);
+                          rgbControllers[2].text = value.toString();
                           updateHSV();
                         },
                       ),
@@ -263,7 +265,7 @@ class _ColorPickerState extends State<ColorPicker> {
                     flex: 2,
                     child: Slider(
                       value: hsvColor.hue,
-                      max: 255.0,
+                      max: 360.0,
                       onChanged: (value) => setState(
                         () {
                           widget.controller.color =

@@ -1,16 +1,15 @@
 import 'dart:io';
 
+import 'package:flame_character/flame_character.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
-import 'package:storytailor/db/key_value_database.dart';
-import 'package:storytailor/game_objects/project.dart';
+import 'package:storytailor/l10n/app_localizations.dart';
+import 'package:storytailor/project.dart';
 import 'package:storytailor/utils/dialog_util.dart';
 import 'package:storytailor/utils/size_unit_conversion.dart';
-import 'package:storytailor/utils/string_utility.dart';
 import 'package:storytailor/views/new_project_page.dart';
 import 'package:storytailor/views/project_related/export_to_zip.dart';
 import 'package:storytailor/views/project_related/project_view.dart';

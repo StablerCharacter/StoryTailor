@@ -1,7 +1,8 @@
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:gap/gap.dart';
 import 'package:pocketbase/pocketbase.dart';
 import 'package:storytailor/db/pocketbase.dart';
+import 'package:storytailor/l10n/app_localizations.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class LoginPage extends StatefulWidget {
@@ -80,17 +81,26 @@ class _LoginState extends State<LoginPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(appLocal.login, style: theme.typography.title),
-            TextBox(
-              controller: emailController,
-              keyboardType: TextInputType.emailAddress,
-              placeholder: appLocal.email,
+            const Gap(16),
+            ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 430),
+              child: Column(
+                children: [
+                  TextBox(
+                    controller: emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    placeholder: appLocal.email,
+                  ),
+                  const Gap(8),
+                  PasswordBox(
+                    controller: passwordController,
+                    revealMode: PasswordRevealMode.peekAlways,
+                    placeholder: appLocal.password,
+                  ),
+                ],
+              ),
             ),
-            PasswordBox(
-              controller: passwordController,
-              revealMode: PasswordRevealMode.peekAlways,
-              placeholder: appLocal.password,
-            ),
-            const SizedBox(height: 15),
+            const Gap(16),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -98,25 +108,23 @@ class _LoginState extends State<LoginPage> {
                   onPressed: login,
                   child: Text(appLocal.login),
                 ),
-                const SizedBox(width: 10),
+                const Gap(8),
                 Button(
                   onPressed: register,
                   child: Text(appLocal.register),
                 ),
               ],
             ),
-            Container(
-              margin: const EdgeInsets.all(5.0),
-              child: Text(appLocal.or,
-                  style: TextStyle(color: theme.inactiveColor)),
-            ),
+            const Gap(8),
+            Text(appLocal.or, style: TextStyle(color: theme.inactiveColor)),
+            const Gap(8),
             OutlinedButton(
               onPressed: () => _users.authWithOAuth2(
                 "google",
                 (url) async {
                   await launchUrl(url);
                 },
-              ),
+              ).then((record) => Navigator.of(context).pop()),
               child: Text(appLocal.continueGoogle),
             ),
           ],

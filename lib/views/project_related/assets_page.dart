@@ -2,19 +2,19 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flame_audio/flame_audio.dart';
+import 'package:flame_character/flame_character.dart';
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gap/gap.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:path/path.dart' as p;
 import 'package:storytailor/components/audio_player_widget.dart';
-import 'package:storytailor/db/key_value_database.dart';
+import 'package:storytailor/l10n/app_localizations.dart';
+import 'package:storytailor/project.dart';
 import 'package:storytailor/utils/assets_utility.dart';
 import 'package:storytailor/views/advanced_audio_file_config.dart';
 import 'package:super_drag_and_drop/super_drag_and_drop.dart';
 
 import '/components/button_with_icon.dart';
-import '/game_objects/project.dart';
 import '/utils/size_unit_conversion.dart';
 import '/views/code_page.dart';
 

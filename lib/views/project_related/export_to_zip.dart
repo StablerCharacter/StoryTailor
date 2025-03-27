@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:archive/archive_io.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:storytailor/l10n/app_localizations.dart';
 import 'package:path/path.dart' as p;
 import 'package:share_plus/share_plus.dart';
 
@@ -34,6 +34,8 @@ class _ExportProjectToZipState extends State<ExportProjectToZip> {
       },
     ).then((_) {
       if (!context.mounted) return;
+      AppLocalizations appLocal = AppLocalizations.of(context)!;
+
       Navigator.pop(context);
 
       if (Platform.isAndroid || Platform.isIOS) {
@@ -42,8 +44,6 @@ class _ExportProjectToZipState extends State<ExportProjectToZip> {
         FilePicker.platform
             .saveFile(fileName: "${p.basename(widget.directory.path)}.zip")
             .then((path) async {
-          AppLocalizations appLocal = AppLocalizations.of(context)!;
-
           if (path != null) {
             File oldFile = File(widget.fileName);
             await oldFile.copy(path);

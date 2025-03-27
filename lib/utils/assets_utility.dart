@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:path/path.dart' as p;
-import 'package:storytailor/game_objects/project.dart';
+import 'package:storytailor/project.dart';
 
 /// Returns a metadata file of the input file.
 ///

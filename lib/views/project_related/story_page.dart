@@ -1,15 +1,10 @@
 import 'dart:io';
 
+import 'package:flame_character/flame_character.dart';
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-
-import '/game_objects/project.dart';
-import '/story_structure/branch.dart';
-import '/story_structure/chapter.dart';
-import '/story_structure/dialog.dart';
-import '/story_structure/story_manager.dart';
-import '/utils/string_utility.dart';
+import 'package:storytailor/l10n/app_localizations.dart';
+import 'package:storytailor/project.dart';
 
 class StoryPage extends StatefulWidget {
   const StoryPage(this.project, {super.key});
@@ -30,10 +25,23 @@ class _StoryPageState extends State<StoryPage> {
   StoryManager get story => widget.project.story;
 
   @override
-  void deactivate() {
+  void initState() {
+    widget.project.story.storyDirectory =
+        Directory("${widget.project.projectDirectory.path}/story/")
+          ..createSync();
+    widget.project.story
+        .loadChaptersFromDirectory()
+        .then((_) => setState(() {}));
+
+    super.initState();
+  }
+
+  @override
+  void deactivate() async {
     story.storyDirectory ??=
         Directory("${widget.project.projectDirectory.path}/story/");
-    story.saveChaptersToFile();
+    await story.saveChaptersToFile();
+    await story.saveToJson();
 
     super.deactivate();
   }
@@ -79,12 +87,13 @@ class _StoryPageState extends State<StoryPage> {
         if (story.chapters.isEmpty) {
           return const Text("No chapters...");
         }
-        return ListView.builder(
+        return ReorderableListView.builder(
           physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
           itemCount: story.chapters.length,
           itemBuilder: (context, index) {
             return Slidable(
+              key: Key("$index"),
               endActionPane: ActionPane(
                 extentRatio: 1 / 5,
                 motion: const ScrollMotion(),
@@ -113,6 +122,15 @@ class _StoryPageState extends State<StoryPage> {
                 },
               ),
             );
+          },
+          onReorder: (int oldIndex, int newIndex) {
+            setState(() {
+              if (oldIndex < newIndex) {
+                newIndex -= 1;
+              }
+              final item = story.chapters.removeAt(oldIndex);
+              story.chapters.insert(newIndex, item);
+            });
           },
         );
       case StoryObjects.chapter:
@@ -208,8 +226,7 @@ class _StoryPageState extends State<StoryPage> {
                       currentlyViewingObject = StoryObjects.dialog;
                     });
                   },
-                  title: Text(limitDisplayStringLength(
-                      current.dialogs[index].text, 30)),
+                  title: Text(current.dialogs[index].text),
                 ),
               );
             },

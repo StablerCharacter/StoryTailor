@@ -1,16 +1,20 @@
+import 'dart:io';
+
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flame_audio/flame_audio.dart';
+import 'package:flame_character/flame_character.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart' hide Route;
-import 'package:storytailor/game_objects/credits_stage.dart';
-import 'package:storytailor/game_objects/project.dart';
+import 'package:path/path.dart' as p;
+import 'package:storytailor/game_preview/project_asset_manager.dart';
+import 'package:storytailor/project.dart';
+import 'package:storytailor/views/project_related/credits_config.dart';
 
-import 'game_objects/story_dialog.dart';
-
-class GamePreview extends FlameGame
+class GamePreview extends BasicGame
     with HasKeyboardHandlerComponents, LongPressDetector {
+  @override
   late final RouterComponent router;
   static const String devtools = "devtools";
   String stage;
@@ -21,6 +25,11 @@ class GamePreview extends FlameGame
   @override
   Future<void> onLoad() async {
     FlameAudio.bgm.initialize();
+    GameConfig.assetManager = ProjectAssetManager(project);
+    CreditsConfigState.tryLoad(
+      File(p.join(project.projectDirectory.path, "stages", "credits.json")),
+    );
+
     add(
       KeyboardListenerComponent(
         keyUp: {
@@ -47,7 +56,7 @@ class GamePreview extends FlameGame
           "mainMenu": Route(Component.new),
           "story": Route(() => StoryDialog(project.story).createComponent()),
           "credits": Route(
-            () => CreditsStage(project).createComponent(),
+            () => CreditsStage(CreditsConfigState.config).createComponent(),
             maintainState: false,
           ),
         },

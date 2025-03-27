@@ -1,10 +1,10 @@
 import 'dart:io';
 
+import 'package:fluent_ui/fluent_ui.dart';
 import 'package:gap/gap.dart';
 import 'package:path/path.dart' as p;
-import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:storytailor/components/asset_field.dart';
+import 'package:storytailor/l10n/app_localizations.dart';
 import 'package:storytailor/views/project_related/asset_picker.dart';
 import 'package:storytailor/views/project_related/assets_page.dart';
 
@@ -48,9 +48,9 @@ class _AudioAssetFieldState extends AssetFieldState<File> {
             icon: const Icon(FluentIcons.open_file),
             onPressed: () {
               showAssetPicker(context, widget.project,
-                  fileFormats: AssetsPage.audioExt)
+                      fileFormats: AssetsPage.audioExt)
                   .then(
-                    (value) {
+                (value) {
                   if (value == null) {
                     return;
                   }

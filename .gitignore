@@ -31,6 +31,7 @@ migrate_working_dir/
 .pub-cache/
 .pub/
 /build/
+**/l10n/app_localizations*.dart
 
 # Symbolication related
 app.*.symbols
@@ -44,5 +45,6 @@ app.*.map.json
 /android/app/release
 
 untranslatedMessages.txt
-/pocketbase/
+/pocketbase/*
 !/pocketbase/pocketbase
+!/pocketbase/LICENSE.md

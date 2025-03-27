@@ -3,9 +3,9 @@ import 'dart:convert';
 import 'package:ffmpeg_helper/ffmpeg_helper.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gap/gap.dart';
 import 'package:http/http.dart' as http;
+import 'package:storytailor/l10n/app_localizations.dart';
 import 'package:storytailor/utils/size_unit_conversion.dart';
 
 /// FFmpeg Setup Interface (only for Windows)
@@ -125,6 +125,8 @@ class _FFmpegWindowsSetupState extends State<FFmpegWindowsSetup> {
   int stepNo = 1;
 
   Future<String> getFFmpegSize() async {
+    AppLocalizations appLocal = AppLocalizations.of(context)!;
+
     http.Response latestFFmpegRelease = await http.get(
         Uri.parse(
             "https://api.github.com/repos/BtbN/FFmpeg-Builds/releases/latest"),
@@ -144,8 +146,6 @@ class _FFmpegWindowsSetupState extends State<FFmpegWindowsSetup> {
     if (!context.mounted) {
       return "Error ${latestFFmpegRelease.statusCode}";
     }
-
-    AppLocalizations appLocal = AppLocalizations.of(context)!;
 
     return appLocal.errorDownloadSize(latestFFmpegRelease.statusCode);
   }

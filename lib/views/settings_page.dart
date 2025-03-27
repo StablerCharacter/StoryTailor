@@ -3,13 +3,13 @@ import 'dart:io';
 
 import 'package:ffmpeg_helper/ffmpeg_helper.dart';
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gap/gap.dart';
 import 'package:pocketbase/pocketbase.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storytailor/components/button_with_icon.dart';
 import 'package:storytailor/db/pocketbase.dart';
+import 'package:storytailor/l10n/app_localizations.dart';
 import 'package:storytailor/views/about_page.dart';
 import 'package:storytailor/views/ffmpeg_windows_setup.dart';
 
@@ -123,7 +123,19 @@ class _SettingsPageState extends State<SettingsPage> {
                 children: [
                   Visibility(
                     visible: _pb.authStore.isValid,
-                    replacement: Flex(
+                    replacement: ButtonWithIcon(
+                      icon: const Icon(FluentIcons.signin),
+                      child: Text(appLocal.login),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          FluentPageRoute(
+                            builder: (context) => const LoginPage(),
+                          ),
+                        );
+                      },
+                    ),
+                    child: Flex(
                       direction: buttonsAxis,
                       children: [
                         ButtonWithIcon(
@@ -136,21 +148,9 @@ class _SettingsPageState extends State<SettingsPage> {
                         const Gap(5),
                       ],
                     ),
-                    child: ButtonWithIcon(
-                      icon: const Icon(FluentIcons.signin),
-                      child: Text(appLocal.login),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          FluentPageRoute(
-                            builder: (context) => const LoginPage(),
-                          ),
-                        );
-                      },
-                    ),
                   ),
                   Visibility(
-                    visible: !_pb.authStore.isValid,
+                    visible: _pb.authStore.isValid,
                     child: ButtonWithIcon(
                       icon: const Icon(FluentIcons.player_settings),
                       child: Text(appLocal.accountSettings),

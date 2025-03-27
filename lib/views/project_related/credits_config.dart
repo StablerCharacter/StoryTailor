@@ -1,86 +1,19 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flame_character/flame_character.dart';
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gap/gap.dart';
 import 'package:path/path.dart' as p;
 import 'package:storytailor/components/audio_asset_field.dart';
 import 'package:storytailor/components/button_with_icon.dart';
+import 'package:storytailor/components/color_field.dart';
 import 'package:storytailor/components/image_asset_field.dart';
-import 'package:storytailor/game_objects/project.dart';
+import 'package:storytailor/components/stretch_mode_combobox.dart';
+import 'package:storytailor/l10n/app_localizations.dart';
+import 'package:storytailor/project.dart';
 import 'package:storytailor/utils/assets_utility.dart';
 import 'package:storytailor/utils/list_utility.dart';
-import 'package:storytailor/utils/stretch_mode.dart';
-
-class CreditsSection {
-  String name;
-  String content;
-
-  CreditsSection(this.name, this.content);
-
-  factory CreditsSection.fromMap(Map<String, String> map) {
-    return CreditsSection(map["name"]!, map["content"]!);
-  }
-
-  Map<String, String> toMap() {
-    return {
-      "name": name,
-      "content": content,
-    };
-  }
-}
-
-class CreditsConfig {
-  bool enabled = true;
-  String stageBackground = "";
-  String stageBackgroundMusic = "";
-  List<CreditsSection> sections = [
-    CreditsSection("Made with", "Game made with StoryTailor.")
-  ];
-  Stretch backgroundStretch;
-  Curve animationCurve = Curves.linear;
-  Duration animationDuration = const Duration(seconds: 1);
-
-  CreditsConfig({
-    this.enabled = true,
-    this.stageBackground = "",
-    this.stageBackgroundMusic = "",
-    this.backgroundStretch = Stretch.scaleToCover,
-  });
-
-  factory CreditsConfig.fromMap(Map<String, dynamic> map) {
-    CreditsConfig config = CreditsConfig(
-      enabled: map["enabled"] ?? true,
-      stageBackground: map["stageBackground"] ?? "",
-      stageBackgroundMusic: map["stageBackgroundMusic"] ?? "",
-      backgroundStretch:
-          Stretch.fromDisplayName(map["backgroundStretch"] ?? "Scale to cover"),
-    );
-
-    config.sections = (map["sections"]! as List<dynamic>)
-        .map(
-          (e) => CreditsSection.fromMap(
-            (e as Map<String, dynamic>).map(
-              (key, value) => MapEntry(key, value as String),
-            ),
-          ),
-        )
-        .toList();
-
-    return config;
-  }
-
-  Map<String, dynamic> toMap() {
-    return {
-      "enabled": enabled,
-      "stageBackground": stageBackground,
-      "stageBackgroundMusic": stageBackgroundMusic,
-      "backgroundStretch": backgroundStretch.displayName,
-      "sections": sections.map((e) => e.toMap()).toList(growable: false),
-    };
-  }
-}
 
 class CreditsConfigPage extends StatefulWidget {
   const CreditsConfigPage(this.project, {super.key});
@@ -123,7 +56,7 @@ class CreditsConfigState extends State<CreditsConfigPage> {
       try {
         config =
             CreditsConfig.fromMap(jsonDecode(stageFile.readAsStringSync()));
-      } catch (_) {
+      } catch (err) {
         stageFile.writeAsStringSync(jsonEncode(config.toMap()));
       }
     } else {
@@ -236,8 +169,10 @@ class CreditsConfigState extends State<CreditsConfigPage> {
                         ),
                         StretchModeComboBox(
                           value: config.backgroundStretch,
-                          onChange: (newValue) => config.backgroundStretch =
-                              newValue ?? Stretch.scaleToCover,
+                          onChange: (newValue) => setState(() {
+                            config.backgroundStretch =
+                                newValue ?? Stretch.scaleToCover;
+                          }),
                         ),
                       ],
                     ),
@@ -266,6 +201,47 @@ class CreditsConfigState extends State<CreditsConfigPage> {
                               file.path,
                             );
                           },
+                        ),
+                      ],
+                    ),
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          appLocal.textColor,
+                          style: theme.typography.bodyStrong,
+                        ),
+                        ColorField(
+                          initialValue: config.textColor,
+                          onColorSelected: (color) {
+                            if (color == null) return;
+
+                            config.textColor = color;
+                          },
+                        )
+                      ],
+                    ),
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          "Fade Duration (ms)",
+                          style: theme.typography.bodyStrong,
+                        ),
+                        SizedBox(
+                          width: 125,
+                          child: NumberBox(
+                            value: config.animationDuration.inMilliseconds,
+                            onChanged: (newDuration) {
+                              setState(() {
+                                if (newDuration == null) return;
+
+                                config.animationDuration =
+                                    Duration(milliseconds: newDuration);
+                              });
+                            },
+                            mode: SpinButtonPlacementMode.none,
+                          ),
                         ),
                       ],
                     ),

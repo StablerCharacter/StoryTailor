@@ -3,12 +3,12 @@ import 'dart:io';
 import 'package:ffmpeg_helper/ffmpeg_helper.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storytailor/db/pocketbase.dart';
+import 'package:storytailor/l10n/app_localizations.dart';
 import 'package:storytailor/views/mobile_tutorial_page.dart';
 import 'package:storytailor/views/project_list.dart';
 import 'package:system_theme/system_theme.dart';
@@ -23,7 +23,7 @@ void main() async {
 
   if (Platform.isWindows || Platform.isMacOS || Platform.isLinux) {
     await windowManager.ensureInitialized();
-    WindowManager.instance.setMinimumSize(const Size(350, 460));
+    WindowManager.instance.setMinimumSize(const Size(500, 460));
   }
 
   Animate.restartOnHotReload = true;

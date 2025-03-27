@@ -1,11 +1,10 @@
 import 'dart:io';
 
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gap/gap.dart';
 import 'package:path/path.dart' as p;
-
-import 'package:storytailor/game_objects/project.dart';
+import 'package:storytailor/l10n/app_localizations.dart';
+import 'package:storytailor/project.dart';
 import 'package:storytailor/views/project_related/asset_picker.dart';
 
 class AssetField<F extends FileSystemEntity> extends StatefulWidget {
