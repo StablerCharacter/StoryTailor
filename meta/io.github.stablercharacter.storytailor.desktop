@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+
+Name=StoryTailor
+Comment=A visual novel game editor.
+Categories=Development;Building;
+
+Icon=storytailor
+Exec=storytailor
+Terminal=false

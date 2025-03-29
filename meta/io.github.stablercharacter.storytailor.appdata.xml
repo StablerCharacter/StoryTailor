@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+	<id>io.github.stablercharacter.storytailor</id>
+	<metadata_license>FSFAP</metadata_license>
+	<project_license>GPL-3.0</project_license>
+	<name>StoryTailor</name>
+	<summary>A visual novel game editor</summary>
+	<description>
+		<p>A cross-platform visual novel game engine/editor with priority for collaboration and phone users.</p>
+	</description>
+	<launchable type="desktop-id">io.github.stablercharacter.storytailor.desktop</launchable>
+	<url type="homepage">https://github.com/StablerCharacter/StoryTailor</url>
+	<screenshots>
+		<screenshot type="default">
+			<image>https://raw.githubusercontent.com/StablerCharacter/StoryTailor/refs/heads/master/screenshots/projectlist.png</image>
+		</screenshot>
+	</screenshots>
+	<provides>
+		<id>io.github.stablercharacter.storytailor.desktop</id>
+	</provides>
+</component>

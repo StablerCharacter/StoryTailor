@@ -14,8 +14,6 @@ import 'package:storytailor/views/project_related/credits_config.dart';
 
 class GamePreview extends BasicGame
     with HasKeyboardHandlerComponents, LongPressDetector {
-  @override
-  late final RouterComponent router;
   static const String devtools = "devtools";
   String stage;
   Project project;

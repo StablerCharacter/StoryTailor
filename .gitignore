@@ -48,3 +48,7 @@ untranslatedMessages.txt
 /pocketbase/*
 !/pocketbase/pocketbase
 !/pocketbase/LICENSE.md
+
+# AppImage
+AppDir/
+*.AppImage
