@@ -22,6 +22,10 @@ To install, Follow the [Flutter documentation](https://docs.flutter.dev/get-star
 To build, Run `flutter build [target]`. For example, `flutter build windows`, `flutter build linux`, 
 and `flutter build apk`.
 
+> [!NOTE]
+> The Flutter build command has to be run once before going through any of the packaging instructions
+> below.
+
 ### AppImage (Linux)
 
 To create an AppImage package, There are two prerequisites, GNU make, and `appimagetool`.
@@ -49,3 +53,13 @@ something similar to this pattern:
 To build for arm64 (aarch64), You will need to do a similar thing to the above paragraph, which is to
 run `make appimage-resources` then run `ARCH=aarch64 [path to appimagetool] -g AppDir` (Add parameters
 as needed, such as `-s` to sign)
+
+### Inno Setup (Windows)
+
+StoryTailor uses Inno Setup to create installer applications for Windows.
+
+Inno Setup can be downloaded on [its website](https://jrsoftware.org/isdl.php) or installed interactively 
+through WinGet by running `winget install --id JRSoftware.InnoSetup -e -s winget -i`.
+
+After Inno Setup has been installed, You can open the Inno Setup Compiler and open the `windows_setup.iss`
+file located within the root of this project, then you can press Run (F9) to run the setup.
