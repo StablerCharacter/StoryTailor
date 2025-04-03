@@ -32,15 +32,15 @@ dependencies:
     sdk: flutter
 
   fluent_ui: ^4.11.2
-  flame: ^1.26.1
+  flame: ^1.27.0
   system_theme: ^3.1.2
   event: ^3.1.0
   intl: ^0.19.0
-  shared_preferences: ^2.5.2
+  shared_preferences: ^2.5.3
   provider: ^6.1.4
   path: ^1.9.1
   path_provider: ^2.1.5
-  file_picker: ^9.2.2
+  file_picker: ^10.0.0
   flutter_highlight: ^0.7.0
   highlight: ^0.7.0
   google_fonts: ^6.2.1
@@ -50,15 +50,10 @@ dependencies:
   gap: ^3.0.1
   pixel_snap: ^0.1.5
   super_drag_and_drop: ^0.8.24
-  flame_audio: ^2.11.2
-  flame_svg: ^1.11.8
+  flame_audio: ^2.11.3
+  flame_svg: ^1.11.9
   webview_flutter: ^4.10.0
   line_icons: ^2.0.3
-  ffmpeg_kit_flutter_full_gpl: ^6.0.3
-  ffmpeg_helper:
-    git:
-      url: https://github.com/lines-of-codes/ffmpeg_helper.git
-      ref: main
   http: ^1.3.0
   window_manager: ^0.4.3
   archive: ^4.0.5
@@ -66,6 +61,8 @@ dependencies:
   pocketbase: ^0.22.0
   flame_character:
     path: flame_character/
+  ffmpeg_cli: ^0.3.0
+  dio: ^5.8.0+1
 
 dev_dependencies:
   flutter_test:

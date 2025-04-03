@@ -162,7 +162,7 @@ packages:
     source: hosted
     version: "7.0.2"
   dio:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: dio
       sha256: "253a18bbd4851fecba42f7343a1df3a9a4c1d31a2c1b37e221086b4fa8c8dbc9"
@@ -201,31 +201,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.4"
-  ffmpeg_helper:
+  ffmpeg_cli:
     dependency: "direct main"
     description:
-      path: "."
-      ref: main
-      resolved-ref: fe4ce47a1c3a45f3fa3685c4122c6cf2af1b6078
-      url: "https://github.com/lines-of-codes/ffmpeg_helper.git"
-    source: git
-    version: "1.0.1"
-  ffmpeg_kit_flutter_full_gpl:
-    dependency: "direct main"
-    description:
-      name: ffmpeg_kit_flutter_full_gpl
-      sha256: "4f269bcb636bfcb544e5b4d65c706a3d311839970cb42638e72406410c1b5b7b"
+      name: ffmpeg_cli
+      sha256: a7704193b6885d3ff4b00c6ec4bcd08d607a243e56da8a43faab7ce7a313b2ed
       url: "https://pub.dev"
     source: hosted
-    version: "6.0.3"
-  ffmpeg_kit_flutter_platform_interface:
-    dependency: transitive
-    description:
-      name: ffmpeg_kit_flutter_platform_interface
-      sha256: addf046ae44e190ad0101b2fde2ad909a3cd08a2a109f6106d2f7048b7abedee
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.2.1"
+    version: "0.3.0"
   file:
     dependency: transitive
     description:
@@ -238,10 +221,10 @@ packages:
     dependency: "direct main"
     description:
       name: file_picker
-      sha256: "09b474c0c8117484b80cbebc043801ff91e05cfbd2874d512825c899e1754694"
+      sha256: "36a1652d99cb6bf8ccc8b9f43aded1fd60b234d23ce78af422c07f950a436ef7"
       url: "https://pub.dev"
     source: hosted
-    version: "9.2.3"
+    version: "10.0.0"
   fixnum:
     dependency: transitive
     description:
@@ -254,18 +237,18 @@ packages:
     dependency: "direct main"
     description:
       name: flame
-      sha256: "6a68254f6d6a298e14bb1671147d859e73bb505e05bf2ab4fb0bf663cb3b2696"
+      sha256: "7a39044eeea6906d8acc5d8292941fa081a4f2a37fd76dc5a2dbee8a29e28256"
       url: "https://pub.dev"
     source: hosted
-    version: "1.26.1"
+    version: "1.27.0"
   flame_audio:
     dependency: "direct main"
     description:
       name: flame_audio
-      sha256: a53075eb17c35ecc5c13a9ea519e713b757dd205d93f7a6dce8f7d25ced99921
+      sha256: "8de338cb5bc44c7f31c229fc6da074f7ac4a1b02a24fc1a5244bc05921aee7b4"
       url: "https://pub.dev"
     source: hosted
-    version: "2.11.2"
+    version: "2.11.3"
   flame_character:
     dependency: "direct main"
     description:
@@ -277,10 +260,10 @@ packages:
     dependency: "direct main"
     description:
       name: flame_svg
-      sha256: e4b55eab02e1f0276340d0241417c61ae3b3477f386d19d24134b49f99a7ed71
+      sha256: "6fdf60bbf453ac0a9f45f428e36748a35cc119079f919081c40d3010cf1e465a"
       url: "https://pub.dev"
     source: hosted
-    version: "1.11.8"
+    version: "1.11.9"
   fluent_ui:
     dependency: "direct main"
     description:
@@ -557,22 +540,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.1.1"
-  package_info_plus:
-    dependency: transitive
-    description:
-      name: package_info_plus
-      sha256: "7976bfe4c583170d6cdc7077e3237560b364149fcd268b5f53d95a991963b191"
-      url: "https://pub.dev"
-    source: hosted
-    version: "8.3.0"
-  package_info_plus_platform_interface:
-    dependency: transitive
-    description:
-      name: package_info_plus_platform_interface
-      sha256: "6c935fb612dff8e3cc9632c2b301720c77450a126114126ffaafe28d2e87956c"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.2.0"
   path:
     dependency: "direct main"
     description:
@@ -958,10 +925,10 @@ packages:
     dependency: transitive
     description:
       name: url_launcher_ios
-      sha256: "16a513b6c12bb419304e72ea0ae2ab4fed569920d1c7cb850263fe3acc824626"
+      sha256: "7f2022359d4c099eea7df3fdf739f7d3d3b9faf3166fb1dd390775176e0b76cb"
       url: "https://pub.dev"
     source: hosted
-    version: "6.3.2"
+    version: "6.3.3"
   url_launcher_linux:
     dependency: transitive
     description:
@@ -1086,10 +1053,10 @@ packages:
     dependency: transitive
     description:
       name: webview_flutter_wkwebview
-      sha256: c49a98510080378b1525132f407a92c3dcd3b7145bef04fb8137724aadcf1cf0
+      sha256: c14455137ce60a68e1ccaf4e8f2dae8cebcb3465ddaa2fcfb57584fb7c5afe4d
       url: "https://pub.dev"
     source: hosted
-    version: "3.18.4"
+    version: "3.18.5"
   win32:
     dependency: transitive
     description:

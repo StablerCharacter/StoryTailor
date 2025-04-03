@@ -1,13 +1,15 @@
 import 'dart:io';
 
-import 'package:ffmpeg_helper/ffmpeg_helper.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storytailor/db/pocketbase.dart';
+import 'package:storytailor/ffmpeg/ffmpeg_manager.dart';
 import 'package:storytailor/l10n/app_localizations.dart';
 import 'package:storytailor/views/mobile_tutorial_page.dart';
 import 'package:storytailor/views/project_list.dart';
@@ -28,12 +30,25 @@ void main() async {
 
   Animate.restartOnHotReload = true;
 
-  FFMpegHelper.instance.initialize();
-
   SystemTheme.fallbackColor = Colors.blue;
   await SystemTheme.accentColor.load();
 
   final prefs = await SharedPreferences.getInstance();
+
+  var ffmpegFolderPath = prefs.getString("ffmpegFolderPath");
+
+  if (Platform.isWindows &&
+      (ffmpegFolderPath == null || ffmpegFolderPath.isEmpty)) {
+    var dir = await getApplicationDocumentsDirectory();
+    var ffmpegDir = Directory(p.join(dir.path, "StoryTailor", "ffmpeg",
+        "ffmpeg-master-latest-win64-gpl", "bin"));
+
+    if (await ffmpegDir.exists()) {
+      await prefs.setString("ffmpegFolderPath", ffmpegDir.path);
+    }
+  }
+
+  FfmpegManager.initialize(prefs);
 
   PocketBaseClient.initialize();
 

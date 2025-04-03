@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:ffmpeg_helper/ffmpeg_helper.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:gap/gap.dart';
 import 'package:pocketbase/pocketbase.dart';
@@ -9,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storytailor/components/button_with_icon.dart';
 import 'package:storytailor/db/pocketbase.dart';
+import 'package:storytailor/ffmpeg/ffmpeg_manager.dart';
 import 'package:storytailor/l10n/app_localizations.dart';
 import 'package:storytailor/views/about_page.dart';
 import 'package:storytailor/views/ffmpeg_windows_setup.dart';
@@ -90,7 +90,7 @@ class _SettingsPageState extends State<SettingsPage> {
       );
     });
 
-    isFfmpegPresent = FFMpegHelper.instance.isFFMpegPresent();
+    isFfmpegPresent = FfmpegManager.instance.isFfmpegPresent();
   }
 
   @override
@@ -222,82 +222,90 @@ class _SettingsPageState extends State<SettingsPage> {
                 },
               ),
               const Gap(10),
-              Text("FFmpeg", style: theme.typography.bodyStrong),
-              Text(
-                appLocal.ffmpegDescription,
-                textAlign: TextAlign.center,
-              ),
-              FutureBuilder(
-                future: isFfmpegPresent,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    if (snapshot.data == true) {
-                      return Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(FluentIcons.check_mark),
-                          const Gap(5),
-                          Text(appLocal.ffmpegInstalled)
-                        ],
-                      );
-                    }
+              Visibility(
+                visible: !(Platform.isAndroid || Platform.isIOS),
+                child: Column(
+                  children: [
+                    Text("FFmpeg", style: theme.typography.bodyStrong),
+                    Text(
+                      appLocal.ffmpegDescription,
+                      textAlign: TextAlign.center,
+                    ),
+                    FutureBuilder(
+                      future: isFfmpegPresent,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.done) {
+                          if (snapshot.data == true) {
+                            return Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(FluentIcons.check_mark),
+                                const Gap(5),
+                                Text(appLocal.ffmpegInstalled)
+                              ],
+                            );
+                          }
 
-                    return Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(FluentIcons.chrome_close),
-                            const Gap(5),
-                            Text(appLocal.ffmpegNotInstalled),
-                          ],
-                        ),
-                        const Gap(5),
-                        Button(
-                          onPressed: () {
-                            if (Platform.isWindows) {
-                              Navigator.push(
-                                context,
-                                FluentPageRoute(
-                                  builder: (context) =>
-                                      const FFmpegWindowsSetup(),
-                                ),
-                              );
-                            } else if (Platform.isLinux) {
-                              showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return ContentDialog(
-                                      title: Text(appLocal.ffmpegLinux),
-                                      content: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Text(appLocal.ffmpegLinuxInstall),
-                                          const SelectableText(
-                                              "sudo apt-get install ffmpeg\nsudo snap install ffmpeg"),
-                                        ],
+                          return Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Icon(FluentIcons.chrome_close),
+                                  const Gap(5),
+                                  Text(appLocal.ffmpegNotInstalled),
+                                ],
+                              ),
+                              const Gap(5),
+                              Button(
+                                onPressed: () {
+                                  if (Platform.isWindows) {
+                                    Navigator.push(
+                                      context,
+                                      FluentPageRoute(
+                                        builder: (context) =>
+                                            const FFmpegWindowsSetup(),
                                       ),
-                                      actions: [
-                                        FilledButton(
-                                          child: Text(
-                                              appLocal.returnToPreviousPage),
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          },
-                                        ),
-                                      ],
                                     );
-                                  });
-                            }
-                          },
-                          child: Text(appLocal.installFFmpeg),
-                        )
-                      ],
-                    );
-                  }
+                                  } else if (Platform.isLinux) {
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return ContentDialog(
+                                            title: Text(appLocal.ffmpegLinux),
+                                            content: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Text(appLocal
+                                                    .ffmpegLinuxInstall),
+                                                const SelectableText(
+                                                    "sudo apt-get install ffmpeg\nsudo snap install ffmpeg"),
+                                              ],
+                                            ),
+                                            actions: [
+                                              FilledButton(
+                                                child: Text(appLocal
+                                                    .returnToPreviousPage),
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                              ),
+                                            ],
+                                          );
+                                        });
+                                  }
+                                },
+                                child: Text(appLocal.installFFmpeg),
+                              )
+                            ],
+                          );
+                        }
 
-                  return const ProgressRing();
-                },
+                        return const ProgressRing();
+                      },
+                    ),
+                  ],
+                ),
               ),
             ],
           ),

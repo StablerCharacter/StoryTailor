@@ -11,6 +11,15 @@ It is highly not recommended to use StoryTailor
 for production uses right now, as breaking changes 
 might occur even every commit.
 
+## License
+
+This project has two parts.
+The editor is licensed in [GNU GPLv3](https://github.com/StablerCharacter/StoryTailor/blob/master/LICENSE), 
+but the runtime library is licensed under [GNU LGPLv3](https://github.com/StablerCharacter/StoryTailor/blob/master/flame_character/LICENSE)
+
+Whether the license of the runtime library should be changed to MIT license for more freedom is 
+still in consideration.
+
 ## Contributing
 Please see [contributing.md](contributing.md)
 

@@ -492,25 +492,26 @@ class _AssetsPageState extends State<AssetsPage> {
                                       appLocal.fileSize(fileSize),
                                     ),
                                     renameFileTile,
-                                    ListTile(
-                                      leading: const Icon(
-                                          FluentIcons.document_management),
-                                      title: Text(appLocal.advancedOptions),
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                        Navigator.push(
-                                          context,
-                                          FluentPageRoute(
-                                            builder: (context) =>
-                                                AdvancedAudioFileConfig(
-                                              entity,
-                                              updateCallback: () =>
-                                                  setState(() {}),
+                                    if (!(Platform.isAndroid || Platform.isIOS))
+                                      ListTile(
+                                        leading: const Icon(
+                                            FluentIcons.document_management),
+                                        title: Text(appLocal.advancedOptions),
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                          Navigator.push(
+                                            context,
+                                            FluentPageRoute(
+                                              builder: (context) =>
+                                                  AdvancedAudioFileConfig(
+                                                entity,
+                                                updateCallback: () =>
+                                                    setState(() {}),
+                                              ),
                                             ),
-                                          ),
-                                        );
-                                      },
-                                    ),
+                                          );
+                                        },
+                                      ),
                                     deleteFileTile,
                                   ],
                                 ),

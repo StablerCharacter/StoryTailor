@@ -1,10 +1,10 @@
 import 'dart:convert';
 
-import 'package:ffmpeg_helper/ffmpeg_helper.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:gap/gap.dart';
 import 'package:http/http.dart' as http;
+import 'package:storytailor/ffmpeg/ffmpeg_manager.dart';
 import 'package:storytailor/l10n/app_localizations.dart';
 import 'package:storytailor/utils/size_unit_conversion.dart';
 
@@ -121,7 +121,7 @@ class _CompletableSubStep extends StatelessWidget {
 class _FFmpegWindowsSetupState extends State<FFmpegWindowsSetup> {
   ScrollController scrollController = ScrollController();
   Future<String>? ffmpegSize;
-  FFMpegProgress? ffmpegInstallProgress;
+  FfmpegProgress? ffmpegInstallProgress;
   int stepNo = 1;
 
   Future<String> getFFmpegSize() async {
@@ -194,12 +194,12 @@ class _FFmpegWindowsSetupState extends State<FFmpegWindowsSetup> {
             buttons: [
               FilledButton(
                 onPressed: () {
-                  FFMpegHelper.instance
-                      .setupFFMpegOnWindows(
+                  FfmpegManager.instance
+                      .setupForWindows(
                     onProgress: (progress) => setState(() {
                       ffmpegInstallProgress = progress;
 
-                      if (progress.phase == FFMpegProgressPhase.inactive) {
+                      if (progress.phase == FfmpegProgressPhase.inactive) {
                         stepNo++;
                       }
                     }),
@@ -243,11 +243,11 @@ class _FFmpegWindowsSetupState extends State<FFmpegWindowsSetup> {
               children: [
                 _CompletableSubStep(
                     ffmpegInstallProgress?.phase ==
-                            FFMpegProgressPhase.downloading
+                            FfmpegProgressPhase.downloading
                         ? appLocal.downloading
                         : appLocal.download,
                     ffmpegInstallProgress?.phase ==
-                            FFMpegProgressPhase.downloading
+                            FfmpegProgressPhase.downloading
                         ? SubStepState.doing
                         : SubStepState.done,
                     progress: ffmpegInstallProgress != null
@@ -257,19 +257,19 @@ class _FFmpegWindowsSetupState extends State<FFmpegWindowsSetup> {
                         : null),
                 _CompletableSubStep(
                     ffmpegInstallProgress?.phase ==
-                            FFMpegProgressPhase.decompressing
+                            FfmpegProgressPhase.decompressing
                         ? appLocal.decompressing
                         : appLocal.decompress,
                     ffmpegInstallProgress?.phase ==
-                            FFMpegProgressPhase.decompressing
+                            FfmpegProgressPhase.decompressing
                         ? SubStepState.doing
                         : ffmpegInstallProgress?.phase ==
-                                FFMpegProgressPhase.downloading
+                                FfmpegProgressPhase.downloading
                             ? SubStepState.planned
                             : SubStepState.done),
                 _CompletableSubStep(
                     appLocal.finished,
-                    ffmpegInstallProgress?.phase == FFMpegProgressPhase.inactive
+                    ffmpegInstallProgress?.phase == FfmpegProgressPhase.inactive
                         ? SubStepState.done
                         : SubStepState.planned),
               ],
