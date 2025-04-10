@@ -301,11 +301,11 @@ class _AssetsPageState extends State<AssetsPage> {
                                       children: [
                                         Button(
                                           onPressed: () {},
-                                          child: const Text("Directory"),
+                                          child: Text(appLocal.folder),
                                         ),
                                         Button(
                                           onPressed: () {},
-                                          child: const Text("Text File"),
+                                          child: Text(appLocal.textFile),
                                         ),
                                       ],
                                     ),

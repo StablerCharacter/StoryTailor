@@ -1,0 +1,148 @@
+---
+title: FFmpeg
+description: FFmpeg integration in StoryTailor
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+FFmpeg is a multimedia processing program, or as how the
+official website says it:
+
+> A complete, cross-platform solution to record, convert and
+> stream audio and video. 
+
+FFmpeg integration is only available on desktop platforms, 
+Mobile users of StoryTailor must use the media module in 
+the StoryTailor's server or use an external website/apps 
+to process audio files.
+
+This guide includes installation for FFmpeg for each 
+platforms.
+
+## Windows
+
+There are two ways of installing FFmpeg on Windows.
+To let StoryTailor download and set it up or install 
+it through a package manager.
+
+It is recommended to install it through your system's
+package manager to easily be able to update FFmpeg later.
+
+Windows FFmpeg builds from gyan.dev has two versions,
+including the essentials version and the full version.
+
+The essentials version should have most of the required 
+functionality, but you could check [gyan.dev included libraries](https://www.gyan.dev/ffmpeg/builds/#libraries)
+to see which library is included in which version.
+
+<Tabs>
+  <TabItem label="WinGet">
+    WinGet is the Windows Package Manager which is 
+    supported on Windows 10 1709 (build 16299) or later.
+
+```ps
+winget install "FFmpeg (Essentials Build)" # Essentials build
+winget install ffmpeg # Full build
+```
+
+    For more information on the usage of WinGet, Check [Microsoft's WinGet Documentation](https://learn.microsoft.com/en-us/windows/package-manager/winget/)
+  </TabItem>
+  <TabItem label="Scoop">
+    Only the full and nightly build is available on scoop.
+
+```ps
+scoop install ffmpeg # Full build
+scoop install ffmpeg-gyan-nightly # Nightly build
+```
+  </TabItem>
+  <TabItem label="Chocolatey">
+```ps
+choco install ffmpeg # Essentials build
+choco install ffmpeg-full # Full build
+```
+  </TabItem>
+  <TabItem label="StoryTailor">
+    To install FFmpeg through StoryTailor, Visit the 
+    app Settings page, and under the FFmpeg section, 
+    Click "Download & Install"
+
+    StoryTailor will install FFmpeg into `%USERPROFILE%\Documents\StoryTailor\ffmpeg`.
+    If you'd like to update the version of FFmpeg StoryTailor installed, Delete the 
+    `ffmpeg` folder, and download it through the app settings again.
+  </TabItem>
+</Tabs>
+
+## Linux
+
+Most distributions that ships with a desktop environment
+should likely ship with FFmpeg already.
+
+If it isn't installed, you can install them through your 
+system package manager.
+
+Do note that the FFmpeg integration is tested with the 
+latest FFmpeg version (As of writing, is version 7.1), 
+and the codec support might not be consistent across 
+distros, depending on what functionality the package 
+maintainer chooses.
+
+<Tabs>
+  <TabItem label="Debian">
+    FFmpeg is included in the default Debian repositories
+    and can be simply installed by running:
+
+```sh
+sudo apt install ffmpeg
+```
+
+    But the FFmpeg version *might* be outdated (if you're 
+    not using Debian testing/unstable), if you encounter 
+    any issues or would prefer a newer version,
+    Check out [Deb Multimedia Repository](https://www.deb-multimedia.org/)
+  </TabItem>
+  <TabItem label="Arch Linux">
+    ```sh
+sudo pacman -S ffmpeg
+    ```
+  </TabItem>
+  <TabItem label="Fedora">
+    FFmpeg on Fedora has two versions, `ffmpeg-free` in the
+    official repository and `ffmpeg` in RPM Fusion which 
+    differs in functionality, but the `ffmpeg-free` package 
+    should cover most audio processing needs.
+
+```sh
+sudo dnf install ffmpeg-free
+```
+
+    If `ffmpeg-free` doesn't support what you need, you might 
+    find it on the `ffmpeg` package in RPM Fusion.
+
+    If you haven't added the RPM Fusion repository yet, Check 
+    out [RPM Fusion Configuration](https://rpmfusion.org/Configuration)
+
+    Then you can simply run the following to install:
+
+```sh
+sudo dnf install ffmpeg
+```
+  </TabItem>
+</Tabs>
+
+## macOS
+
+FFmpeg on macOS can be installed through Homebrew with 
+the following command:
+
+```sh
+brew install ffmpeg
+```
+
+## Why it isn't on mobile
+
+While in development, StoryTailor used to include FFmpeg
+mobile support through a library called [FFmpegKit](https://github.com/arthenica/ffmpeg-kit)
+but unfortunately, it has been retired. FFmpeg integration
+support for mobile users might return if there is a replacement
+library.
+

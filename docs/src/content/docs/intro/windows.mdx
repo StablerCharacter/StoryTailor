@@ -1,0 +1,46 @@
+---
+title: Installing on Windows
+description: A guide on how to install StoryTailor on Windows
+---
+
+import { Steps } from "@astrojs/starlight/components";
+
+There are multiple ways you can install StoryTailor.
+
+The most classic way is to install using an installation wizard.
+
+## Installation Wizard
+
+<Steps>
+1. Visit [StoryTailor's GitHub releases page](https://github.com/StablerCharacter/StoryTailor/releases)
+2. Download the file `StoryTailor-Win64-x.x.x-Installer.exe` (`x.x.x` being the editor version number)
+from the latest releases
+3. Follow the installation wizard.
+</Steps>
+
+StoryTailor should now appear as a shortcut in your start menu, or also on your desktop if you 
+have chosen to create it during the installation wizard.
+
+## WinGet
+
+Run `winget install --id StablerCharacter.StoryTailor`
+
+## Scoop
+
+Scoop is a Windows package manager, which if you're reading this section, 
+you probably already know why you want to use it.
+
+<Steps>
+1. Make sure that the `extras` bucket is added. 
+    If you haven't added it, it can be added by running:
+
+    ```
+    scoop bucket add extras
+    ```
+
+2. Then, Install StoryTailor!
+    
+    ```
+    scoop install storytailor
+    ```
+</Steps>

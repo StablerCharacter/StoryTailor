@@ -1,0 +1,52 @@
+---
+title: Introduction
+description: Introduction to the StoryTailor visual novel game engine.
+---
+
+import { Tabs, TabItem, Steps } from '@astrojs/starlight/components';
+
+StoryTailor is a visual novel game engine with a cross-platform editor, 
+allowing you to edit your stories on a phone, tablet, laptop, or a desktop.
+
+Note that StoryTailor is still in development and might not be in the best 
+shape at the moment. It is not recommended to use this for production work 
+until a stable release has been made.
+
+## Installation
+
+StoryTailor can be installed in multiple ways.
+
+<Tabs>
+    <TabItem label="Windows">
+        Visit [StoryTailor's GitHub releases page](https://github.com/StablerCharacter/StoryTailor/releases)
+        and download the file `StoryTailor-Win64-x.x.x-Installer.exe` (`x.x.x` being the editor version number)
+        from the latest releases and follow the installation wizard.
+
+        Please see [Windows installation instructions page](/StoryTailor/intro/windows) for more ways to install.
+    </TabItem>
+    <TabItem label="Linux">
+        To install through Flathub, Run the following:
+        ```
+flatpak install flathub io.github.stablercharacter.storytailor
+        ```
+
+        Please see [Linux installation instructions page](/StoryTailor/intro/linux) for more ways to install.
+    </TabItem>
+    <TabItem label="Android">
+        Visit [StoryTailor's GitHub releases page](https://github.com/StablerCharacter/StoryTailor/releases)
+        and download the latest `.apk` file.
+    </TabItem>
+    <TabItem label="macOS/iOS">
+        The StoryTailor's developer does not have a Mac to build on and be able to distribute binaries.
+        Feel free to [reach out](https://lines-of-codes.github.io/#contact) if you want to volunteer to help.
+
+        Please see the [build instructions](/StoryTailor/intro/build) to manually build the engine.
+    </TabItem>
+</Tabs>
+
+## License
+
+StoryTailor is free and open-source. The editor itself is licensed under 
+[GNU GPLv3](https://choosealicense.com/licenses/gpl-3.0/) but the 
+FlamingCharacters runtime library is licensed under [GNU 
+LGPLv3](https://choosealicense.com/licenses/lgpl-3.0/).

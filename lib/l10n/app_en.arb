@@ -129,6 +129,8 @@
   },
   "importAssetBtn": "Import new asset...",
   "newBtn": "New...",
+  "folder": "Folder",
+  "textFile": "Text File",
   "renameFile": "Rename",
   "@renameFile": {
     "description": "Appears on a button which when clicked will rename the file."
@@ -283,8 +285,8 @@
   "lightTheme": "Light",
   "systemTheme": "System",
   "language": "Language",
-  "ffmpegInstalled": "FFmpeg for StoryTailor is installed.",
-  "ffmpegNotInstalled": "FFmpeg for StoryTailor is NOT installed.",
+  "ffmpegInstalled": "FFmpeg is installed.",
+  "ffmpegNotInstalled": "FFmpeg is not installed.",
   "installFFmpeg": "Download & Install FFmpeg",
   "ffmpegDescription": "FFmpeg is a program to convert audio and video files.",
   "installFailed": "Installation failed.",

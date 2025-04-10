@@ -69,9 +69,6 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Future<bool>? isFfmpegPresent;
 
-  String loggedIn = "Signed in";
-  String loggedOut = "Signed out";
-
   @override
   void initState() {
     super.initState();
@@ -107,9 +104,6 @@ class _SettingsPageState extends State<SettingsPage> {
     Axis buttonsAxis = MediaQuery.of(context).size.width >= 600
         ? Axis.horizontal
         : Axis.vertical;
-
-    loggedIn = appLocal.loginSuccess;
-    loggedOut = appLocal.loggedOut;
 
     return ScaffoldPage(
       content: SingleChildScrollView(
