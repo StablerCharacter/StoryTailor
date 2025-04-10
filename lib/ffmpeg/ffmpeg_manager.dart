@@ -45,9 +45,7 @@ class FfmpegManager {
 
   // Original code from FFmpeg CLI library, Modified to fit my needs
   Future<FfprobeOutput> ffprobe(String filePath) async {
-    print("ffprobe run requested on $filePath");
-
-    final result = await Process.run("ffprobe", [
+    final result = await Process.run(getCliPath("ffprobe"), [
       "-v",
       "quiet",
       "-print_format",
@@ -75,7 +73,7 @@ class FfmpegManager {
     if (Platform.isAndroid || Platform.isIOS) return false;
 
     try {
-      Process process = await Process.start("ffmpeg", ["-version"]);
+      ProcessResult process = await Process.run(getCliPath("ffmpeg"), ["-version"]);
       return await process.exitCode == 0;
     } catch (e) {
       return false;
