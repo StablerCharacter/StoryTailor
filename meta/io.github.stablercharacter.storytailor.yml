@@ -1,0 +1,36 @@
+id: io.github.stablercharacter.storytailor
+runtime: org.freedesktop.Platform
+runtime-version: '24.08'
+sdk: org.freedesktop.Sdk
+command: storytailor
+finish-args:
+  - --share=ipc
+  - --socket=fallback-x11
+  - --socket=wayland
+  - --device=dri
+  - --share=network
+  - --filesystem=xdg-documents/StoryTailor:create
+  - --filesystem=xdg-data/io.github.stablercharacter.storytailor:create
+modules:
+  - name: storytailor
+    buildsystem: simple
+    build-commands:
+      - install -Dm0644 io.github.stablercharacter.storytailor.metainfo.xml -t ${FLATPAK_DEST}/share/metainfo/
+      - install -Dm0644 io.github.stablercharacter.storytailor.desktop -t ${FLATPAK_DEST}/share/applications/
+      - install -Dm0644 icon_square_512x512.png ${FLATPAK_DEST}/share/icons/hicolor/512x512/apps/io.github.stablercharacter.storytailor.png
+      - mkdir -pv ${FLATPAK_DEST}/opt/storytailor
+      - mv bundle/* ${FLATPAK_DEST}/opt/storytailor
+      - mkdir -pv ${FLATPAK_DEST}/bin
+      - ln -s ${FLATPAK_DEST}/opt/storytailor/storytailor ${FLATPAK_DEST}/bin/storytailor
+    sources:
+      - type: file
+        path: io.github.stablercharacter.storytailor.metainfo.xml
+      - type: file
+        path: io.github.stablercharacter.storytailor.desktop
+      - type: file
+        path: ../icons/icon_square_512x512.png
+      - type: archive
+        only-arches:
+          - x86_64
+        path: ../build/StoryTailor-Linux-x64.tar.gz
+        strip-components: 0

@@ -64,7 +64,7 @@ flutter {
 }
 
 android {
-    namespace 'ga.trashbingames.storytailor'
+    namespace 'io.github.stablercharacter.storytailor'
 
     packagingOptions {
         pickFirst 'lib/x86/libc++_shared.so'

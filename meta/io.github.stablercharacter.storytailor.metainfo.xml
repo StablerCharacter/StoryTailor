@@ -20,5 +20,11 @@
         </p>
     </description>
 
+    <screenshots>
+        <screenshot type="default">
+            <image>https://raw.githubusercontent.com/StablerCharacter/StoryTailor/refs/heads/master/screenshots/projectlist.png</image>
+        </screenshot>
+    </screenshots>
+
     <launchable type="desktop-id">io.github.stablercharacter.storytailor.desktop</launchable>
 </component>

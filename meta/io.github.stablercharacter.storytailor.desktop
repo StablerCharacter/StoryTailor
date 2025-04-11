@@ -6,6 +6,6 @@ Name=StoryTailor
 Comment=A visual novel game editor.
 Categories=Development;Building;
 
-Icon=storytailor
+Icon=io.github.stablercharacter.storytailor
 Exec=storytailor
 Terminal=false

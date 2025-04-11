@@ -55,3 +55,9 @@ untranslatedMessages.txt
 # AppImage
 AppDir/
 *.AppImage
+
+# Flatpak
+flatpak/
+flatpak-repo
+.flatpak-builder/
+*.flatpak
