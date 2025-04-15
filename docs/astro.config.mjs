@@ -29,6 +29,17 @@ export default defineConfig({
           autogenerate: { directory: "guides" },
         },
         {
+          label: "Stages",
+          items: [
+            {
+              label: "Stages", slug: "stages/stages"
+            },
+            { label: "Main Menu Stage", slug: "stages/main-menu-stage" },
+            { label: "Story Stage", slug: "stages/story-stage" },
+            { label: "Credits Stage", slug: "stages/credits-stage" }
+          ]
+        },
+        {
           label: "Reference",
           autogenerate: { directory: "reference" },
         },
