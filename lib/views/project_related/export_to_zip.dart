@@ -42,18 +42,12 @@ class _ExportProjectToZipState extends State<ExportProjectToZip> {
         SharePlus.instance.share(ShareParams(files: [XFile(widget.fileName)]));
       } else {
         FilePicker
-            .saveFile(fileName: "${p.basename(widget.directory.path)}.zip")
+            .saveFile(fileName: "${p.basename(widget.directory.path)}.zip", bytes: File(widget.fileName).readAsBytesSync())
             .then((path) async {
-          if (path != null) {
-            File oldFile = File(widget.fileName);
-            await oldFile.copy(path);
-            await oldFile.delete();
-          }
-
           displayInfoBar(
             context,
             builder: (context, close) => InfoBar(
-              title: Text(appLocal.savedTo(path ?? widget.fileName)),
+              title: Text(appLocal.savedTo(path?.toString() ?? widget.fileName)),
             ),
           );
         });

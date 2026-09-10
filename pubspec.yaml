@@ -31,39 +31,42 @@ dependencies:
   flutter:
     sdk: flutter
 
-  fluent_ui: ^4.16.0
-  flame: ^1.38.0
+  fluent_ui: ^4.16.1
+  flame: ^1.38.2
   system_theme: ^3.3.0
   event: ^3.1.0
-  intl: ^0.20.2
+  intl: ^0.20.3
   shared_preferences: ^2.5.5
   provider: ^6.1.5+1
   path: ^1.9.1
   path_provider: ^2.1.6
-  file_picker: ^11.0.2
+  file_picker: ^12.2.0
   flutter_highlight: ^0.7.0
   highlight: ^0.7.0
-  google_fonts: ^8.2.0
+  google_fonts: ^8.2.1
   flutter_animate: ^4.5.2
   flutter_slidable: ^4.0.3
   url_launcher: ^6.3.2
   gap: ^3.0.1
   pixel_snap: ^0.1.5
-  super_drag_and_drop: ^0.9.1
+  super_drag_and_drop: ^0.10.0-dev.2
   flame_audio: ^2.12.2
-  flame_svg: ^1.12.2
+  flame_svg: ^2.0.0
   webview_flutter: ^4.14.1
   line_icons: ^2.0.3
   http: ^1.6.0
   window_manager: ^0.5.2
-  archive: ^4.0.9
-  share_plus: ^12.0.2
-  pocketbase: ^0.24.0+1
+  archive: ^4.2.0
+  share_plus: ^13.3.0
+  pocketbase: ^0.25.1
   flame_character:
     path: flame_character/
   ffmpeg_helper:
     path: ../ffmpeg_helper
-  dio: ^5.10.0
+  dio: ^5.11.1
+
+dependency_overrides:
+  device_info_plus: 13.2.0
 
 dev_dependencies:
   flutter_test:

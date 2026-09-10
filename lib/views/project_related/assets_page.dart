@@ -272,15 +272,15 @@ class _AssetsPageState extends State<AssetsPage> {
                             FilePicker.pickFiles(
                                     dialogTitle: appLocal.importAssetBtn)
                                 .then((value) {
-                              if (value != null) {
-                                File file = File(value.files.single.path!);
-                                String fileName = p.basename(file.path);
-                                file
-                                    .copy("${assetsFolder.path}/$fileName")
-                                    .then((file) {
-                                  setState(() {});
-                                });
-                              }
+                              if (value.isEmpty) return;
+
+                              File file = File(value.single.path!);
+                              String fileName = p.basename(file.path);
+                              file
+                                  .copy("${assetsFolder.path}/$fileName")
+                                  .then((file) {
+                                setState(() {});
+                              });
                             });
                           },
                         ),

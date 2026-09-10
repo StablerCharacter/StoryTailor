@@ -8,7 +8,7 @@ import Foundation
 import audioplayers_darwin
 import device_info_plus
 import ffmpeg_kit_next_flutter
-import file_picker
+import file_picker_darwin
 import irondash_engine_context
 import package_info_plus
 import screen_retriever_macos
