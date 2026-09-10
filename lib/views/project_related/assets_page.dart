@@ -269,8 +269,8 @@ class _AssetsPageState extends State<AssetsPage> {
                           icon: const Icon(FluentIcons.download),
                           child: Text(appLocal.importAssetBtn),
                           onPressed: () {
-                            FilePicker.platform
-                                .pickFiles(dialogTitle: appLocal.importAssetBtn)
+                            FilePicker.pickFiles(
+                                    dialogTitle: appLocal.importAssetBtn)
                                 .then((value) {
                               if (value != null) {
                                 File file = File(value.files.single.path!);
@@ -327,11 +327,9 @@ class _AssetsPageState extends State<AssetsPage> {
                 ),
                 TreeView(
                   selectionMode: TreeViewSelectionMode.single,
-                  onSelectionChanged: (selected) async {
-                    if (selected.isEmpty) return;
-
+                  onItemInvoked: (selected, reason) async {
                     FileSystemEntity entity =
-                        selected.single.value as FileSystemEntity;
+                        selected.value as FileSystemEntity;
                     if (entity is File) {
                       String basename = p.basename(entity.path);
                       String extension = p.extension(entity.path);
@@ -492,26 +490,25 @@ class _AssetsPageState extends State<AssetsPage> {
                                       appLocal.fileSize(fileSize),
                                     ),
                                     renameFileTile,
-                                    if (!(Platform.isAndroid || Platform.isIOS))
-                                      ListTile(
-                                        leading: const Icon(
-                                            FluentIcons.document_management),
-                                        title: Text(appLocal.advancedOptions),
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                          Navigator.push(
-                                            context,
-                                            FluentPageRoute(
-                                              builder: (context) =>
-                                                  AdvancedAudioFileConfig(
-                                                entity,
-                                                updateCallback: () =>
-                                                    setState(() {}),
-                                              ),
+                                    ListTile(
+                                      leading: const Icon(
+                                          FluentIcons.document_management),
+                                      title: Text(appLocal.advancedOptions),
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                        Navigator.push(
+                                          context,
+                                          FluentPageRoute(
+                                            builder: (context) =>
+                                                AdvancedAudioFileConfig(
+                                              entity,
+                                              updateCallback: () =>
+                                                  setState(() {}),
                                             ),
-                                          );
-                                        },
-                                      ),
+                                          ),
+                                        );
+                                      },
+                                    ),
                                     deleteFileTile,
                                   ],
                                 ),

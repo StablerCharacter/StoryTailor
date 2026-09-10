@@ -39,7 +39,10 @@ class _ProjectPageState extends State<ProjectPage> {
     AppLocalizations appLocal = AppLocalizations.of(context)!;
 
     return NavigationView(
-      appBar: NavigationAppBar(title: Text(widget.project.name)),
+      titleBar: TitleBar(
+        onBackRequested: () => Navigator.pop(context),
+        title: Text(widget.project.name),
+      ),
       pane: NavigationPane(
         selected: tabIndex,
         onChanged: (newIndex) => setState(() {

@@ -133,19 +133,19 @@ class _MyHomePageState extends State<MyHomePage> {
     AppLocalizations appLocal = AppLocalizations.of(context)!;
 
     return NavigationView(
-      appBar: NavigationAppBar(
-        leading: Container(
-          margin: const EdgeInsets.fromLTRB(10, 15, 2.5, 7.5),
+      titleBar: TitleBar(
+        isBackButtonVisible: false,
+        icon: Container(
+          // margin: const EdgeInsets.fromLTRB(10, 15, 2.5, 7.5),
+          margin: const EdgeInsets.fromLTRB(18, 4, 0, 4),
           child: const Image(
             image: AssetImage('assets/icon.png'),
           ),
         ),
-        title: Container(
-            margin: const EdgeInsets.fromLTRB(0, 10, 30, 0),
-            child: Text(
-              "StoryTailor",
-              style: theme.typography.title,
-            )),
+        title: Text(
+          "StoryTailor",
+          style: theme.typography.bodyStrong,
+        ),
       ),
       pane: NavigationPane(
         displayMode: PaneDisplayMode.top,
@@ -160,21 +160,23 @@ class _MyHomePageState extends State<MyHomePage> {
             title: Text(appLocal.tutorials, style: theme.typography.body),
             body: Platform.isAndroid || Platform.isIOS
                 ? MobileTutorialPage()
-                : Container(
-                    margin: const EdgeInsets.all(30),
-                    child: Column(
-                      children: [
-                        Text(appLocal.tutorials,
-                            style: theme.typography.titleLarge),
-                        const Gap(10),
-                        Button(
-                          onPressed: () {
-                            launchUrl(Uri.parse(
-                                "https://stablercharacter.github.io/StoryTailor/introduction.html"));
-                          },
-                          child: Text(appLocal.openTutorial),
-                        ),
-                      ],
+                : ScaffoldPage(
+                    padding: const EdgeInsets.all(30),
+                    content: SizedBox.expand(
+                      child: Column(
+                        children: [
+                          Text(appLocal.tutorials,
+                              style: theme.typography.titleLarge),
+                          const Gap(10),
+                          Button(
+                            onPressed: () {
+                              launchUrl(Uri.parse(
+                                  "https://stablercharacter.github.io/StoryTailor/intro/introduction/"));
+                            },
+                            child: Text(appLocal.openTutorial),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
           ),

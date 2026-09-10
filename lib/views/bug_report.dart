@@ -1,5 +1,6 @@
 import 'package:flame_character/flame_character.dart';
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:gap/gap.dart';
 import 'package:storytailor/components/button_with_icon.dart';
 import 'package:storytailor/l10n/app_localizations.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -39,12 +40,14 @@ class _BugReportPageState extends State<BugReportPage> {
           appLocal.bugDetails,
           textAlign: TextAlign.center,
         ),
+        const Gap(8),
         TextBox(
           controller: controller,
           placeholder: appLocal.bugDetailsPlaceholder,
           minLines: 5,
           maxLines: 20,
         ),
+        const Gap(8),
         ButtonWithIcon(
           icon: const Icon(FluentIcons.flag),
           onPressed: () {

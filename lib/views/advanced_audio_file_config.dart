@@ -1,13 +1,10 @@
 import 'dart:io';
 
-import 'package:ffmpeg_cli/ffmpeg_cli.dart';
+import 'package:ffmpeg_helper/ffmpeg_helper.dart';
 import 'package:flame_character/flame_character.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:gap/gap.dart';
 import 'package:path/path.dart' as p;
-import 'package:storytailor/ffmpeg/ffmpeg_manager.dart';
-import 'package:storytailor/ffmpeg/ffprobe_output.dart';
-import 'package:storytailor/ffmpeg/ffprobe_stream.dart';
 import 'package:storytailor/l10n/app_localizations.dart';
 import 'package:storytailor/utils/assets_utility.dart';
 import 'package:storytailor/utils/size_unit_conversion.dart';
@@ -27,7 +24,7 @@ class AdvancedAudioFileConfig extends StatefulWidget {
 class _AdvancedAudioFileConfigState extends State<AdvancedAudioFileConfig> {
   int platformTabIndex = 0;
   KeyValueDatabase? metadataDb;
-  late Future<FfprobeOutput?> mediaInfo;
+  late Future<MediaInformation?> mediaInfo;
   String initialValue = "";
   String? codecValue;
   bool isChanged = false;
@@ -49,10 +46,10 @@ class _AdvancedAudioFileConfigState extends State<AdvancedAudioFileConfig> {
       metadataDb = KeyValueDatabase.loadFromFile(metadataFile);
     }
     mediaInfo =
-        FfmpegManager.instance.ffprobe(widget.audioFile.path).then((value) {
-      if (canConvertTo.contains(value.streams?.firstOrNull?.codecName)) {
+        FFMpegHelper.instance.runProbe(widget.audioFile.path).then((value) {
+      if (canConvertTo.contains(value?.getStreams().firstOrNull?.getCodec())) {
         setState(() {
-          codecValue = value.streams!.first.codecName;
+          codecValue = value!.getStreams().first.getCodec();
           initialValue = codecValue!;
         });
       }
@@ -84,47 +81,49 @@ class _AdvancedAudioFileConfigState extends State<AdvancedAudioFileConfig> {
     late BuildContext dialogContext;
     String outputFilePath =
         "${p.dirname(widget.audioFile.path)}/${p.basenameWithoutExtension(widget.audioFile.path)}${getFormat()}";
-    Ffmpeg()
-        .run(
-      FfmpegCommand.simple(
+    FFMpegHelper.instance.runAsync(
+      FFMpegCommand(
         inputs: [
-          FfmpegInput.asset(
-            widget.audioFile.path,
+          FFMpegInput.asset(
+            Platform.isAndroid
+                ? '"${widget.audioFile.path}"'
+                : widget.audioFile.path,
           )
         ],
         args: [
-          const CliArg(name: "y"), // Overwrite output files
-          const CliArg(name: "v", value: "debug"),
-          CliArg(
-            name: "-acodec",
-            value: codecValue!,
-          ),
+          const OverwriteArgument(),
+          const LogLevelArgument(LogLevel.debug),
+          CustomArgument([
+            "-acodec",
+            codecValue!,
+          ]),
         ],
-        outputFilepath: outputFilePath,
+        outputFilepath:
+            Platform.isAndroid ? '"$outputFilePath"' : outputFilePath,
       ),
-    )
-        .then((proc) async {
-      if (await proc.exitCode != 0) {
+      onComplete: (file) {
+        Navigator.pop(dialogContext);
+        if (file == null) {
+          displayInfoBar(
+            dialogContext,
+            builder: (context, close) => InfoBar(
+              title: Text(appLocal.reimportError),
+            ),
+          );
+          return;
+        }
+        widget.audioFile.delete();
+        if (widget.updateCallback != null) {
+          widget.updateCallback!();
+        }
         displayInfoBar(
           dialogContext,
           builder: (context, close) => InfoBar(
-            title: Text(appLocal.reimportError),
+            title: Text(appLocal.assetReimported),
           ),
         );
-        return;
-      }
-      widget.audioFile.delete();
-      if (widget.updateCallback != null) {
-        widget.updateCallback!();
-      }
-      displayInfoBar(
-        dialogContext,
-        builder: (context, close) => InfoBar(
-          title: Text(appLocal.assetReimported),
-        ),
-      );
-      Navigator.pop(dialogContext);
-    });
+      },
+    );
 
     if (!context.mounted) {
       return;
@@ -179,41 +178,41 @@ class _AdvancedAudioFileConfigState extends State<AdvancedAudioFileConfig> {
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done &&
                       snapshot.hasData) {
-                    FfprobeOutput data = snapshot.data!;
-                    List<FfprobeStream> streams = data.streams ?? [];
+                    MediaInformation data = snapshot.data!;
+                    List<StreamInformation> streams = data.getStreams();
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        Text(p.basename(widget.audioFile.path)),
                         Text(appLocal.bitrate(
                             SizeUnitConversion.bytesToAppropriateUnits(
-                                int.parse(data.format!["bit_rate"] ?? "0")))),
-                        Text(
-                            appLocal.format(data.format!["format_name"] ?? "")),
+                                int.parse(data.getBitrate() ?? "0")))),
+                        Text(appLocal.format(data.getFormat() ?? "")),
                         Text(appLocal.fileSize(
                             SizeUnitConversion.bytesToAppropriateUnits(
-                                int.parse(data.format!["size"] ?? "0")))),
+                                int.parse(data.getSize() ?? "0")))),
                         ListView.builder(
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
                           itemCount: streams.length,
                           itemBuilder: (context, index) {
-                            FfprobeStream stream = streams[index];
-                            if (stream.codecType != "audio") {
+                            StreamInformation stream = streams[index];
+                            if (stream.getType() != "audio") {
                               return Container();
                             }
                             return ListTile(
-                              title: Text(appLocal
-                                  .audioStreamNo(stream.index ?? "Unknown")),
+                              title: Text(appLocal.audioStreamNo(
+                                  stream.getIndex() ?? "Unknown")),
                               subtitle: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
+                                  Text(appLocal.sampleRate(
+                                      stream.getSampleRate() ?? "")),
                                   Text(appLocal
-                                      .sampleRate(stream.sampleRate ?? "")),
-                                  Text(appLocal
-                                      .codecTeller(stream.codecName ?? "")),
+                                      .codecTeller(stream.getCodec() ?? "")),
                                   Text(appLocal.bitrate(SizeUnitConversion
-                                      .bytesToAppropriateUnits(
-                                          int.parse(stream.bitrate ?? "0"))))
+                                      .bytesToAppropriateUnits(int.parse(
+                                          stream.getBitrate() ?? "0"))))
                                 ],
                               ),
                             );
@@ -227,6 +226,7 @@ class _AdvancedAudioFileConfigState extends State<AdvancedAudioFileConfig> {
                       alignment: Alignment.center, child: const ProgressRing());
                 },
               ),
+              const Gap(8),
               Expander(
                 initiallyExpanded: true,
                 header: Text(appLocal.audioSettings),
@@ -237,7 +237,7 @@ class _AdvancedAudioFileConfigState extends State<AdvancedAudioFileConfig> {
                       appLocal.wordCodec,
                       style: theme.typography.bodyStrong,
                     ),
-                    const Gap(5),
+                    const Gap(6),
                     ComboBox(
                       items: const [
                         ComboBoxItem(
@@ -256,7 +256,7 @@ class _AdvancedAudioFileConfigState extends State<AdvancedAudioFileConfig> {
                         codecValue = newValue;
                       }),
                     ),
-                    const Gap(10),
+                    const Gap(16),
                     Row(
                       children: [
                         Button(

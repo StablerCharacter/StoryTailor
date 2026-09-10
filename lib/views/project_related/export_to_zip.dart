@@ -39,9 +39,9 @@ class _ExportProjectToZipState extends State<ExportProjectToZip> {
       Navigator.pop(context);
 
       if (Platform.isAndroid || Platform.isIOS) {
-        Share.shareXFiles([XFile(widget.fileName)]);
+        SharePlus.instance.share(ShareParams(files: [XFile(widget.fileName)]));
       } else {
-        FilePicker.platform
+        FilePicker
             .saveFile(fileName: "${p.basename(widget.directory.path)}.zip")
             .then((path) async {
           if (path != null) {

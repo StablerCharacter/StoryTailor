@@ -7,6 +7,7 @@
 #include "generated_plugin_registrant.h"
 
 #include <audioplayers_linux/audioplayers_linux_plugin.h>
+#include <ffmpeg_kit_next_flutter/f_fmpeg_kit_flutter_plugin.h>
 #include <irondash_engine_context/irondash_engine_context_plugin.h>
 #include <screen_retriever_linux/screen_retriever_linux_plugin.h>
 #include <super_native_extensions/super_native_extensions_plugin.h>
@@ -18,6 +19,9 @@ void fl_register_plugins(FlPluginRegistry* registry) {
   g_autoptr(FlPluginRegistrar) audioplayers_linux_registrar =
       fl_plugin_registry_get_registrar_for_plugin(registry, "AudioplayersLinuxPlugin");
   audioplayers_linux_plugin_register_with_registrar(audioplayers_linux_registrar);
+  g_autoptr(FlPluginRegistrar) ffmpeg_kit_next_flutter_registrar =
+      fl_plugin_registry_get_registrar_for_plugin(registry, "FFmpegKitFlutterPlugin");
+  f_fmpeg_kit_flutter_plugin_register_with_registrar(ffmpeg_kit_next_flutter_registrar);
   g_autoptr(FlPluginRegistrar) irondash_engine_context_registrar =
       fl_plugin_registry_get_registrar_for_plugin(registry, "IrondashEngineContextPlugin");
   irondash_engine_context_plugin_register_with_registrar(irondash_engine_context_registrar);
